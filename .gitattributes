@@ -1,0 +1,3 @@
+public/wasm/* -whitespace
+public/models/* binary
+*.wasm binary

@@ -1,0 +1,10 @@
+node_modules
+.next
+out
+.vercel
+playwright-report
+test-results
+output/playwright
+.playwright-cli
+.DS_Store
+*.log

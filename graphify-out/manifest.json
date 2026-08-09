@@ -1,0 +1,197 @@
+{
+  "app/layout.tsx": {
+    "mtime": 1786244182.2037945,
+    "ast_hash": "0298bfe8ff983e43e46b024224f43026",
+    "semantic_hash": ""
+  },
+  "app/manifest.ts": {
+    "mtime": 1786244033.3206966,
+    "ast_hash": "eb8135e8bc819714529b5d90752d0799",
+    "semantic_hash": ""
+  },
+  "app/page.tsx": {
+    "mtime": 1786243448.7390275,
+    "ast_hash": "4580c84f7950dbd4535bc97606deec07",
+    "semantic_hash": ""
+  },
+  "components/SkeletonView.tsx": {
+    "mtime": 1786243744.060915,
+    "ast_hash": "bae405cb4316553b6dc2df928d3e39b7",
+    "semantic_hash": ""
+  },
+  "components/SwingAnalyzer.tsx": {
+    "mtime": 1786244033.321171,
+    "ast_hash": "c3a323e240f3245072c7df90d2c43bbe",
+    "semantic_hash": ""
+  },
+  "e2e/mobile.spec.ts": {
+    "mtime": 1786243956.002117,
+    "ast_hash": "a7ce4bfd29f63d3a8ee1a96fe0a838b6",
+    "semantic_hash": ""
+  },
+  "eslint.config.mjs": {
+    "mtime": 1786243448.7382553,
+    "ast_hash": "0c8d3be31a12d1e43d65a49db0d4dd50",
+    "semantic_hash": ""
+  },
+  "lib/analysis.ts": {
+    "mtime": 1786244300.0617945,
+    "ast_hash": "13205820722d41ef7dacb92aacb534b3",
+    "semantic_hash": ""
+  },
+  "lib/demo.ts": {
+    "mtime": 1786243546.6274867,
+    "ast_hash": "b6f19591b1798e32cfc56485abaa8012",
+    "semantic_hash": ""
+  },
+  "lib/geometry.ts": {
+    "mtime": 1786243546.6271858,
+    "ast_hash": "61321d091e39b1538ecc5528eb700320",
+    "semantic_hash": ""
+  },
+  "lib/pose-engine.ts": {
+    "mtime": 1786243605.272368,
+    "ast_hash": "bb2f75373364be3c438d7d9d86711ec6",
+    "semantic_hash": ""
+  },
+  "lib/types.ts": {
+    "mtime": 1786243448.7391136,
+    "ast_hash": "c0cfbfb7fb48320a5ed41e68157300d9",
+    "semantic_hash": ""
+  },
+  "lib/video-analysis.ts": {
+    "mtime": 1786243605.272518,
+    "ast_hash": "24b2330138e2cc0e53f397b43f3e5436",
+    "semantic_hash": ""
+  },
+  "next-env.d.ts": {
+    "mtime": 1786244377.3014426,
+    "ast_hash": "8195d2c60ce847a459ae9d308d6a5724",
+    "semantic_hash": ""
+  },
+  "next.config.ts": {
+    "mtime": 1786244033.3203647,
+    "ast_hash": "3324dd1e5a1c16469d0dbf8ed94b4d1d",
+    "semantic_hash": ""
+  },
+  "package.json": {
+    "mtime": 1786244033.319983,
+    "ast_hash": "f807f0332ca06290c4d91da4f9463f6d",
+    "semantic_hash": ""
+  },
+  "playwright.config.ts": {
+    "mtime": 1786243448.7385242,
+    "ast_hash": "b1adfa2ea95e53b5ac7661b954d3839e",
+    "semantic_hash": ""
+  },
+  "public/sw.js": {
+    "mtime": 1786243744.0615969,
+    "ast_hash": "5a1cc336c59b712e244db9b2a14a4219",
+    "semantic_hash": ""
+  },
+  "public/wasm/vision_wasm_internal.js": {
+    "mtime": 1786244003.6181803,
+    "ast_hash": "4e4d2056933ff10bb5ea0acd6c169c23",
+    "semantic_hash": ""
+  },
+  "public/wasm/vision_wasm_module_internal.js": {
+    "mtime": 1786244003.620995,
+    "ast_hash": "8a47b94363c7e8195fb41980fd257ebe",
+    "semantic_hash": ""
+  },
+  "public/wasm/vision_wasm_nosimd_internal.js": {
+    "mtime": 1786244003.6240494,
+    "ast_hash": "5b111068b7389e5bd6b8a953b0272108",
+    "semantic_hash": ""
+  },
+  "tests/analysis.test.ts": {
+    "mtime": 1786244300.0620759,
+    "ast_hash": "926ffaada9d0524495b55df6b55350d1",
+    "semantic_hash": ""
+  },
+  "tests/geometry.test.ts": {
+    "mtime": 1786243956.0018473,
+    "ast_hash": "9673d501ac98d70d92b60cc7769ef8e3",
+    "semantic_hash": ""
+  },
+  "tsconfig.json": {
+    "mtime": 1786244013.3624175,
+    "ast_hash": "4702c57e203bf19749275e3c04f94ac1",
+    "semantic_hash": ""
+  },
+  "vitest.config.ts": {
+    "mtime": 1786243448.738388,
+    "ast_hash": "0b2c303928740325a030cdfb5a17abaa",
+    "semantic_hash": ""
+  },
+  ".playwright-cli/page-2026-08-09T02-55-38-291Z.yml": {
+    "mtime": 1786244138.2920365,
+    "ast_hash": "398f2fa745ba4082724127fd207628d4",
+    "semantic_hash": ""
+  },
+  ".playwright-cli/page-2026-08-09T02-55-47-551Z.yml": {
+    "mtime": 1786244147.552181,
+    "ast_hash": "7da9afd7ece30d312292ad7265cf57cb",
+    "semantic_hash": ""
+  },
+  ".playwright-cli/page-2026-08-09T02-56-42-892Z.yml": {
+    "mtime": 1786244202.8931153,
+    "ast_hash": "e0899d38fd4a765d222747f31c9d288d",
+    "semantic_hash": ""
+  },
+  ".playwright-cli/page-2026-08-09T02-57-00-057Z.yml": {
+    "mtime": 1786244220.0581326,
+    "ast_hash": "bc00196b9651f4da69d9877a379e57f3",
+    "semantic_hash": ""
+  },
+  ".playwright-cli/page-2026-08-09T02-58-38-982Z.yml": {
+    "mtime": 1786244318.982361,
+    "ast_hash": "2eafe46992f5659e7029c28206ca5526",
+    "semantic_hash": ""
+  },
+  ".playwright-cli/page-2026-08-09T02-58-50-445Z.yml": {
+    "mtime": 1786244330.445446,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  ".playwright-cli/page-2026-08-09T02-58-52-186Z.yml": {
+    "mtime": 1786244332.1869812,
+    "ast_hash": "2c1abee4f7ac6363df30862682703eb8",
+    "semantic_hash": ""
+  },
+  ".playwright-cli/page-2026-08-09T02-59-06-925Z.yml": {
+    "mtime": 1786244346.9263415,
+    "ast_hash": "bb6b779f1436abf51732c35088ee594a",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1786244052.9040437,
+    "ast_hash": "01e8142356e15c3404e0d84c48187cd0",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1786244052.9041169,
+    "ast_hash": "5c27369b226fcf2be8a6cfe52224e767",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1786243956.002557,
+    "ast_hash": "57b5e59d6f99334325fdadb63815a9a1",
+    "semantic_hash": ""
+  },
+  "docs/architecture.md": {
+    "mtime": 1786243956.0024312,
+    "ast_hash": "1f3a0086cf5c333d42fa07914786ea38",
+    "semantic_hash": ""
+  },
+  "docs/competitive-analysis.md": {
+    "mtime": 1786243956.0022416,
+    "ast_hash": "215e2d2dd473fa34a9712b2b207139b4",
+    "semantic_hash": ""
+  },
+  "public/icon.svg": {
+    "mtime": 1786243448.7388422,
+    "ast_hash": "b5fcb45f8d8dbfc09336c27c26362ae0",
+    "semantic_hash": ""
+  }
+}
