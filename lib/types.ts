@@ -29,7 +29,7 @@ export type MetricResult = {
   key: MetricKey;
   label: string;
   value: number;
-  unit: "°" | "몸통";
+  unit: "°" | "torso";
   reference: [number, number];
   score: number;
   status: "good" | "watch";

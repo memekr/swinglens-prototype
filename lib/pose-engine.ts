@@ -43,7 +43,7 @@ export class PoseEngine {
   }
 
   detect(canvas: HTMLCanvasElement, timestampMs: number): PoseDetection {
-    if (!this.landmarker) throw new Error("포즈 모델이 준비되지 않았습니다.");
+    if (!this.landmarker) throw new Error("The on-device pose model is not ready.");
     const result = this.landmarker.detectForVideo(canvas, timestampMs);
     const raw = result.landmarks[0];
     if (!raw || raw.length < 29) return null;

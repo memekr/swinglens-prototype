@@ -19,10 +19,10 @@ import type {
 } from "./types";
 
 const PHASE_COPY: Record<PhaseKey, Pick<PhaseDefinition, "label" | "description">> = {
-  setup: { label: "셋업", description: "움직임이 커지기 전 기준 자세" },
-  launch: { label: "런치", description: "손의 가속이 시작되는 구간" },
-  contact: { label: "컨택 후보", description: "손목 속도가 가장 큰 프레임 — 실제 타구 순간은 아님" },
-  follow: { label: "팔로스루", description: "최대 손목 속도 이후 감속 구간" },
+  setup: { label: "Setup", description: "Your baseline before the swing gathers speed" },
+  launch: { label: "Launch", description: "The window where hand acceleration begins" },
+  contact: { label: "Contact candidate", description: "Peak wrist-speed sample — not confirmed ball contact" },
+  follow: { label: "Follow-through", description: "The deceleration window after peak hand speed" },
 };
 
 type ReferenceMap = Record<MetricKey, [number, number]>;
@@ -114,30 +114,30 @@ function phaseMetrics(
     ),
     headMovement: distance(currentHeadOffset, setupHeadOffset) / torsoScale(setupFrame.landmarks),
   };
-  const copy: Record<MetricKey, { label: string; unit: "°" | "몸통"; good: string; watch: string }> = {
+  const copy: Record<MetricKey, { label: string; unit: "°" | "torso"; good: string; watch: string }> = {
     leadKnee: {
-      label: "앞무릎 각도",
+      label: "Lead-knee angle",
       unit: "°",
-      good: "앞다리가 단계 참고 범위 안에서 지지하고 있어요.",
-      watch: "앞무릎 굽힘을 영상과 함께 확인해 보세요. 카메라 각도에 따라 값이 달라집니다.",
+      good: "Your lead leg is supporting this checkpoint inside the prototype range.",
+      watch: "Review lead-knee flexion on the frame; camera angle can change this 2D value.",
     },
     torsoLean: {
-      label: "몸통 기울기",
+      label: "Torso lean",
       unit: "°",
-      good: "몸통 기울기가 이 단계의 참고 범위에 있어요.",
-      watch: "상체가 너무 세워지거나 무너지지 않는지 확인해 보세요.",
+      good: "Torso lean sits inside the prototype range for this checkpoint.",
+      watch: "Check whether the upper body is standing up early or collapsing over the plate.",
     },
     separation: {
-      label: "어깨–골반 선 차이",
+      label: "Shoulder–hip line gap",
       unit: "°",
-      good: "2D 화면에서 어깨와 골반 선의 차이가 참고 범위에 있어요.",
-      watch: "회전 타이밍을 점검하되, 이 값은 3D 분리각이 아닌 화면상 대리값입니다.",
+      good: "The on-screen shoulder and hip lines sit inside the prototype range.",
+      watch: "Review rotation timing. This is a 2D screen-space proxy, not a 3D separation angle.",
     },
     headMovement: {
-      label: "머리 상대 이동",
-      unit: "몸통",
-      good: "골반 대비 머리 위치가 비교적 안정적이에요.",
-      watch: "골반 기준 머리 이동이 크게 보입니다. 중심 이동과 촬영 흔들림을 함께 확인하세요.",
+      label: "Relative head travel",
+      unit: "torso",
+      good: "Head position stays relatively stable against the pelvis.",
+      watch: "Head travel is large relative to the pelvis. Check both weight shift and camera shake.",
     },
   };
 
@@ -160,7 +160,7 @@ function phaseMetrics(
 
 function qualityChecks(frames: PoseFrame[], expectedSamples: number): QualityCheck[] {
   if (frames.length === 0) {
-    return [{ key: "pose", label: "사람 인식", status: "fail", detail: "전신 포즈를 찾지 못했습니다." }];
+    return [{ key: "pose", label: "Person detection", status: "fail", detail: "No full-body pose was found." }];
   }
   const coverage = frames.length / Math.max(expectedSamples, 1);
   const averageConfidence = frames.reduce((sum, frame) => sum + frame.confidence, 0) / frames.length;
@@ -186,33 +186,33 @@ function qualityChecks(frames: PoseFrame[], expectedSamples: number): QualityChe
   return [
     {
       key: "coverage",
-      label: "포즈 추적",
+      label: "Pose coverage",
       status: coverage >= 0.72 ? "pass" : coverage >= 0.48 ? "warn" : "fail",
-      detail: `${Math.round(coverage * 100)}% 프레임에서 전신을 찾았습니다.`,
+      detail: `A full-body pose was found in ${Math.round(coverage * 100)}% of sampled frames.`,
     },
     {
       key: "confidence",
-      label: "관절 선명도",
+      label: "Joint confidence",
       status: averageConfidence >= 0.68 ? "pass" : averageConfidence >= 0.5 ? "warn" : "fail",
-      detail: `핵심 관절 평균 신뢰도 ${Math.round(averageConfidence * 100)}%입니다.`,
+      detail: `Key-joint confidence averages ${Math.round(averageConfidence * 100)}%.`,
     },
     {
       key: "framing",
-      label: "전신 크기",
+      label: "Subject scale",
       status: bodyHeight >= 0.46 && bodyHeight <= 0.94 ? "pass" : bodyHeight >= 0.33 ? "warn" : "fail",
-      detail: bodyHeight < 0.46 ? "선수가 화면에서 작습니다. 카메라를 조금 더 가까이 두세요." : "화면 안 전신 크기가 분석에 적절합니다.",
+      detail: bodyHeight < 0.46 ? "The hitter is small in frame. Move the camera slightly closer." : "Full-body scale is suitable for analysis.",
     },
     {
       key: "clipping",
-      label: "프레임 여유",
+      label: "Frame clearance",
       status: clippedRatio <= 0.08 ? "pass" : clippedRatio <= 0.28 ? "warn" : "fail",
-      detail: clippedRatio <= 0.08 ? "머리와 발이 안정적으로 화면 안에 있습니다." : "머리나 발이 잘린 프레임이 있습니다.",
+      detail: clippedRatio <= 0.08 ? "Head and feet remain safely inside the frame." : "The head or feet are clipped in part of the swing.",
     },
     {
       key: "motion",
-      label: "스윙 움직임",
+      label: "Swing motion",
       status: motionSpan >= 0.48 ? "pass" : motionSpan >= 0.28 ? "warn" : "fail",
-      detail: motionSpan >= 0.48 ? "손과 몸통의 상대 움직임이 충분히 포착됐습니다." : "한 번의 전체 스윙이 포함되도록 다시 촬영해 주세요.",
+      detail: motionSpan >= 0.48 ? "Enough hand-to-torso motion was captured." : "Record one complete swing from setup through follow-through.",
     },
   ];
 }
@@ -239,8 +239,8 @@ export function analyzePoseSequence(
       phases: [],
       quality,
       strengths: [],
-      adjustments: ["전신이 계속 보이도록 가로 화면에서 다시 촬영하면 코칭 결과를 만들 수 있어요."],
-      disclaimer: "신뢰도가 부족해 자세 점수를 만들지 않았습니다.",
+      adjustments: ["Retake in landscape with the full body visible from setup through follow-through."],
+      disclaimer: "Evidence quality was too low, so SwingLens withheld the mechanics score.",
     };
   }
 
@@ -278,8 +278,8 @@ export function analyzePoseSequence(
     durationMs: frames.at(-1)?.timestampMs ?? 0,
     phases: phaseResults,
     quality,
-    strengths: strengths.length ? strengths : ["전신 포즈가 안정적으로 추적됐습니다."],
-    adjustments: adjustments.length ? adjustments : ["현재 참고 범위에서는 큰 이탈이 보이지 않습니다."],
-    disclaimer: "2D 화면 기반 참고값이며 의료·부상 진단 또는 전문 코치의 판단을 대체하지 않습니다.",
+    strengths: strengths.length ? strengths : ["The full-body pose remained stable across the swing."],
+    adjustments: adjustments.length ? adjustments : ["No major departure appears against the current prototype ranges."],
+    disclaimer: "These are 2D screen-space cues, not medical advice, injury diagnosis, or a replacement for a qualified coach.",
   };
 }

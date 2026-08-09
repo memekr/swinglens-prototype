@@ -1,36 +1,47 @@
-# 프로토타입 아키텍처와 판단 경계
+# Prototype architecture and decision boundaries
 
-## 실행 흐름
+## Runtime flow
 
-1. 사용자가 `capture="environment"`가 설정된 파일 입력으로 촬영하거나 영상을 고른다.
-2. 브라우저의 `<video>` 디코더가 최대 12초 구간을 실제 타임스탬프로 탐색한다.
-3. 각 프레임을 장축 640~720px로 고품질 리샘플링하고 약한 명암 보정을 적용한다.
-4. 앱에 포함된 MediaPipe Pose Landmarker Lite/WASM이 33개 랜드마크를 찾는다.
-5. 손목 중심 이동 속도의 피크 전후에서 셋업·런치·컨택 후보·팔로스루 키프레임을 정한다.
-6. 몸통 길이로 정규화한 2D 지표를 단계별 프로토타입 참고 범위와 비교한다.
-7. 관절 신뢰도와 촬영 품질이 기준 미달이면 점수 생성을 중단하고 재촬영 안내만 표시한다.
+1. The user records or selects a clip through a file input with `capture="environment"`.
+2. The browser `<video>` decoder seeks real timestamps within the first 12 seconds.
+3. Each frame is resampled to a 640–720 px long edge and receives conservative contrast normalization.
+4. Bundled MediaPipe Pose Landmarker Lite/WASM estimates 33 body landmarks.
+5. The pipeline finds setup, launch, contact-candidate, and follow-through samples around peak wrist-center speed.
+6. Torso-normalized 2D cues are compared with checkpoint-specific prototype ranges.
+7. Pose coverage, joint confidence, subject scale, clipping, and actual swing motion act as score gates.
+8. The report exposes the evidence through checkpoint tabs, Frame Lab scrubbing, side-by-side comparison, and rule-based practice cards.
 
-모든 영상 프레임과 미리보기는 탭 메모리에만 존재한다. Vercel은 정적 앱 코드, WASM, 모델 파일만 제공하며 영상 수신 API가 없다.
+Every decoded frame and preview stays in tab memory. Vercel serves application code, WASM, and the pose model; there is no video-receiving API.
 
-## 의도적으로 측정하지 않는 값
+## Features added from external pattern research
 
-- 실제 공과 배트의 접촉 시점
-- 배트 스피드, 타구 속도, 절대 거리
-- 정확한 어택 앵글과 3D 관절·회전각
-- 가려진 관절의 그럴듯한 복원
-- 부상 위험 또는 의료 진단
+- Frame scrubbing and side-by-side comparison, abstracted from Kinovea, Onform, and V1 workflows
+- Player/Coach detail modes, abstracted from the open-source Baseball Swing Analyzer
+- Joint trajectory and camera-plane warnings, adapted from Sports2D without claiming its research outputs
+- Cue-specific practice cards, inspired by Mustard and BarrelLabs product patterns
+- Client-side share and print-to-PDF instead of server-side report storage
 
-낮은 FPS는 시간 정보를 잃은 상태다. 공간 리샘플링은 관절 모델의 입력 크기를 맞출 뿐, 누락된 순간을 복원하지 않는다. 향후 프레임 보간을 실험하더라도 원본 프레임과 합성 프레임을 구분하고 합성 프레임을 이벤트 판정 근거로 쓰지 않아야 한다.
+No source code or brand assets were copied from those projects.
 
-## 모바일 앱 전환 경로
+## Values intentionally not measured
 
-프로토타입 검증 뒤 Capacitor로 웹 UI를 감싸는 방법보다, 카메라·영상 디코딩·GPU 세션의 안정성이 중요한 제품 특성상 React Native 또는 네이티브 Swift/Kotlin 셸을 권장한다. 공통으로 유지할 수 있는 부분은 TypeScript의 기하·단계·품질 판정 로직과 리포트 스키마다.
+- Actual bat–ball contact time
+- Bat speed, exit velocity, or absolute distance
+- True attack angle or 3D joint/rotation angles
+- Plausible reconstruction of occluded joints
+- Injury risk or medical diagnosis
 
-- iOS: Vision/MediaPipe Tasks 또는 Core ML 변환 모델, AVAssetReader, Metal
+Low FPS means temporal information is missing. Spatial resampling can prepare a model input but cannot restore an unrecorded moment. If interpolation is tested later, synthetic frames must be visibly distinguished from source frames and must not become event-detection evidence.
+
+## Native mobile path
+
+After prototype validation, a React Native or native Swift/Kotlin shell is preferable to a thin Capacitor wrapper because this product depends on stable camera capture, media decoding, and GPU sessions. The TypeScript geometry, phase, quality-gating, practice-card, and report schemas can remain shared.
+
+- iOS: Vision/MediaPipe Tasks or a Core ML conversion, AVAssetReader, Metal
 - Android: MediaPipe Tasks/TFLite, MediaCodec, GPU delegate
-- 모델 업데이트: 앱 번들 기본 모델 + 서명된 선택적 모델 팩
-- 개인정보: 기본 로컬 처리, 사용자가 명시적으로 선택한 익명 측정값만 연구용 업로드
+- Model updates: bundled baseline model plus signed optional model packs
+- Privacy: local processing by default; research telemetry only through explicit opt-in
 
-## 검증이 필요한 다음 단계
+## Validation still required
 
-현재 참고 범위는 UI와 분석 흐름을 검증하기 위한 임시값이다. 실제 제품 전에는 촬영 각도별 데이터셋, 코치 다중 라벨, 동일 영상 반복 측정, 저조도·가림·좌타·청소년 케이스를 분리해 검증해야 한다.
+The current ranges validate the product flow, not baseball truth. A production release needs camera-angle-specific datasets, independent coach labels, repeatability testing, low-light and occlusion cases, left-handed hitters, youth participants, and real mobile performance profiling.

@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SwingLens | 온디바이스 스윙 체크",
-  description: "휴대폰 영상으로 야구 스윙 자세를 확인하는 로컬 비전 AI 프로토타입",
+  title: "SwingLens | On-device swing review",
+  description: "Review baseball swing checkpoints and full-body pose evidence from a phone video — processed on your device.",
   applicationName: "SwingLens",
   manifest: "/manifest.webmanifest",
   icons: { icon: "/icon.svg", apple: "/icon.svg" },
@@ -19,7 +19,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ko">
+    <html lang="en">
       <body>{children}</body>
     </html>
   );

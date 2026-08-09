@@ -6,5 +6,6 @@ playwright-report
 test-results
 output/playwright
 .playwright-cli
+graphify-out/20??-??-??/
 .DS_Store
 *.log

@@ -1,12 +1,12 @@
 {
   "app/layout.tsx": {
-    "mtime": 1786244182.2037945,
-    "ast_hash": "0298bfe8ff983e43e46b024224f43026",
+    "mtime": 1786245370.5300424,
+    "ast_hash": "44f780ae4953da8983d9a8fdaaa397eb",
     "semantic_hash": ""
   },
   "app/manifest.ts": {
-    "mtime": 1786244033.3206966,
-    "ast_hash": "eb8135e8bc819714529b5d90752d0799",
+    "mtime": 1786245370.5304887,
+    "ast_hash": "1566083c72163971ef66fc99fb7fdfc0",
     "semantic_hash": ""
   },
   "app/page.tsx": {
@@ -15,18 +15,18 @@
     "semantic_hash": ""
   },
   "components/SkeletonView.tsx": {
-    "mtime": 1786243744.060915,
-    "ast_hash": "bae405cb4316553b6dc2df928d3e39b7",
+    "mtime": 1786245488.8235538,
+    "ast_hash": "15342c3616852658b1acbfae37f97ece",
     "semantic_hash": ""
   },
   "components/SwingAnalyzer.tsx": {
-    "mtime": 1786244033.321171,
-    "ast_hash": "c3a323e240f3245072c7df90d2c43bbe",
+    "mtime": 1786245360.6450121,
+    "ast_hash": "1cebc92a944c4d78fa1d2a7b4194bdf5",
     "semantic_hash": ""
   },
   "e2e/mobile.spec.ts": {
-    "mtime": 1786243956.002117,
-    "ast_hash": "a7ce4bfd29f63d3a8ee1a96fe0a838b6",
+    "mtime": 1786245488.82376,
+    "ast_hash": "a149118c94ed0a9203c0d9c26eb4ab8a",
     "semantic_hash": ""
   },
   "eslint.config.mjs": {
@@ -35,8 +35,8 @@
     "semantic_hash": ""
   },
   "lib/analysis.ts": {
-    "mtime": 1786244300.0617945,
-    "ast_hash": "13205820722d41ef7dacb92aacb534b3",
+    "mtime": 1786245120.6144357,
+    "ast_hash": "28f1e33f1a37a55cec18815d67831929",
     "semantic_hash": ""
   },
   "lib/demo.ts": {
@@ -50,22 +50,22 @@
     "semantic_hash": ""
   },
   "lib/pose-engine.ts": {
-    "mtime": 1786243605.272368,
-    "ast_hash": "bb2f75373364be3c438d7d9d86711ec6",
+    "mtime": 1786245112.4128537,
+    "ast_hash": "54400e80fa4250386b803d3d1b5a3959",
     "semantic_hash": ""
   },
   "lib/types.ts": {
-    "mtime": 1786243448.7391136,
-    "ast_hash": "c0cfbfb7fb48320a5ed41e68157300d9",
+    "mtime": 1786245120.6141455,
+    "ast_hash": "a05e3c5eb5de1a29f9f164255d1885e4",
     "semantic_hash": ""
   },
   "lib/video-analysis.ts": {
-    "mtime": 1786243605.272518,
-    "ast_hash": "24b2330138e2cc0e53f397b43f3e5436",
+    "mtime": 1786245112.4133298,
+    "ast_hash": "4a85aa13685630c5d240641b8d82a782",
     "semantic_hash": ""
   },
   "next-env.d.ts": {
-    "mtime": 1786244377.3014426,
+    "mtime": 1786245735.4852152,
     "ast_hash": "8195d2c60ce847a459ae9d308d6a5724",
     "semantic_hash": ""
   },
@@ -175,23 +175,53 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1786243956.002557,
-    "ast_hash": "57b5e59d6f99334325fdadb63815a9a1",
+    "mtime": 1786245563.1013553,
+    "ast_hash": "cef6fbd577b28574c3f39aacdb2feccd",
     "semantic_hash": ""
   },
   "docs/architecture.md": {
-    "mtime": 1786243956.0024312,
-    "ast_hash": "1f3a0086cf5c333d42fa07914786ea38",
+    "mtime": 1786245563.1015255,
+    "ast_hash": "8c23b0707699d029548accd27ec6051d",
     "semantic_hash": ""
   },
   "docs/competitive-analysis.md": {
-    "mtime": 1786243956.0022416,
-    "ast_hash": "215e2d2dd473fa34a9712b2b207139b4",
+    "mtime": 1786245563.10166,
+    "ast_hash": "30234028a3f010deda0c0f4b7420aebd",
     "semantic_hash": ""
   },
   "public/icon.svg": {
     "mtime": 1786243448.7388422,
     "ast_hash": "b5fcb45f8d8dbfc09336c27c26362ae0",
+    "semantic_hash": ""
+  },
+  "components/AnalysisReport.tsx": {
+    "mtime": 1786245271.0229225,
+    "ast_hash": "4d17af8d6c0d5823b9ca352c7fd57b27",
+    "semantic_hash": ""
+  },
+  "components/Icon.tsx": {
+    "mtime": 1786245194.9928803,
+    "ast_hash": "926a5035166da3930a2efc0322112216",
+    "semantic_hash": ""
+  },
+  "components/ReviewStudio.tsx": {
+    "mtime": 1786245194.993122,
+    "ast_hash": "63e40883c09cbb903040572e8bf2616a",
+    "semantic_hash": ""
+  },
+  "lib/drills.ts": {
+    "mtime": 1786245194.9930255,
+    "ast_hash": "1bb0e7219a92640fd9c697d1511a056a",
+    "semantic_hash": ""
+  },
+  "tests/drills.test.ts": {
+    "mtime": 1786245488.8239074,
+    "ast_hash": "80f658776461ba21da8d2f6678f58ee2",
+    "semantic_hash": ""
+  },
+  "THIRD_PARTY_NOTICES.md": {
+    "mtime": 1786244432.87783,
+    "ast_hash": "18465b7ec03e74b2927741a2cbbc5fae",
     "semantic_hash": ""
   }
 }

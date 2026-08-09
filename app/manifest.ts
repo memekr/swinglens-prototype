@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "SwingLens — 온디바이스 스윙 체크",
+    name: "SwingLens — On-device swing review",
     short_name: "SwingLens",
-    description: "휴대폰 영상에서 기기 안에서 동작하는 야구 스윙 자세 분석 프로토타입",
+    description: "A local-first baseball swing review prototype for phone video.",
     start_url: "/",
     display: "standalone",
     background_color: "#07110d",

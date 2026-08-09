@@ -1,21 +1,32 @@
-# 경쟁 제품 참고 메모
+# Competitive and open-source feature research
 
-조사 범위: 2026년 7월 기준 제품 방향을 중심으로 2026-08-09 공식 App Store 설명을 재확인했다. 마케팅 문구는 기능 존재의 단서로만 사용했고, 측정 정확도를 검증된 사실로 받아들이지 않았다.
+Research was refreshed on 2026-08-09, with the requested July 2026 product horizon as the cutoff for feature selection. Store and repository descriptions establish that a feature is advertised or implemented; they do not prove measurement accuracy.
 
-| 제품 | 참고한 패턴 | SwingLens 적용 | 그대로 따르지 않은 점 |
+## Product patterns
+
+| Product or project | Observed pattern | Added to SwingLens | Explicit boundary |
 |---|---|---|---|
-| [Onform](https://apps.apple.com/us/app/onform-video-analysis-app/id1490334045) | 프레임 스크러빙, 스켈레톤, 비교·주석 | 핵심 단계 키프레임과 스켈레톤 근거 | 클라우드 팀 관리와 240fps 전제 |
-| [Sportsbox 3D Golf](https://apps.apple.com/us/app/sportsbox-3d-golf/id1578921026) | 촬영 가이드, 단계별 레퍼런스 | 전신·거리·카메라 높이 안내, 단계 탭 | 단일 2D 영상에서 3D 수치를 주장하는 표현 |
-| [Mustard Pitching](https://apps.apple.com/us/app/mustard-pitching/id1526812408) | 자동 키페이즈, 스켈레톤, 개인화 드릴 | 키페이즈와 다음 시도 문장 | 의료·부상 진단으로 오해할 표현 |
-| [SwingVision](https://apps.apple.com/us/app/swingvision-tennis-pickleball/id989461317) | 한 카메라 영상에서 이벤트 구간화 | 손목 속도 기반 스윙 구간 후보 | 실제 타구 이벤트를 검출했다고 주장 |
-| [V1 Baseball](https://apps.apple.com/us/app/v1-baseball-swing-analyzer/id1530643098) | 프레임 단위 재생, 레퍼런스 비교, 드로잉 | 키프레임별 지표와 화면 오버레이 | 유료 콘텐츠·계정 중심 흐름 |
+| [Onform](https://apps.apple.com/us/app/onform-video-analysis-app/id1490334045) | Frame scrubbing, skeleton tracking, side-by-side review, annotation | Frame Lab, overlay toggle, checkpoint compare | No claim of 240 FPS capture or cloud team workflow |
+| [Kinovea](https://github.com/Kinovea/Kinovea) | Capture, slow motion, comparison, annotation, measurement | Evidence scrubbing and comparison controls | No arbitrary pixel-to-real-world measurement |
+| [Sports2D](https://github.com/davidpagnon/Sports2D) | 2D trajectories and angles, configurable outputs, strong camera-plane warnings | Technical Coach view, range transparency, camera guidance | No OpenSim, inverse kinematics, or metric coordinates |
+| [Baseball Swing Analyzer](https://github.com/rainmandr/Swing-Analyzer) | Simple/advanced modes, frame analysis, knowledge/drills, PDF reports | Player/Coach views and print-to-PDF | No cloud LLM, database, or server video upload |
+| [BarrelLabs SwingAI](https://github.com/BARRELLABS/barrellabs-swing-app) | Mechanics breakdown, comparisons, top fixes, personalized drills, PDF | Cue-ranked practice cards and short next-rep plan | No unsupported MLB similarity score |
+| [Mustard Pitching](https://apps.apple.com/us/app/mustard-pitching/id1526812408) | Automatic key phases, skeletal overlay, personalized drills | Checkpoint evidence and cue-specific drills | No injury or medical inference |
+| [Sportsbox 3D Golf](https://apps.apple.com/us/app/sportsbox-3d-golf/id1578921026) | Guided face-on capture and phase comparison | Full-body capture checklist and phase tabs | No single-camera 3D claims |
+| [SwingVision](https://apps.apple.com/us/app/swingvision-tennis-pickleball/id989461317) | Single-camera event segmentation and highlights | Wrist-speed checkpoint candidates | Contact candidate is never called confirmed contact |
+| [V1 Baseball](https://apps.apple.com/us/app/v1-baseball-swing-analyzer/id1530643098) | Frame playback, reference comparison, drawing tools | Tracked-sample navigation and checkpoint comparison | No account or paid reference library |
+| [Pose2Sim](https://github.com/perfanalytics/pose2sim) | Local privacy, multi-camera calibration, research-grade 3D workflow | Local-first principle and documented native roadmap | Multi-camera 3D is deliberately outside this PWA |
 
-## 제품 차별점
+## Why these additions were selected
 
-- 영상은 서버로 업로드하지 않는다. 모델과 분석 코드가 브라우저에서 실행된다.
-- 처음부터 점수를 보여주지 않는다. 포즈 추적·관절 선명도·프레이밍이 부족하면 분석을 보류한다.
-- `컨택 후보`를 실제 공 접촉으로 부르지 않는다.
-- 모든 지표는 영상 프레임, 참고 범위, 2D 한계와 함께 제시한다.
-- 로그인 없이 URL만으로 테스트할 수 있으며 PWA로 설치할 수 있다.
+Frame review, comparison, audience-appropriate detail, drills, and portable reports improve the coaching workflow without requiring a new model or unsupported measurements. Multi-camera 3D, generative similarity, ball-contact detection, and absolute speed require data or sensors this prototype does not have, so they remain excluded.
 
-경쟁 제품의 브랜드, 카피, 화면 구성은 복제하지 않았다. 기능 패턴만 제품 요구사항으로 추상화했다.
+## Differentiation
+
+- Video processing stays in the browser; the server receives zero video bytes.
+- A score is withheld when pose, framing, or motion evidence fails.
+- Every cue links back to a visible source sample and a labeled prototype range.
+- Frame Lab exposes tracked source timestamps and never presents interpolated frames as evidence.
+- Testers can open a sample report without an account or personal video.
+
+Competitor branding, copy, layouts, and source code were not copied. Only product patterns were translated into independent requirements.

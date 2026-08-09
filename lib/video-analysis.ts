@@ -24,7 +24,7 @@ function waitForEvent(target: HTMLMediaElement, event: "loadedmetadata" | "loade
     };
     const onError = () => {
       cleanup();
-      reject(new Error("이 브라우저에서 영상을 열 수 없습니다. MP4 또는 MOV 파일을 사용해 주세요."));
+      reject(new Error("This browser could not decode the video. Try an MP4 or MOV file."));
     };
     target.addEventListener(event, onDone, { once: true });
     target.addEventListener("error", onError, { once: true });
@@ -46,7 +46,7 @@ function enhancedFrame(video: HTMLVideoElement): HTMLCanvasElement {
   canvas.width = Math.max(1, Math.round(video.videoWidth * scale));
   canvas.height = Math.max(1, Math.round(video.videoHeight * scale));
   const context = canvas.getContext("2d", { alpha: false, willReadFrequently: false });
-  if (!context) throw new Error("프레임 캔버스를 만들 수 없습니다.");
+  if (!context) throw new Error("SwingLens could not create a frame canvas.");
   context.imageSmoothingEnabled = true;
   context.imageSmoothingQuality = "high";
   context.filter = "contrast(1.055) saturate(0.97)";
@@ -89,7 +89,7 @@ export async function analyzeVideoFile(
     await waitForEvent(video, "loadedmetadata");
     if (video.readyState < 2) await waitForEvent(video, "loadeddata");
     if (!Number.isFinite(video.duration) || video.duration <= 0) {
-      throw new Error("영상 길이를 확인할 수 없습니다.");
+      throw new Error("SwingLens could not read the video duration.");
     }
     const maxDurationSeconds = 12;
     const durationSeconds = Math.min(video.duration, maxDurationSeconds);
@@ -101,7 +101,7 @@ export async function analyzeVideoFile(
       expectedSamples === 1 ? 0 : (lastTime * index) / (expectedSamples - 1),
     );
 
-    onProgress(0, expectedSamples, "로컬 포즈 모델 준비");
+    onProgress(0, expectedSamples, "Loading the on-device pose model");
     await engine.load();
     const frames: PoseFrame[] = [];
     let analyzedWidth = 0;
@@ -122,7 +122,7 @@ export async function analyzeVideoFile(
           previewDataUrl: preview(canvas),
         });
       }
-      onProgress(index + 1, expectedSamples, index < expectedSamples * 0.72 ? "프레임 보정 · 관절 추적" : "스윙 단계 찾기");
+      onProgress(index + 1, expectedSamples, index < expectedSamples * 0.72 ? "Enhancing frames · tracking joints" : "Finding swing checkpoints");
       if (index % 3 === 0) await nextPaint();
     }
 

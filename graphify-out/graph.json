@@ -84,6 +84,96 @@
       "norm_label": "home()"
     },
     {
+      "label": "AnalysisReport.tsx",
+      "file_type": "code",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "components_analysisreport",
+      "community": 2,
+      "norm_label": "analysisreport.tsx"
+    },
+    {
+      "label": "PHASE_ORDER",
+      "file_type": "code",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "components_analysisreport_phase_order",
+      "community": 2,
+      "norm_label": "phase_order"
+    },
+    {
+      "label": "MetricValue()",
+      "file_type": "code",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "components_analysisreport_metricvalue",
+      "community": 2,
+      "norm_label": "metricvalue()"
+    },
+    {
+      "label": "AnalysisReport()",
+      "file_type": "code",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "components_analysisreport_analysisreport",
+      "community": 2,
+      "norm_label": "analysisreport()"
+    },
+    {
+      "label": "Icon.tsx",
+      "file_type": "code",
+      "source_file": "components/Icon.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "components_icon",
+      "community": 2,
+      "norm_label": "icon.tsx"
+    },
+    {
+      "label": "IconName",
+      "file_type": "code",
+      "source_file": "components/Icon.tsx",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "components_icon_iconname",
+      "community": 2,
+      "norm_label": "iconname"
+    },
+    {
+      "label": "Icon()",
+      "file_type": "code",
+      "source_file": "components/Icon.tsx",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "components_icon_icon",
+      "community": 2,
+      "norm_label": "icon()"
+    },
+    {
+      "label": "ReviewStudio.tsx",
+      "file_type": "code",
+      "source_file": "components/ReviewStudio.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "components_reviewstudio",
+      "community": 2,
+      "norm_label": "reviewstudio.tsx"
+    },
+    {
+      "label": "ReviewStudio()",
+      "file_type": "code",
+      "source_file": "components/ReviewStudio.tsx",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "components_reviewstudio_reviewstudio",
+      "community": 2,
+      "norm_label": "reviewstudio()"
+    },
+    {
       "label": "SkeletonView.tsx",
       "file_type": "code",
       "source_file": "components/SkeletonView.tsx",
@@ -117,47 +207,17 @@
       "label": "RunStatus",
       "file_type": "code",
       "source_file": "components/SwingAnalyzer.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "_origin": "ast",
       "id": "components_swinganalyzer_runstatus",
       "community": 2,
       "norm_label": "runstatus"
     },
     {
-      "label": "PHASE_ORDER",
-      "file_type": "code",
-      "source_file": "components/SwingAnalyzer.tsx",
-      "source_location": "L13",
-      "_origin": "ast",
-      "id": "components_swinganalyzer_phase_order",
-      "community": 2,
-      "norm_label": "phase_order"
-    },
-    {
-      "label": "Icon()",
-      "file_type": "code",
-      "source_file": "components/SwingAnalyzer.tsx",
-      "source_location": "L15",
-      "_origin": "ast",
-      "id": "components_swinganalyzer_icon",
-      "community": 2,
-      "norm_label": "icon()"
-    },
-    {
-      "label": "MetricValue()",
-      "file_type": "code",
-      "source_file": "components/SwingAnalyzer.tsx",
-      "source_location": "L29",
-      "_origin": "ast",
-      "id": "components_swinganalyzer_metricvalue",
-      "community": 2,
-      "norm_label": "metricvalue()"
-    },
-    {
       "label": "SwingAnalyzer()",
       "file_type": "code",
       "source_file": "components/SwingAnalyzer.tsx",
-      "source_location": "L33",
+      "source_location": "L14",
       "_origin": "ast",
       "id": "components_swinganalyzer_swinganalyzer",
       "community": 2,
@@ -332,6 +392,46 @@
       "id": "lib_demo_createdemoframes",
       "community": 2,
       "norm_label": "createdemoframes()"
+    },
+    {
+      "label": "drills.ts",
+      "file_type": "code",
+      "source_file": "lib/drills.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "lib_drills",
+      "community": 2,
+      "norm_label": "drills.ts"
+    },
+    {
+      "label": "DrillSuggestion",
+      "file_type": "code",
+      "source_file": "lib/drills.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "lib_drills_drillsuggestion",
+      "community": 2,
+      "norm_label": "drillsuggestion"
+    },
+    {
+      "label": "DRILLS",
+      "file_type": "code",
+      "source_file": "lib/drills.ts",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "lib_drills_drills",
+      "community": 2,
+      "norm_label": "drills"
+    },
+    {
+      "label": "getDrillSuggestions()",
+      "file_type": "code",
+      "source_file": "lib/drills.ts",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "lib_drills_getdrillsuggestions",
+      "community": 2,
+      "norm_label": "getdrillsuggestions()"
     },
     {
       "label": "geometry.ts",
@@ -6444,6 +6544,16 @@
       "norm_label": "analysis.test.ts"
     },
     {
+      "label": "drills.test.ts",
+      "file_type": "code",
+      "source_file": "tests/drills.test.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tests_drills_test",
+      "community": 2,
+      "norm_label": "drills.test.ts"
+    },
+    {
       "label": "geometry.test.ts",
       "file_type": "code",
       "source_file": "tests/geometry.test.ts",
@@ -6724,54 +6834,94 @@
       "norm_label": "swinglens prototype"
     },
     {
-      "label": "\ub85c\uceec \uc2e4\ud589",
+      "label": "Run locally",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L5",
+      "source_location": "L7",
       "_origin": "ast",
-      "id": "readme_\ub85c\uceec_\uc2e4\ud589",
+      "id": "readme_run_locally",
       "community": 6,
-      "norm_label": "\u1105\u1169\u110f\u1165\u11af \u1109\u1175\u11af\u1112\u1162\u11bc"
+      "norm_label": "run locally"
     },
     {
-      "label": "\uac80\uc99d",
+      "label": "Validate",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L14",
+      "source_location": "L16",
       "_origin": "ast",
-      "id": "readme_\uac80\uc99d",
+      "id": "readme_validate",
       "community": 6,
-      "norm_label": "\u1100\u1165\u11b7\u110c\u1173\u11bc"
+      "norm_label": "validate"
     },
     {
-      "label": "\ud604\uc7ac \uae30\ub2a5",
+      "label": "Current feature set",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L24",
+      "source_location": "L26",
       "_origin": "ast",
-      "id": "readme_\ud604\uc7ac_\uae30\ub2a5",
+      "id": "readme_current_feature_set",
       "community": 6,
-      "norm_label": "\u1112\u1167\u11ab\u110c\u1162 \u1100\u1175\u1102\u1173\u11bc"
+      "norm_label": "current feature set"
     },
     {
-      "label": "\uc911\uc694\ud55c \ud55c\uacc4",
+      "label": "Important limits",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L36",
+      "source_location": "L41",
       "_origin": "ast",
-      "id": "readme_\uc911\uc694\ud55c_\ud55c\uacc4",
+      "id": "readme_important_limits",
       "community": 6,
-      "norm_label": "\u110c\u116e\u11bc\u110b\u116d\u1112\u1161\u11ab \u1112\u1161\u11ab\u1100\u1168"
+      "norm_label": "important limits"
     },
     {
-      "label": "\ub77c\uc774\uc120\uc2a4 \uba54\ubaa8",
+      "label": "License note",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L42",
+      "source_location": "L47",
       "_origin": "ast",
-      "id": "readme_\ub77c\uc774\uc120\uc2a4_\uba54\ubaa8",
+      "id": "readme_license_note",
       "community": 6,
-      "norm_label": "\u1105\u1161\u110b\u1175\u1109\u1165\u11ab\u1109\u1173 \u1106\u1166\u1106\u1169"
+      "norm_label": "license note"
+    },
+    {
+      "label": "THIRD_PARTY_NOTICES.md",
+      "file_type": "document",
+      "source_file": "THIRD_PARTY_NOTICES.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "third_party_notices",
+      "community": 61,
+      "norm_label": "third_party_notices.md"
+    },
+    {
+      "label": "Third-party notices",
+      "file_type": "document",
+      "source_file": "THIRD_PARTY_NOTICES.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "third_party_notices_third_party_notices",
+      "community": 61,
+      "norm_label": "third-party notices"
+    },
+    {
+      "label": "MediaPipe Tasks Vision",
+      "file_type": "document",
+      "source_file": "THIRD_PARTY_NOTICES.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "third_party_notices_mediapipe_tasks_vision",
+      "community": 61,
+      "norm_label": "mediapipe tasks vision"
+    },
+    {
+      "label": "MediaPipe Pose Landmarker Lite",
+      "file_type": "document",
+      "source_file": "THIRD_PARTY_NOTICES.md",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "third_party_notices_mediapipe_pose_landmarker_lite",
+      "community": 61,
+      "norm_label": "mediapipe pose landmarker lite"
     },
     {
       "label": "architecture.md",
@@ -6784,54 +6934,64 @@
       "norm_label": "architecture.md"
     },
     {
-      "label": "\ud504\ub85c\ud1a0\ud0c0\uc785 \uc544\ud0a4\ud14d\ucc98\uc640 \ud310\ub2e8 \uacbd\uacc4",
+      "label": "Prototype architecture and decision boundaries",
       "file_type": "document",
       "source_file": "docs/architecture.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "docs_architecture_\ud504\ub85c\ud1a0\ud0c0\uc785_\uc544\ud0a4\ud14d\ucc98\uc640_\ud310\ub2e8_\uacbd\uacc4",
+      "id": "docs_architecture_prototype_architecture_and_decision_boundaries",
       "community": 6,
-      "norm_label": "\u1111\u1173\u1105\u1169\u1110\u1169\u1110\u1161\u110b\u1175\u11b8 \u110b\u1161\u110f\u1175\u1110\u1166\u11a8\u110e\u1165\u110b\u116a \u1111\u1161\u11ab\u1103\u1161\u11ab \u1100\u1167\u11bc\u1100\u1168"
+      "norm_label": "prototype architecture and decision boundaries"
     },
     {
-      "label": "\uc2e4\ud589 \ud750\ub984",
+      "label": "Runtime flow",
       "file_type": "document",
       "source_file": "docs/architecture.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "docs_architecture_\uc2e4\ud589_\ud750\ub984",
+      "id": "docs_architecture_runtime_flow",
       "community": 6,
-      "norm_label": "\u1109\u1175\u11af\u1112\u1162\u11bc \u1112\u1173\u1105\u1173\u11b7"
+      "norm_label": "runtime flow"
     },
     {
-      "label": "\uc758\ub3c4\uc801\uc73c\ub85c \uce21\uc815\ud558\uc9c0 \uc54a\ub294 \uac12",
+      "label": "Features added from external pattern research",
       "file_type": "document",
       "source_file": "docs/architecture.md",
-      "source_location": "L15",
+      "source_location": "L16",
       "_origin": "ast",
-      "id": "docs_architecture_\uc758\ub3c4\uc801\uc73c\ub85c_\uce21\uc815\ud558\uc9c0_\uc54a\ub294_\uac12",
+      "id": "docs_architecture_features_added_from_external_pattern_research",
       "community": 6,
-      "norm_label": "\u110b\u1174\u1103\u1169\u110c\u1165\u11a8\u110b\u1173\u1105\u1169 \u110e\u1173\u11a8\u110c\u1165\u11bc\u1112\u1161\u110c\u1175 \u110b\u1161\u11ad\u1102\u1173\u11ab \u1100\u1161\u11b9"
+      "norm_label": "features added from external pattern research"
     },
     {
-      "label": "\ubaa8\ubc14\uc77c \uc571 \uc804\ud658 \uacbd\ub85c",
+      "label": "Values intentionally not measured",
       "file_type": "document",
       "source_file": "docs/architecture.md",
-      "source_location": "L25",
+      "source_location": "L26",
       "_origin": "ast",
-      "id": "docs_architecture_\ubaa8\ubc14\uc77c_\uc571_\uc804\ud658_\uacbd\ub85c",
+      "id": "docs_architecture_values_intentionally_not_measured",
       "community": 6,
-      "norm_label": "\u1106\u1169\u1107\u1161\u110b\u1175\u11af \u110b\u1162\u11b8 \u110c\u1165\u11ab\u1112\u116a\u11ab \u1100\u1167\u11bc\u1105\u1169"
+      "norm_label": "values intentionally not measured"
     },
     {
-      "label": "\uac80\uc99d\uc774 \ud544\uc694\ud55c \ub2e4\uc74c \ub2e8\uacc4",
+      "label": "Native mobile path",
       "file_type": "document",
       "source_file": "docs/architecture.md",
-      "source_location": "L34",
+      "source_location": "L36",
       "_origin": "ast",
-      "id": "docs_architecture_\uac80\uc99d\uc774_\ud544\uc694\ud55c_\ub2e4\uc74c_\ub2e8\uacc4",
+      "id": "docs_architecture_native_mobile_path",
       "community": 6,
-      "norm_label": "\u1100\u1165\u11b7\u110c\u1173\u11bc\u110b\u1175 \u1111\u1175\u11af\u110b\u116d\u1112\u1161\u11ab \u1103\u1161\u110b\u1173\u11b7 \u1103\u1161\u11ab\u1100\u1168"
+      "norm_label": "native mobile path"
+    },
+    {
+      "label": "Validation still required",
+      "file_type": "document",
+      "source_file": "docs/architecture.md",
+      "source_location": "L45",
+      "_origin": "ast",
+      "id": "docs_architecture_validation_still_required",
+      "community": 6,
+      "norm_label": "validation still required"
     },
     {
       "label": "competitive-analysis.md",
@@ -6844,24 +7004,44 @@
       "norm_label": "competitive-analysis.md"
     },
     {
-      "label": "\uacbd\uc7c1 \uc81c\ud488 \ucc38\uace0 \uba54\ubaa8",
+      "label": "Competitive and open-source feature research",
       "file_type": "document",
       "source_file": "docs/competitive-analysis.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "docs_competitive_analysis_\uacbd\uc7c1_\uc81c\ud488_\ucc38\uace0_\uba54\ubaa8",
+      "id": "docs_competitive_analysis_competitive_and_open_source_feature_research",
       "community": 6,
-      "norm_label": "\u1100\u1167\u11bc\u110c\u1162\u11bc \u110c\u1166\u1111\u116e\u11b7 \u110e\u1161\u11b7\u1100\u1169 \u1106\u1166\u1106\u1169"
+      "norm_label": "competitive and open-source feature research"
     },
     {
-      "label": "\uc81c\ud488 \ucc28\ubcc4\uc810",
+      "label": "Product patterns",
       "file_type": "document",
       "source_file": "docs/competitive-analysis.md",
-      "source_location": "L13",
+      "source_location": "L5",
       "_origin": "ast",
-      "id": "docs_competitive_analysis_\uc81c\ud488_\ucc28\ubcc4\uc810",
+      "id": "docs_competitive_analysis_product_patterns",
       "community": 6,
-      "norm_label": "\u110c\u1166\u1111\u116e\u11b7 \u110e\u1161\u1107\u1167\u11af\u110c\u1165\u11b7"
+      "norm_label": "product patterns"
+    },
+    {
+      "label": "Why these additions were selected",
+      "file_type": "document",
+      "source_file": "docs/competitive-analysis.md",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "docs_competitive_analysis_why_these_additions_were_selected",
+      "community": 6,
+      "norm_label": "why these additions were selected"
+    },
+    {
+      "label": "Differentiation",
+      "file_type": "document",
+      "source_file": "docs/competitive-analysis.md",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "docs_competitive_analysis_differentiation",
+      "community": 6,
+      "norm_label": "differentiation"
     }
   ],
   "links": [
@@ -6940,6 +7120,341 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "components_analysisreport",
+      "target": "components_analysisreport_analysisreport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "components_analysisreport",
+      "target": "components_analysisreport_metricvalue",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "components_analysisreport",
+      "target": "components_analysisreport_phase_order",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "components_analysisreport",
+      "target": "components_icon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "components_analysisreport",
+      "target": "components_icon_icon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "components_analysisreport",
+      "target": "components_reviewstudio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "components_analysisreport",
+      "target": "components_reviewstudio_reviewstudio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "components_analysisreport",
+      "target": "components_skeletonview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "components_analysisreport",
+      "target": "components_skeletonview_skeletonview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "components_analysisreport",
+      "target": "lib_drills",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "components_analysisreport",
+      "target": "lib_drills_getdrillsuggestions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "components_analysisreport",
+      "target": "lib_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "components_analysisreport",
+      "target": "lib_types_analysisresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "components_analysisreport",
+      "target": "lib_types_phasekey",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "components_analysisreport",
+      "target": "lib_video_analysis",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "components_analysisreport",
+      "target": "lib_video_analysis_videoanalysisoutput",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/SwingAnalyzer.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "components_swinganalyzer",
+      "target": "components_analysisreport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components/AnalysisReport.tsx",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "components_analysisreport_analysisreport",
+      "target": "lib_drills_getdrillsuggestions"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/SwingAnalyzer.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "components_swinganalyzer",
+      "target": "components_analysisreport_analysisreport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/Icon.tsx",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "components_icon",
+      "target": "components_icon_icon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/Icon.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "components_icon",
+      "target": "components_icon_iconname",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/ReviewStudio.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "components_reviewstudio",
+      "target": "components_icon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/SwingAnalyzer.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "components_swinganalyzer",
+      "target": "components_icon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/ReviewStudio.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "components_reviewstudio",
+      "target": "components_icon_icon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/SwingAnalyzer.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "components_swinganalyzer",
+      "target": "components_icon_icon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/ReviewStudio.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "components_reviewstudio",
+      "target": "components_reviewstudio_reviewstudio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/ReviewStudio.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "components_reviewstudio",
+      "target": "components_skeletonview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/ReviewStudio.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "components_reviewstudio",
+      "target": "components_skeletonview_skeletonview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/ReviewStudio.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "components_reviewstudio",
+      "target": "lib_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/ReviewStudio.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "components_reviewstudio",
+      "target": "lib_types_phaseresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/ReviewStudio.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "components_reviewstudio",
+      "target": "lib_types_poseframe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "components/SkeletonView.tsx",
       "source_location": "L6",
       "weight": 1.0,
@@ -6956,28 +7471,6 @@
       "weight": 1.0,
       "source": "components_skeletonview",
       "target": "lib_geometry",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "components/SkeletonView.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "components_skeletonview",
-      "target": "lib_geometry_midpoint",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "components/SkeletonView.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "components_skeletonview",
-      "target": "lib_geometry_pose",
       "confidence_score": 1.0
     },
     {
@@ -7014,73 +7507,10 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "components/SwingAnalyzer.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "source": "components_swinganalyzer",
-      "target": "components_skeletonview",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "components/SkeletonView.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "components_skeletonview_skeletonview",
-      "target": "lib_geometry_midpoint"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "components/SwingAnalyzer.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "source": "components_swinganalyzer",
-      "target": "components_skeletonview_skeletonview",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/SwingAnalyzer.tsx",
-      "source_location": "L15",
-      "weight": 1.0,
-      "source": "components_swinganalyzer",
-      "target": "components_swinganalyzer_icon",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "components/SwingAnalyzer.tsx",
-      "source_location": "L29",
-      "weight": 1.0,
-      "source": "components_swinganalyzer",
-      "target": "components_swinganalyzer_metricvalue",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "components/SwingAnalyzer.tsx",
-      "source_location": "L13",
-      "weight": 1.0,
-      "source": "components_swinganalyzer",
-      "target": "components_swinganalyzer_phase_order",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "components/SwingAnalyzer.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "source": "components_swinganalyzer",
       "target": "components_swinganalyzer_runstatus",
@@ -7090,7 +7520,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/SwingAnalyzer.tsx",
-      "source_location": "L33",
+      "source_location": "L14",
       "weight": 1.0,
       "source": "components_swinganalyzer",
       "target": "components_swinganalyzer_swinganalyzer",
@@ -7193,17 +7623,6 @@
       "weight": 1.0,
       "source": "components_swinganalyzer",
       "target": "lib_types_handedness",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "components/SwingAnalyzer.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
-      "source": "components_swinganalyzer",
-      "target": "lib_types_phasekey",
       "confidence_score": 1.0
     },
     {
@@ -7538,6 +7957,17 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/drills.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_drills_test",
+      "target": "lib_analysis",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -7747,6 +8177,17 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/drills.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "tests_drills_test",
+      "target": "lib_analysis_analyzeposesequence",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/demo.ts",
@@ -7854,6 +8295,17 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/drills.test.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "tests_drills_test",
+      "target": "lib_demo",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -7895,6 +8347,102 @@
       "weight": 1.0,
       "source": "tests_analysis_test",
       "target": "lib_demo_createdemoframes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/drills.test.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "tests_drills_test",
+      "target": "lib_demo_createdemoframes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/drills.ts",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "lib_drills",
+      "target": "lib_drills_drills",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/drills.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "lib_drills",
+      "target": "lib_drills_drillsuggestion",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/drills.ts",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "lib_drills",
+      "target": "lib_drills_getdrillsuggestions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/drills.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "lib_drills",
+      "target": "lib_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/drills.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "lib_drills",
+      "target": "lib_types_analysisresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/drills.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "lib_drills",
+      "target": "lib_types_metrickey",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/drills.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_drills_test",
+      "target": "lib_drills",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/drills.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_drills_test",
+      "target": "lib_drills_getdrillsuggestions",
       "confidence_score": 1.0
     },
     {
@@ -16005,7 +16553,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L40",
+      "source_location": "L45",
       "weight": 1.0,
       "source": "readme",
       "target": "docs_architecture",
@@ -16015,7 +16563,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L40",
+      "source_location": "L45",
       "weight": 1.0,
       "source": "readme",
       "target": "docs_competitive_analysis",
@@ -16035,50 +16583,80 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L14",
+      "source_location": "L26",
       "weight": 1.0,
       "source": "readme_swinglens_prototype",
-      "target": "readme_\uac80\uc99d",
+      "target": "readme_current_feature_set",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L42",
+      "source_location": "L41",
       "weight": 1.0,
       "source": "readme_swinglens_prototype",
-      "target": "readme_\ub77c\uc774\uc120\uc2a4_\uba54\ubaa8",
+      "target": "readme_important_limits",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L5",
+      "source_location": "L47",
       "weight": 1.0,
       "source": "readme_swinglens_prototype",
-      "target": "readme_\ub85c\uceec_\uc2e4\ud589",
+      "target": "readme_license_note",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L36",
+      "source_location": "L7",
       "weight": 1.0,
       "source": "readme_swinglens_prototype",
-      "target": "readme_\uc911\uc694\ud55c_\ud55c\uacc4",
+      "target": "readme_run_locally",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L24",
+      "source_location": "L16",
       "weight": 1.0,
       "source": "readme_swinglens_prototype",
-      "target": "readme_\ud604\uc7ac_\uae30\ub2a5",
+      "target": "readme_validate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "THIRD_PARTY_NOTICES.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "third_party_notices",
+      "target": "third_party_notices_third_party_notices",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "THIRD_PARTY_NOTICES.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "third_party_notices_third_party_notices",
+      "target": "third_party_notices_mediapipe_pose_landmarker_lite",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "THIRD_PARTY_NOTICES.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "third_party_notices_third_party_notices",
+      "target": "third_party_notices_mediapipe_tasks_vision",
       "confidence_score": 1.0
     },
     {
@@ -16088,27 +16666,27 @@
       "source_location": "L1",
       "weight": 1.0,
       "source": "docs_architecture",
-      "target": "docs_architecture_\ud504\ub85c\ud1a0\ud0c0\uc785_\uc544\ud0a4\ud14d\ucc98\uc640_\ud310\ub2e8_\uacbd\uacc4",
+      "target": "docs_architecture_prototype_architecture_and_decision_boundaries",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/architecture.md",
-      "source_location": "L34",
+      "source_location": "L16",
       "weight": 1.0,
-      "source": "docs_architecture_\ud504\ub85c\ud1a0\ud0c0\uc785_\uc544\ud0a4\ud14d\ucc98\uc640_\ud310\ub2e8_\uacbd\uacc4",
-      "target": "docs_architecture_\uac80\uc99d\uc774_\ud544\uc694\ud55c_\ub2e4\uc74c_\ub2e8\uacc4",
+      "source": "docs_architecture_prototype_architecture_and_decision_boundaries",
+      "target": "docs_architecture_features_added_from_external_pattern_research",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/architecture.md",
-      "source_location": "L25",
+      "source_location": "L36",
       "weight": 1.0,
-      "source": "docs_architecture_\ud504\ub85c\ud1a0\ud0c0\uc785_\uc544\ud0a4\ud14d\ucc98\uc640_\ud310\ub2e8_\uacbd\uacc4",
-      "target": "docs_architecture_\ubaa8\ubc14\uc77c_\uc571_\uc804\ud658_\uacbd\ub85c",
+      "source": "docs_architecture_prototype_architecture_and_decision_boundaries",
+      "target": "docs_architecture_native_mobile_path",
       "confidence_score": 1.0
     },
     {
@@ -16117,18 +16695,28 @@
       "source_file": "docs/architecture.md",
       "source_location": "L3",
       "weight": 1.0,
-      "source": "docs_architecture_\ud504\ub85c\ud1a0\ud0c0\uc785_\uc544\ud0a4\ud14d\ucc98\uc640_\ud310\ub2e8_\uacbd\uacc4",
-      "target": "docs_architecture_\uc2e4\ud589_\ud750\ub984",
+      "source": "docs_architecture_prototype_architecture_and_decision_boundaries",
+      "target": "docs_architecture_runtime_flow",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/architecture.md",
-      "source_location": "L15",
+      "source_location": "L45",
       "weight": 1.0,
-      "source": "docs_architecture_\ud504\ub85c\ud1a0\ud0c0\uc785_\uc544\ud0a4\ud14d\ucc98\uc640_\ud310\ub2e8_\uacbd\uacc4",
-      "target": "docs_architecture_\uc758\ub3c4\uc801\uc73c\ub85c_\uce21\uc815\ud558\uc9c0_\uc54a\ub294_\uac12",
+      "source": "docs_architecture_prototype_architecture_and_decision_boundaries",
+      "target": "docs_architecture_validation_still_required",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/architecture.md",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "docs_architecture_prototype_architecture_and_decision_boundaries",
+      "target": "docs_architecture_values_intentionally_not_measured",
       "confidence_score": 1.0
     },
     {
@@ -16138,19 +16726,40 @@
       "source_location": "L1",
       "weight": 1.0,
       "source": "docs_competitive_analysis",
-      "target": "docs_competitive_analysis_\uacbd\uc7c1_\uc81c\ud488_\ucc38\uace0_\uba54\ubaa8",
+      "target": "docs_competitive_analysis_competitive_and_open_source_feature_research",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/competitive-analysis.md",
-      "source_location": "L13",
+      "source_location": "L24",
       "weight": 1.0,
-      "source": "docs_competitive_analysis_\uacbd\uc7c1_\uc81c\ud488_\ucc38\uace0_\uba54\ubaa8",
-      "target": "docs_competitive_analysis_\uc81c\ud488_\ucc28\ubcc4\uc810",
+      "source": "docs_competitive_analysis_competitive_and_open_source_feature_research",
+      "target": "docs_competitive_analysis_differentiation",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/competitive-analysis.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "docs_competitive_analysis_competitive_and_open_source_feature_research",
+      "target": "docs_competitive_analysis_product_patterns",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/competitive-analysis.md",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "docs_competitive_analysis_competitive_and_open_source_feature_research",
+      "target": "docs_competitive_analysis_why_these_additions_were_selected",
       "confidence_score": 1.0
     }
   ],
-  "hyperedges": []
+  "hyperedges": [],
+  "built_at_commit": "926aa04ccf06ab14eef2191a4336905583591134"
 }

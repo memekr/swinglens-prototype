@@ -1,13 +1,18 @@
 # Graph Report - swinglens-prototype  (2026-08-09)
 
 ## Corpus Check
-- 30 files · ~120,159 words
+- 36 files · ~116,970 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 686 nodes · 904 edges · 61 communities (27 shown, 34 thin omitted)
+- 704 nodes · 944 edges · 62 communities (28 shown, 34 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.56)
 - Token cost: 0 input · 0 output
+
+## Graph Freshness
+- Built from commit: `926aa04c`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - [[_COMMUNITY_vision_wasm_internal.js|vision_wasm_internal.js]]
@@ -63,6 +68,7 @@
 - [[_COMMUNITY_preRun|preRun]]
 - [[_COMMUNITY_registerType|registerType]]
 - [[_COMMUNITY_statfs|statfs]]
+- [[_COMMUNITY_Third-party notices|Third-party notices]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `module` - 47 edges
@@ -70,11 +76,11 @@
 3. `ExceptionInfo` - 13 edges
 4. `ExceptionInfo` - 13 edges
 5. `phaseMetrics()` - 9 edges
-6. `midpoint()` - 9 edges
-7. `analyzeVideoFile()` - 9 edges
-8. `scripts` - 8 edges
-9. `detectPhases()` - 7 edges
-10. `torsoScale()` - 7 edges
+6. `analyzeVideoFile()` - 9 edges
+7. `scripts` - 8 edges
+8. `detectPhases()` - 7 edges
+9. `analyzePoseSequence()` - 7 edges
+10. `createDemoFrames()` - 7 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `JsOnUint8ArrayImageListener()` --references--> `module`  [EXTRACTED]
@@ -91,11 +97,11 @@
 ## Import Cycles
 - None detected.
 
-## Communities (61 total, 34 thin omitted)
+## Communities (62 total, 34 thin omitted)
 
 ### Community 2 - "analysis.ts"
 Cohesion: 0.07
-Nodes (47): SkeletonView(), PHASE_ORDER, RunStatus, SwingAnalyzer(), analyzePoseSequence(), detectPhases(), KEY_JOINTS, PHASE_COPY (+39 more)
+Nodes (54): AnalysisReport(), PHASE_ORDER, Icon(), IconName, ReviewStudio(), SkeletonView(), RunStatus, SwingAnalyzer() (+46 more)
 
 ### Community 3 - "module"
 Cohesion: 0.04
@@ -110,8 +116,8 @@ Cohesion: 0.11
 Nodes (18): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, moduleResolution (+10 more)
 
 ### Community 6 - "SwingLens Prototype"
-Cohesion: 0.12
-Nodes (13): 검증이 필요한 다음 단계, 모바일 앱 전환 경로, 실행 흐름, 의도적으로 측정하지 않는 값, 프로토타입 아키텍처와 판단 경계, 경쟁 제품 참고 메모, 제품 차별점, SwingLens Prototype (+5 more)
+Cohesion: 0.11
+Nodes (16): Features added from external pattern research, Native mobile path, Prototype architecture and decision boundaries, Runtime flow, Validation still required, Values intentionally not measured, Competitive and open-source feature research, Differentiation (+8 more)
 
 ### Community 7 - "abort"
 Cohesion: 0.13
@@ -169,8 +175,12 @@ Nodes (3): msync(), put_char(), write()
 Cohesion: 0.67
 Nodes (3): msync(), put_char(), write()
 
+### Community 61 - "Third-party notices"
+Cohesion: 0.50
+Nodes (3): MediaPipe Pose Landmarker Lite, MediaPipe Tasks Vision, Third-party notices
+
 ## Knowledge Gaps
-- **67 isolated node(s):** `metadata`, `viewport`, `RunStatus`, `PHASE_ORDER`, `PHASE_COPY` (+62 more)
+- **74 isolated node(s):** `metadata`, `viewport`, `PHASE_ORDER`, `IconName`, `RunStatus` (+69 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **34 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -178,16 +188,16 @@ Nodes (3): msync(), put_char(), write()
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `module` connect `module` to `compilerOptions`?**
-  _High betweenness centrality (0.357) - this node is a cross-community bridge._
+  _High betweenness centrality (0.339) - this node is a cross-community bridge._
 - **Why does `compilerOptions` connect `compilerOptions` to `module`?**
-  _High betweenness centrality (0.042) - this node is a cross-community bridge._
+  _High betweenness centrality (0.040) - this node is a cross-community bridge._
 - **Why does `ExceptionInfo` connect `ExceptionInfo` to `vision_wasm_internal.js`?**
-  _High betweenness centrality (0.028) - this node is a cross-community bridge._
-- **What connects `metadata`, `viewport`, `RunStatus` to the rest of the system?**
-  _67 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _High betweenness centrality (0.027) - this node is a cross-community bridge._
+- **What connects `metadata`, `viewport`, `PHASE_ORDER` to the rest of the system?**
+  _74 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `vision_wasm_internal.js` be split into smaller, more focused modules?**
   _Cohesion score 0.012121212121212121 - nodes in this community are weakly interconnected._
 - **Should `vision_wasm_nosimd_internal.js` be split into smaller, more focused modules?**
   _Cohesion score 0.012121212121212121 - nodes in this community are weakly interconnected._
 - **Should `analysis.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.07355769230769231 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0656140350877193 - nodes in this community are weakly interconnected._
