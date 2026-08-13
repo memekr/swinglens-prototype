@@ -1,6 +1,11 @@
 import { PoseEngine } from "./pose-engine";
 import type { PoseFrame } from "./types";
 
+// Sample budget (maxSamples) is what actually bounds on-device inference work,
+// not clip length — a longer clip just spreads the same 72 samples thinner.
+// This is a sanity ceiling for accidental non-swing uploads, not a real limit.
+export const MAX_ANALYZED_SECONDS = 60;
+
 export type VideoAnalysisOutput = {
   frames: PoseFrame[];
   expectedSamples: number;
@@ -91,8 +96,7 @@ export async function analyzeVideoFile(
     if (!Number.isFinite(video.duration) || video.duration <= 0) {
       throw new Error("SwingLens could not read the video duration.");
     }
-    const maxDurationSeconds = 12;
-    const durationSeconds = Math.min(video.duration, maxDurationSeconds);
+    const durationSeconds = Math.min(video.duration, MAX_ANALYZED_SECONDS);
     const targetFps = 10;
     const maxSamples = 72;
     const expectedSamples = Math.max(8, Math.min(maxSamples, Math.ceil(durationSeconds * targetFps)));
@@ -134,7 +138,7 @@ export async function analyzeVideoFile(
       sourceHeight: video.videoHeight,
       analyzedWidth,
       analyzedHeight,
-      truncated: video.duration > maxDurationSeconds,
+      truncated: video.duration > MAX_ANALYZED_SECONDS,
     };
   } finally {
     video.removeAttribute("src");

@@ -8,11 +8,16 @@ export function SkeletonView({
   label,
   showSkeleton = true,
   pathPoints,
+  aspectRatio = 1,
 }: {
   frame: PoseFrame;
   label: string;
   showSkeleton?: boolean;
   pathPoints?: PoseLandmark[];
+  /** Analyzed-frame width / height. MediaPipe normalizes x and y against these
+   * independently, so the viewBox must use the same ratio or the image and
+   * the skeleton it's plotted on drift apart for any non-square video. */
+  aspectRatio?: number;
 }) {
   const landmarks = frame.landmarks;
   const path = pathPoints && pathPoints.length > 1 ? pathPoints.map((point) => `${point.x},${point.y}`).join(" ") : null;
@@ -20,7 +25,7 @@ export function SkeletonView({
 
   return (
     <figure className="skeleton-stage" aria-label={`${label} skeleton overlay`}>
-      <svg viewBox="0 0 1 1" role="img">
+      <svg viewBox={`0 0 ${aspectRatio} 1`} role="img">
         <defs>
           <linearGradient id="demo-bg" x1="0" x2="1" y1="0" y2="1">
             <stop offset="0" stopColor="#12251d" />
@@ -32,12 +37,12 @@ export function SkeletonView({
           </radialGradient>
         </defs>
         {frame.previewDataUrl ? (
-          <image href={frame.previewDataUrl} width="1" height="1" preserveAspectRatio="xMidYMid meet" />
+          <image href={frame.previewDataUrl} width={aspectRatio} height="1" preserveAspectRatio="none" />
         ) : (
           <>
-            <rect width="1" height="1" fill="url(#demo-bg)" />
-            <ellipse cx=".5" cy=".9" rx=".46" ry=".16" fill="url(#field-glow)" />
-            <path d="M0 .83H1M.5 .83V1" stroke="#8da197" strokeOpacity=".12" strokeWidth=".004" />
+            <rect width={aspectRatio} height="1" fill="url(#demo-bg)" />
+            <ellipse cx={aspectRatio / 2} cy=".9" rx={aspectRatio * 0.46} ry=".16" fill="url(#field-glow)" />
+            <path d={`M0 .83H${aspectRatio}M${aspectRatio / 2} .83V1`} stroke="#8da197" strokeOpacity=".12" strokeWidth=".004" />
           </>
         )}
         {showSkeleton && <>

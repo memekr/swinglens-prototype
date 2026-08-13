@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { getDrillSuggestions } from "@/lib/drills";
 import type { AnalysisResult, MetricUnit, PhaseKey } from "@/lib/types";
-import type { VideoAnalysisOutput } from "@/lib/video-analysis";
+import { MAX_ANALYZED_SECONDS, type VideoAnalysisOutput } from "@/lib/video-analysis";
 import { Icon } from "./Icon";
 import { ReviewStudio } from "./ReviewStudio";
 import { SkeletonView } from "./SkeletonView";
@@ -35,6 +35,9 @@ export function AnalysisReport({
     [activePhase, result.phases],
   );
   const drills = useMemo(() => getDrillSuggestions(result), [result]);
+  const aspectRatio = videoMeta && videoMeta.analyzedHeight > 0
+    ? videoMeta.analyzedWidth / videoMeta.analyzedHeight
+    : 1;
 
   async function shareReport() {
     const summary = [
@@ -91,7 +94,7 @@ export function AnalysisReport({
         ))}
       </div>
 
-      {videoMeta?.truncated && <p className="notice"><Icon name="warn" /> This clip was longer than 12 seconds, so only the first 12 seconds were analyzed.</p>}
+      {videoMeta?.truncated && <p className="notice"><Icon name="warn" /> This clip was longer than {MAX_ANALYZED_SECONDS} seconds, so only the first {MAX_ANALYZED_SECONDS} seconds were analyzed.</p>}
 
       {result.canCoach && selectedPhase && (
         <div className={`phase-report ${viewMode}-view`}>
@@ -106,6 +109,7 @@ export function AnalysisReport({
               frame={selectedPhase.frame}
               label={selectedPhase.label}
               pathPoints={selectedPhase.key === "follow" ? selectedPhase.swingPath?.points : undefined}
+              aspectRatio={aspectRatio}
             />
             <div className="metric-panel">
               <div className="metric-heading"><div><p>{selectedPhase.description}</p><h3>{selectedPhase.label}</h3></div><strong>{selectedPhase.score}</strong></div>
@@ -146,7 +150,9 @@ export function AnalysisReport({
         </div>
       </section>
 
-      {result.canCoach && videoMeta?.frames.length ? <ReviewStudio frames={videoMeta.frames} phases={result.phases} /> : null}
+      {result.canCoach && videoMeta?.frames.length ? (
+        <ReviewStudio frames={videoMeta.frames} phases={result.phases} aspectRatio={aspectRatio} />
+      ) : null}
 
       <div className="evidence-note">
         <Icon name="warn" />
