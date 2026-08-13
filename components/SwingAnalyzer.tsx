@@ -141,7 +141,7 @@ export function SwingAnalyzer() {
               return <circle key={point} className="hero-joint" cx={cx} cy={cy} r="7" />;
             })}
           </svg>
-          <div className="visual-chip chip-top"><b>33</b><span>BODY LANDMARKS</span></div>
+          <div className="visual-chip chip-top"><b>17</b><span>BODY LANDMARKS</span></div>
           <div className="visual-chip chip-bottom"><span>LOCAL MODEL</span><b>READY</b></div>
         </div>
         <div className="hero-proof">
@@ -157,7 +157,7 @@ export function SwingAnalyzer() {
         </div>
         <div className="pipeline-grid">
           <article><span className="step-number">01</span><div className="step-icon"><Icon name="spark" /></div><h3>Prepare each frame</h3><p>High-quality resampling and conservative contrast normalization prepare the image for pose tracking.</p><small>NO SYNTHETIC ACTION</small></article>
-          <article><span className="step-number">02</span><div className="step-icon"><Icon name="pose" /></div><h3>Track the body</h3><p>A bundled lightweight vision model finds 33 body landmarks entirely inside the browser.</p><small>MEDIAPIPE POSE LITE</small></article>
+          <article><span className="step-number">02</span><div className="step-icon"><Icon name="pose" /></div><h3>Track the body</h3><p>A bundled lightweight vision model finds 33 body landmarks, mapped to our 17-point body map, entirely inside the browser.</p><small>MEDIAPIPE POSE LITE</small></article>
           <article><span className="step-number">03</span><div className="step-icon"><Icon name="compare" /></div><h3>Review checkpoints</h3><p>Transparent 2D cues are compared against checkpoint-specific prototype ranges and capture confidence.</p><small>EVIDENCE BEFORE SCORE</small></article>
         </div>
       </section>
@@ -166,7 +166,7 @@ export function SwingAnalyzer() {
         <div className="feature-intro"><p className="eyebrow light"><span /> BUILT FOR REVIEW</p><h2 id="review-features-title">More than a score.<br />A portable film room.</h2><p>Patterns from leading coaching and open-source motion tools, rebuilt around local-first privacy and honest 2D evidence.</p></div>
         <div className="feature-stack">
           <article><span>01</span><div><h3>Frame Lab</h3><p>Scrub tracked samples, toggle the skeleton, and inspect the exact evidence.</p></div></article>
-          <article><span>02</span><div><h3>Checkpoint Compare</h3><p>Place any tracked sample beside setup, launch, contact candidate, or follow-through.</p></div></article>
+          <article><span>02</span><div><h3>Checkpoint Compare</h3><p>Place any tracked sample beside trigger, execution, impact, or follow-through.</p></div></article>
           <article><span>03</span><div><h3>Player / Coach Views</h3><p>Switch between concise cues and technical prototype ranges without rerunning analysis.</p></div></article>
           <article><span>04</span><div><h3>Practice + PDF</h3><p>Turn the weakest 2D cues into short drill cards, then print or share the summary.</p></div></article>
         </div>

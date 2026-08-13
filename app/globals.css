@@ -166,6 +166,8 @@ a { color: inherit; text-decoration: none; }
 .skeleton-shadow line { stroke: #000; stroke-width: .015; }
 .skeleton-lines .bat-line { stroke: var(--coral); stroke-width: .012; }
 .skeleton-points circle { fill: var(--paper); stroke: var(--ink); stroke-width: .004; }
+.skeleton-path polyline { fill: none; stroke: var(--coral); stroke-width: .012; stroke-linecap: round; stroke-linejoin: round; opacity: .9; }
+.skeleton-path .path-end { fill: var(--coral); stroke: var(--paper); stroke-width: .004; }
 .skeleton-stage figcaption { position: absolute; left: 12px; right: 12px; bottom: 12px; display: flex; justify-content: space-between; align-items: center; padding: 9px 11px; border: 1px solid rgba(245,241,232,.14); border-radius: 9px; background: rgba(7,17,13,.74); backdrop-filter: blur(8px); font-size: 10px; }
 .skeleton-stage figcaption span { color: var(--lime); font-weight: 800; }
 .skeleton-stage figcaption time { color: #a2afa8; }
@@ -174,6 +176,7 @@ a { color: inherit; text-decoration: none; }
 .metric-heading p { color: #84958c; font-size: 10px; line-height: 1.45; margin: 0 0 5px; }
 .metric-heading h3 { margin: 0; font-size: 21px; }
 .metric-heading > strong { color: var(--lime); font-size: 35px; }
+.impact-note { color: #acb8b2; font-size: 11px; line-height: 1.55; margin: 0 0 16px; padding: 10px 12px; border-radius: 10px; background: #0a1711; }
 .metric-list { display: grid; gap: 11px; }
 .metric-list article { padding: 12px 13px; border: 1px solid rgba(245,241,232,.09); border-radius: 10px; }
 .metric-top { display: flex; justify-content: space-between; align-items: baseline; }

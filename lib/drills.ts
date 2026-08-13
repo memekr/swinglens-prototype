@@ -34,6 +34,12 @@ const DRILLS: Record<MetricKey, Omit<DrillSuggestion, "key" | "reason">> = {
     cue: "Move the center, not the camera target",
     steps: ["Place two visual markers around the head in a mirror.", "Make a controlled dry swing.", "Keep the head inside the gate while allowing natural weight shift."],
   },
+  swingPath: {
+    title: "High-finish extension reps",
+    dose: "2 × 6 dry swings",
+    cue: "Extend, then wrap up and over",
+    steps: ["Swing at 70% speed with no ball.", "Extend both arms through the contact zone before turning the wrists over.", "Finish with the bat high across the back shoulder, not chopped short."],
+  },
 };
 
 export function getDrillSuggestions(result: AnalysisResult): DrillSuggestion[] {

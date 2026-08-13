@@ -1,10 +1,22 @@
 "use client";
 
-import { SKELETON_CONNECTIONS } from "@/lib/geometry";
-import type { PoseFrame } from "@/lib/types";
+import { EMPHASIZED_POINTS, SKELETON_CONNECTIONS, SKELETON_POINTS } from "@/lib/skeleton";
+import type { PoseFrame, PoseLandmark } from "@/lib/types";
 
-export function SkeletonView({ frame, label, showSkeleton = true }: { frame: PoseFrame; label: string; showSkeleton?: boolean }) {
+export function SkeletonView({
+  frame,
+  label,
+  showSkeleton = true,
+  pathPoints,
+}: {
+  frame: PoseFrame;
+  label: string;
+  showSkeleton?: boolean;
+  pathPoints?: PoseLandmark[];
+}) {
   const landmarks = frame.landmarks;
+  const path = pathPoints && pathPoints.length > 1 ? pathPoints.map((point) => `${point.x},${point.y}`).join(" ") : null;
+  const pathEnd = path && pathPoints ? pathPoints[pathPoints.length - 1] : null;
 
   return (
     <figure className="skeleton-stage" aria-label={`${label} skeleton overlay`}>
@@ -40,11 +52,17 @@ export function SkeletonView({ frame, label, showSkeleton = true }: { frame: Pos
             ))}
           </g>
           <g className="skeleton-points">
-            {[0, 11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28].map((index) => (
-              <circle key={index} cx={landmarks[index].x} cy={landmarks[index].y} r={index === 15 || index === 16 ? 0.013 : 0.01} />
+            {SKELETON_POINTS.map((joint) => (
+              <circle key={joint} cx={landmarks[joint].x} cy={landmarks[joint].y} r={EMPHASIZED_POINTS.includes(joint) ? 0.013 : 0.01} />
             ))}
           </g>
         </>}
+        {path && (
+          <g className="skeleton-path" aria-label="Tracked hand path from impact through follow-through">
+            <polyline points={path} />
+            {pathEnd && <circle className="path-end" cx={pathEnd.x} cy={pathEnd.y} r="0.015" />}
+          </g>
+        )}
       </svg>
       <figcaption>
         <span>{label}</span>

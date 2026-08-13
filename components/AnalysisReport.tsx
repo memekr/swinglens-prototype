@@ -2,16 +2,18 @@
 
 import { useMemo, useState } from "react";
 import { getDrillSuggestions } from "@/lib/drills";
-import type { AnalysisResult, PhaseKey } from "@/lib/types";
+import type { AnalysisResult, MetricUnit, PhaseKey } from "@/lib/types";
 import type { VideoAnalysisOutput } from "@/lib/video-analysis";
 import { Icon } from "./Icon";
 import { ReviewStudio } from "./ReviewStudio";
 import { SkeletonView } from "./SkeletonView";
 
-const PHASE_ORDER: PhaseKey[] = ["setup", "launch", "contact", "follow"];
+const PHASE_ORDER: PhaseKey[] = ["trigger", "execution", "impact", "follow"];
 
-function MetricValue({ value, unit }: { value: number; unit: "°" | "torso" }) {
-  return <>{unit === "°" ? Math.round(value) : value.toFixed(2)}{unit === "torso" ? "×" : unit}</>;
+function MetricValue({ value, unit }: { value: number; unit: MetricUnit }) {
+  if (unit === "°") return <>{Math.round(value)}°</>;
+  if (unit === "torso") return <>{value.toFixed(2)}×</>;
+  return <>{value.toFixed(2)}</>;
 }
 
 export function AnalysisReport({
@@ -25,7 +27,7 @@ export function AnalysisReport({
   isDemo: boolean;
   onReset: () => void;
 }) {
-  const [activePhase, setActivePhase] = useState<PhaseKey>("contact");
+  const [activePhase, setActivePhase] = useState<PhaseKey>("impact");
   const [viewMode, setViewMode] = useState<"player" | "coach">("player");
   const [shareLabel, setShareLabel] = useState("Share summary");
   const selectedPhase = useMemo(
@@ -100,16 +102,23 @@ export function AnalysisReport({
             })}
           </div>
           <div className="phase-grid">
-            <SkeletonView frame={selectedPhase.frame} label={selectedPhase.label} />
+            <SkeletonView
+              frame={selectedPhase.frame}
+              label={selectedPhase.label}
+              pathPoints={selectedPhase.key === "follow" ? selectedPhase.swingPath?.points : undefined}
+            />
             <div className="metric-panel">
               <div className="metric-heading"><div><p>{selectedPhase.description}</p><h3>{selectedPhase.label}</h3></div><strong>{selectedPhase.score}</strong></div>
+              {selectedPhase.key === "impact" && (
+                <p className="impact-note">This is the frame from your video at peak hand speed. Use it to check whether the batter is squaring up to the pitch.</p>
+              )}
               <div className="metric-list">
                 {selectedPhase.metrics.map((metric) => (
                   <article key={metric.key} className={metric.status}>
                     <div className="metric-top"><span>{metric.label}</span><b><MetricValue value={metric.value} unit={metric.unit} /></b></div>
                     <div className="metric-bar"><span style={{ width: `${Math.max(4, metric.score)}%` }} /></div>
                     <p>{metric.note}</p>
-                    <small>Prototype range {metric.reference[0]}–{metric.reference[1]}{metric.unit === "torso" ? "× torso" : metric.unit}</small>
+                    <small>Prototype range {metric.reference[0]}–{metric.reference[1]}{metric.unit === "torso" ? "× torso" : metric.unit === "ratio" ? " roundness" : metric.unit}</small>
                   </article>
                 ))}
               </div>

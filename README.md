@@ -28,9 +28,10 @@ npm run test:e2e
 - iOS and Android browser recording or video selection
 - Local sampling of up to 72 real timestamps from the first 12 seconds
 - High-quality spatial resampling and conservative contrast normalization
-- On-device 33-landmark pose estimation
-- Wrist-speed-based setup, launch, contact-candidate, and follow-through checkpoints
+- On-device 33-landmark pose estimation, mapped to a 17-point body map
+- Trigger, execution, impact, and follow-through checkpoints (front-foot-plant and hand-speed based)
 - 2D lead-knee, torso-lean, shoulder–hip-line, and relative-head-travel cues
+- Tracked hand-path visualization through the follow-through, checked against a circular, slightly upward shape
 - Capture-quality gates that withhold a mechanics score when evidence is weak or static
 - Player and Coach report views
 - Frame Lab with sample scrubbing, skeleton toggle, and side-by-side checkpoint comparison

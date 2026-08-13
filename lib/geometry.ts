@@ -1,25 +1,4 @@
-import type { PoseLandmark } from "./types";
-
-export const POSE = {
-  nose: 0,
-  leftShoulder: 11,
-  rightShoulder: 12,
-  leftElbow: 13,
-  rightElbow: 14,
-  leftWrist: 15,
-  rightWrist: 16,
-  leftHip: 23,
-  rightHip: 24,
-  leftKnee: 25,
-  rightKnee: 26,
-  leftAnkle: 27,
-  rightAnkle: 28,
-} as const;
-
-export const SKELETON_CONNECTIONS: Array<[number, number]> = [
-  [11, 12], [11, 13], [13, 15], [12, 14], [14, 16], [15, 16],
-  [11, 23], [12, 24], [23, 24], [23, 25], [25, 27], [24, 26], [26, 28],
-];
+import type { BodyJoint, PoseLandmark, Skeleton } from "./types";
 
 export function midpoint(a: PoseLandmark, b: PoseLandmark): PoseLandmark {
   return {
@@ -54,12 +33,12 @@ export function axisAngleDifference(first: number, second: number): number {
   return Math.min(raw, 180 - raw);
 }
 
-export function torsoScale(landmarks: PoseLandmark[]): number {
-  const shoulder = midpoint(landmarks[POSE.leftShoulder], landmarks[POSE.rightShoulder]);
-  const hip = midpoint(landmarks[POSE.leftHip], landmarks[POSE.rightHip]);
-  return Math.max(distance(shoulder, hip), 1e-4);
+/** Shoulder-line-to-Center-Hip distance. The scale-normalizing unit for every 2D metric. */
+export function torsoScale(skeleton: Skeleton): number {
+  const shoulders = midpoint(skeleton.leftShoulder, skeleton.rightShoulder);
+  return Math.max(distance(shoulders, skeleton.centerHip), 1e-4);
 }
 
-export function meanVisibility(landmarks: PoseLandmark[], indexes: number[]): number {
-  return indexes.reduce((sum, index) => sum + (landmarks[index]?.visibility ?? 0), 0) / indexes.length;
+export function meanVisibility(skeleton: Skeleton, joints: BodyJoint[]): number {
+  return joints.reduce((sum, joint) => sum + (skeleton[joint]?.visibility ?? 0), 0) / joints.length;
 }

@@ -1,7 +1,6 @@
 import { meanVisibility } from "./geometry";
-import type { PoseLandmark } from "./types";
-
-const CONFIDENCE_JOINTS = [0, 11, 12, 15, 16, 23, 24, 25, 26, 27, 28];
+import { CORE_JOINTS, toSkeleton } from "./skeleton";
+import type { PoseLandmark, Skeleton } from "./types";
 
 type MediaPipePoseLandmarker = {
   detectForVideo: (
@@ -11,7 +10,7 @@ type MediaPipePoseLandmarker = {
   close: () => void;
 };
 
-export type PoseDetection = { landmarks: PoseLandmark[]; confidence: number } | null;
+export type PoseDetection = { landmarks: Skeleton; confidence: number } | null;
 
 export class PoseEngine {
   private landmarker: MediaPipePoseLandmarker | null = null;
@@ -47,13 +46,14 @@ export class PoseEngine {
     const result = this.landmarker.detectForVideo(canvas, timestampMs);
     const raw = result.landmarks[0];
     if (!raw || raw.length < 29) return null;
-    const landmarks = raw.map((landmark) => ({
+    const normalized: PoseLandmark[] = raw.map((landmark) => ({
       x: landmark.x,
       y: landmark.y,
       z: landmark.z,
       visibility: landmark.visibility ?? 0.5,
     }));
-    return { landmarks, confidence: meanVisibility(landmarks, CONFIDENCE_JOINTS) };
+    const landmarks = toSkeleton(normalized);
+    return { landmarks, confidence: meanVisibility(landmarks, CORE_JOINTS) };
   }
 
   close(): void {

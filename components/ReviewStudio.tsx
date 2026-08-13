@@ -6,7 +6,7 @@ import { Icon } from "./Icon";
 import { SkeletonView } from "./SkeletonView";
 
 export function ReviewStudio({ frames, phases }: { frames: PoseFrame[]; phases: PhaseResult[] }) {
-  const defaultIndex = Math.max(0, frames.findIndex((frame) => frame === phases.find((phase) => phase.key === "contact")?.frame));
+  const defaultIndex = Math.max(0, frames.findIndex((frame) => frame === phases.find((phase) => phase.key === "impact")?.frame));
   const [frameIndex, setFrameIndex] = useState(defaultIndex);
   const [showSkeleton, setShowSkeleton] = useState(true);
   const [compare, setCompare] = useState(false);
@@ -40,7 +40,14 @@ export function ReviewStudio({ frames, phases }: { frames: PoseFrame[]; phases: 
 
       <div className={`studio-frames ${compare ? "is-comparing" : ""}`}>
         <SkeletonView frame={frame} label={`Sample ${frameIndex + 1}`} showSkeleton={showSkeleton} />
-        {compare && comparison && <SkeletonView frame={comparison.frame} label={comparison.label} showSkeleton={showSkeleton} />}
+        {compare && comparison && (
+          <SkeletonView
+            frame={comparison.frame}
+            label={comparison.label}
+            showSkeleton={showSkeleton}
+            pathPoints={comparison.key === "follow" ? comparison.swingPath?.points : undefined}
+          />
+        )}
       </div>
 
       <div className="scrubber">

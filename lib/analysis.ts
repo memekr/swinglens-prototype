@@ -1,5 +1,4 @@
 import {
-  POSE,
   angleDegrees,
   axisAngleDifference,
   distance,
@@ -7,34 +6,66 @@ import {
   midpoint,
   torsoScale,
 } from "./geometry";
+import { CORE_JOINTS } from "./skeleton";
 import type {
   AnalysisResult,
+  CoreMetricKey,
   Handedness,
-  MetricKey,
   MetricResult,
+  MetricUnit,
   PhaseDefinition,
   PhaseKey,
   PoseFrame,
   QualityCheck,
+  Skeleton,
+  SwingPath,
 } from "./types";
+import type { BodyJoint } from "./types";
 
+/**
+ * Four checkpoints, in the batting sequence the coaching team defined:
+ * Trigger — the initial movement that sets rhythm and timing.
+ * Execution — front foot plants, then the kinetic chain fires foot, knee,
+ *   hip, upper body.
+ * Impact — the bat-ball contact candidate (peak hand speed).
+ * Follow-through — after impact; shows the finish and the tracked hand path.
+ */
 const PHASE_COPY: Record<PhaseKey, Pick<PhaseDefinition, "label" | "description">> = {
-  setup: { label: "Setup", description: "Your baseline before the swing gathers speed" },
-  launch: { label: "Launch", description: "The window where hand acceleration begins" },
-  contact: { label: "Contact candidate", description: "Peak wrist-speed sample — not confirmed ball contact" },
-  follow: { label: "Follow-through", description: "The deceleration window after peak hand speed" },
+  trigger: {
+    label: "Trigger",
+    description: "The first move that sets rhythm and timing, before the ground-up rotation begins",
+  },
+  execution: {
+    label: "Execution",
+    description: "Front foot plants, then the kinetic chain fires: foot, knee, hip, upper body",
+  },
+  impact: {
+    label: "Impact",
+    description: "Peak hand-speed sample — the impact candidate, not confirmed ball contact",
+  },
+  follow: {
+    label: "Follow-through",
+    description: "After impact. The finish, and the tracked hand path across it",
+  },
 };
 
-type ReferenceMap = Record<MetricKey, [number, number]>;
+type ReferenceMap = Record<CoreMetricKey, [number, number]>;
 
+// Inherited 1:1 from the prior setup/launch/contact/follow bands. Still
+// prototype values pending coach and dataset validation, not re-derived —
+// the swing's rough progression (stance-like → mid-rotation → peak → extension)
+// still holds under the new checkpoint definitions.
 const REFERENCES: Record<PhaseKey, ReferenceMap> = {
-  setup: { leadKnee: [145, 178], torsoLean: [0, 18], separation: [0, 18], headMovement: [0, 0.24] },
-  launch: { leadKnee: [132, 172], torsoLean: [2, 24], separation: [4, 28], headMovement: [0, 0.34] },
-  contact: { leadKnee: [118, 168], torsoLean: [2, 28], separation: [7, 36], headMovement: [0, 0.42] },
+  trigger: { leadKnee: [145, 178], torsoLean: [0, 18], separation: [0, 18], headMovement: [0, 0.24] },
+  execution: { leadKnee: [132, 172], torsoLean: [2, 24], separation: [4, 28], headMovement: [0, 0.34] },
+  impact: { leadKnee: [118, 168], torsoLean: [2, 28], separation: [7, 36], headMovement: [0, 0.42] },
   follow: { leadKnee: [120, 175], torsoLean: [0, 34], separation: [0, 38], headMovement: [0, 0.58] },
 };
 
-const KEY_JOINTS = [0, 11, 12, 15, 16, 23, 24, 25, 26, 27, 28];
+// Roundness = max perpendicular bow off the impact-to-follow-through chord,
+// as a fraction of the chord length. 0 is a straight line; higher is more arced.
+const SWING_PATH_REFERENCE: [number, number] = [0.07, 0.55];
+const MIN_UPWARD_RATIO = 0.04;
 
 function rangeScore(value: number, [min, max]: [number, number]): number {
   if (!Number.isFinite(value)) return 0;
@@ -53,34 +84,87 @@ function smooth(values: number[]): number[] {
   });
 }
 
-export function detectPhases(frames: PoseFrame[]): PhaseDefinition[] {
+function handCenter(landmarks: Skeleton) {
+  return midpoint(landmarks.leftHand, landmarks.rightHand);
+}
+
+/** The lead (front, pitcher-side) leg's joints for this batter's stance. */
+function leadJoints(handedness: Handedness): { hip: BodyJoint; knee: BodyJoint; foot: BodyJoint } {
+  return handedness === "right"
+    ? { hip: "leftHipJoint", knee: "leftKnee", foot: "leftFoot" }
+    : { hip: "rightHipJoint", knee: "rightKnee", foot: "rightFoot" };
+}
+
+/**
+ * Frame-index detector for the four checkpoints. Impact anchors the search
+ * (peak hand speed, unchanged from the prior "contact" heuristic). Trigger
+ * and Execution are then found by walking backward from Impact: Trigger at
+ * the first meaningful departure from the still starting position, Execution
+ * at the lead foot's most-planted sample after that.
+ */
+export function detectPhases(frames: PoseFrame[], handedness: Handedness): PhaseDefinition[] {
   if (frames.length < 4) return [];
 
-  const rawSpeeds = frames.map((frame, index) => {
+  const lead = leadJoints(handedness);
+  const scaleAt = (index: number) => torsoScale(frames[index].landmarks);
+
+  const handSpeeds = frames.map((frame, index) => {
     if (index === 0) return 0;
     const previous = frames[index - 1];
-    const wrist = midpoint(frame.landmarks[POSE.leftWrist], frame.landmarks[POSE.rightWrist]);
-    const previousWrist = midpoint(previous.landmarks[POSE.leftWrist], previous.landmarks[POSE.rightWrist]);
     const deltaSeconds = Math.max((frame.timestampMs - previous.timestampMs) / 1000, 1 / 120);
-    const scale = (torsoScale(frame.landmarks) + torsoScale(previous.landmarks)) / 2;
-    return distance(wrist, previousWrist) / scale / deltaSeconds;
+    const scale = (scaleAt(index) + scaleAt(index - 1)) / 2;
+    return distance(handCenter(frame.landmarks), handCenter(previous.landmarks)) / scale / deltaSeconds;
   });
-  const speeds = smooth(rawSpeeds);
+  const speeds = smooth(handSpeeds);
+
   const searchStart = Math.max(1, Math.floor(frames.length * 0.2));
   const searchEnd = Math.max(searchStart + 1, Math.ceil(frames.length * 0.84));
-  let peakIndex = searchStart;
+  let impactIndex = searchStart;
   for (let index = searchStart + 1; index < searchEnd; index += 1) {
-    if (speeds[index] > speeds[peakIndex]) peakIndex = index;
+    if (speeds[index] > speeds[impactIndex]) impactIndex = index;
   }
 
-  const setupIndex = Math.max(0, peakIndex - Math.max(3, Math.round(frames.length * 0.3)));
-  const launchIndex = Math.max(setupIndex + 1, peakIndex - Math.max(1, Math.round(frames.length * 0.1)));
-  const followIndex = Math.min(frames.length - 1, peakIndex + Math.max(2, Math.round(frames.length * 0.16)));
+  // Trigger: first sample where hands + hips + lead knee have moved
+  // meaningfully from the still starting frame (motion onset).
+  const baseline = frames[0].landmarks;
+  const baselineScale = Math.max(scaleAt(0), 1e-4);
+  const motionOnset = frames.map((frame) => {
+    const hand = distance(handCenter(frame.landmarks), handCenter(baseline));
+    const hip = distance(frame.landmarks.centerHip, baseline.centerHip);
+    const knee = distance(frame.landmarks[lead.knee], baseline[lead.knee]);
+    return (hand + hip * 1.4 + knee) / baselineScale;
+  });
+  const onsetPeak = Math.max(1e-6, ...motionOnset.slice(0, impactIndex + 1));
+  const onsetThreshold = onsetPeak * 0.12;
+  let triggerIndex = 1;
+  for (let index = 1; index <= impactIndex; index += 1) {
+    if (motionOnset[index] >= onsetThreshold) {
+      triggerIndex = index;
+      break;
+    }
+  }
+  triggerIndex = Math.max(1, Math.min(triggerIndex, Math.max(1, impactIndex - 2)));
+
+  // Execution: the lead foot's most-planted (largest y, closest to the
+  // ground) sample between Trigger and Impact — the stride landing.
+  const windowStart = Math.min(triggerIndex + 1, impactIndex - 1);
+  let executionIndex = windowStart;
+  let plantedY = frames[windowStart].landmarks[lead.foot].y;
+  for (let index = windowStart; index < impactIndex; index += 1) {
+    const footY = frames[index].landmarks[lead.foot].y;
+    if (footY >= plantedY) {
+      plantedY = footY;
+      executionIndex = index;
+    }
+  }
+  executionIndex = Math.max(triggerIndex + 1, Math.min(executionIndex, impactIndex - 1));
+
+  const followIndex = Math.min(frames.length - 1, impactIndex + Math.max(2, Math.round(frames.length * 0.16)));
 
   return [
-    { key: "setup", ...PHASE_COPY.setup, frameIndex: setupIndex },
-    { key: "launch", ...PHASE_COPY.launch, frameIndex: launchIndex },
-    { key: "contact", ...PHASE_COPY.contact, frameIndex: peakIndex },
+    { key: "trigger", ...PHASE_COPY.trigger, frameIndex: triggerIndex },
+    { key: "execution", ...PHASE_COPY.execution, frameIndex: executionIndex },
+    { key: "impact", ...PHASE_COPY.impact, frameIndex: impactIndex },
     { key: "follow", ...PHASE_COPY.follow, frameIndex: followIndex },
   ];
 }
@@ -88,33 +172,27 @@ export function detectPhases(frames: PoseFrame[]): PhaseDefinition[] {
 function phaseMetrics(
   phase: PhaseKey,
   frame: PoseFrame,
-  setupFrame: PoseFrame,
+  triggerFrame: PoseFrame,
   handedness: Handedness,
 ): MetricResult[] {
   const landmarks = frame.landmarks;
-  const lead = handedness === "right"
-    ? { hip: POSE.leftHip, knee: POSE.leftKnee, ankle: POSE.leftAnkle }
-    : { hip: POSE.rightHip, knee: POSE.rightKnee, ankle: POSE.rightAnkle };
-  const shoulders = midpoint(landmarks[POSE.leftShoulder], landmarks[POSE.rightShoulder]);
-  const hips = midpoint(landmarks[POSE.leftHip], landmarks[POSE.rightHip]);
-  const setupHips = midpoint(setupFrame.landmarks[POSE.leftHip], setupFrame.landmarks[POSE.rightHip]);
-  const setupNose = setupFrame.landmarks[POSE.nose];
-  const currentHeadOffset = {
-    ...landmarks[POSE.nose],
-    x: landmarks[POSE.nose].x - hips.x,
-    y: landmarks[POSE.nose].y - hips.y,
-  };
-  const setupHeadOffset = { ...setupNose, x: setupNose.x - setupHips.x, y: setupNose.y - setupHips.y };
-  const values: Record<MetricKey, number> = {
-    leadKnee: angleDegrees(landmarks[lead.hip], landmarks[lead.knee], landmarks[lead.ankle]),
+  const lead = leadJoints(handedness);
+  const shoulders = midpoint(landmarks.leftShoulder, landmarks.rightShoulder);
+  const hips = landmarks.centerHip;
+  const triggerHips = triggerFrame.landmarks.centerHip;
+  const triggerHead = triggerFrame.landmarks.head;
+  const currentHeadOffset = { ...landmarks.head, x: landmarks.head.x - hips.x, y: landmarks.head.y - hips.y };
+  const triggerHeadOffset = { ...triggerHead, x: triggerHead.x - triggerHips.x, y: triggerHead.y - triggerHips.y };
+  const values: Record<CoreMetricKey, number> = {
+    leadKnee: angleDegrees(landmarks[lead.hip], landmarks[lead.knee], landmarks[lead.foot]),
     torsoLean: Math.abs((Math.atan2(shoulders.x - hips.x, hips.y - shoulders.y) * 180) / Math.PI),
     separation: axisAngleDifference(
-      lineAngleDegrees(landmarks[POSE.leftShoulder], landmarks[POSE.rightShoulder]),
-      lineAngleDegrees(landmarks[POSE.leftHip], landmarks[POSE.rightHip]),
+      lineAngleDegrees(landmarks.leftShoulder, landmarks.rightShoulder),
+      lineAngleDegrees(landmarks.leftHipJoint, landmarks.rightHipJoint),
     ),
-    headMovement: distance(currentHeadOffset, setupHeadOffset) / torsoScale(setupFrame.landmarks),
+    headMovement: distance(currentHeadOffset, triggerHeadOffset) / torsoScale(triggerFrame.landmarks),
   };
-  const copy: Record<MetricKey, { label: string; unit: "°" | "torso"; good: string; watch: string }> = {
+  const copy: Record<CoreMetricKey, { label: string; unit: MetricUnit; good: string; watch: string }> = {
     leadKnee: {
       label: "Lead-knee angle",
       unit: "°",
@@ -141,7 +219,7 @@ function phaseMetrics(
     },
   };
 
-  return (Object.keys(values) as MetricKey[]).map((key) => {
+  return (Object.keys(values) as CoreMetricKey[]).map((key) => {
     const reference = REFERENCES[phase][key];
     const score = rangeScore(values[key], reference);
     const inRange = Number.isFinite(values[key]) && values[key] >= reference[0] && values[key] <= reference[1];
@@ -158,6 +236,59 @@ function phaseMetrics(
   });
 }
 
+/**
+ * The tracked hand path from Impact through Follow-through: the honest
+ * proxy for bat barrel path (the bat itself isn't tracked). Checked against
+ * the desired shape: a circular, slightly upward arc.
+ */
+function computeSwingPath(frames: PoseFrame[], impactIndex: number, followIndex: number): SwingPath {
+  const start = Math.max(0, Math.min(impactIndex, followIndex));
+  const end = Math.min(frames.length - 1, Math.max(impactIndex, followIndex));
+  const points = frames.slice(start, end + 1).map((frame) => handCenter(frame.landmarks));
+  const first = points[0];
+  const last = points[points.length - 1];
+  const dx = last.x - first.x;
+  const dy = last.y - first.y;
+  const chord = Math.max(Math.hypot(dx, dy), 1e-4);
+  // Image y grows downward, so a rising path has a negative dy.
+  const upwardRatio = -dy / chord;
+  const bow = points.map((point) => {
+    const t = ((point.x - first.x) * dx + (point.y - first.y) * dy) / (chord * chord);
+    const projX = first.x + t * dx;
+    const projY = first.y + t * dy;
+    return Math.hypot(point.x - projX, point.y - projY);
+  });
+  const roundness = Math.max(...bow, 0) / chord;
+  const trendsUp = upwardRatio >= MIN_UPWARD_RATIO;
+  const inRange = trendsUp && roundness >= SWING_PATH_REFERENCE[0] && roundness <= SWING_PATH_REFERENCE[1];
+
+  return {
+    points,
+    upwardRatio,
+    roundness,
+    status: inRange ? "good" : "watch",
+    note: inRange
+      ? "The tracked hand path arcs upward through the follow-through, consistent with a circular, slightly upward bat path."
+      : trendsUp
+        ? "The hand path trends upward but looks flatter than a circular finish here. This tracks hand position, not the bat barrel."
+        : "The hand path is flat or trends down here, short of the circular, slightly upward target shape. This tracks hand position, not the bat barrel.",
+  };
+}
+
+function swingPathMetric(path: SwingPath): MetricResult {
+  const penalty = path.upwardRatio < MIN_UPWARD_RATIO ? 20 : 0;
+  return {
+    key: "swingPath",
+    label: "Swing path shape",
+    value: path.roundness,
+    unit: "ratio",
+    reference: SWING_PATH_REFERENCE,
+    score: Math.max(0, rangeScore(path.roundness, SWING_PATH_REFERENCE) - penalty),
+    status: path.status,
+    note: path.note,
+  };
+}
+
 function qualityChecks(frames: PoseFrame[], expectedSamples: number): QualityCheck[] {
   if (frames.length === 0) {
     return [{ key: "pose", label: "Person detection", status: "fail", detail: "No full-body pose was found." }];
@@ -165,22 +296,22 @@ function qualityChecks(frames: PoseFrame[], expectedSamples: number): QualityChe
   const coverage = frames.length / Math.max(expectedSamples, 1);
   const averageConfidence = frames.reduce((sum, frame) => sum + frame.confidence, 0) / frames.length;
   const bodyHeights = frames.map((frame) => {
-    const ys = KEY_JOINTS.map((index) => frame.landmarks[index]?.y).filter(Number.isFinite);
+    const ys = CORE_JOINTS.map((joint) => frame.landmarks[joint]?.y).filter(Number.isFinite);
     return Math.max(...ys) - Math.min(...ys);
   });
   const bodyHeight = bodyHeights.reduce((sum, value) => sum + value, 0) / bodyHeights.length;
   const clippedRatio = frames.filter((frame) => {
-    const points = [frame.landmarks[POSE.nose], frame.landmarks[POSE.leftAnkle], frame.landmarks[POSE.rightAnkle]];
+    const points = [frame.landmarks.head, frame.landmarks.leftFoot, frame.landmarks.rightFoot];
     return points.some((point) => point.x < 0.025 || point.x > 0.975 || point.y < 0.025 || point.y > 0.975);
   }).length / frames.length;
-  const firstHip = midpoint(frames[0].landmarks[POSE.leftHip], frames[0].landmarks[POSE.rightHip]);
-  const firstWrist = midpoint(frames[0].landmarks[POSE.leftWrist], frames[0].landmarks[POSE.rightWrist]);
-  const firstRelativeWrist = { ...firstWrist, x: firstWrist.x - firstHip.x, y: firstWrist.y - firstHip.y };
+  const firstHip = frames[0].landmarks.centerHip;
+  const firstHand = handCenter(frames[0].landmarks);
+  const firstRelativeHand = { ...firstHand, x: firstHand.x - firstHip.x, y: firstHand.y - firstHip.y };
   const motionSpan = Math.max(...frames.map((frame) => {
-    const hip = midpoint(frame.landmarks[POSE.leftHip], frame.landmarks[POSE.rightHip]);
-    const wrist = midpoint(frame.landmarks[POSE.leftWrist], frame.landmarks[POSE.rightWrist]);
-    const relativeWrist = { ...wrist, x: wrist.x - hip.x, y: wrist.y - hip.y };
-    return distance(relativeWrist, firstRelativeWrist) / torsoScale(frame.landmarks);
+    const hip = frame.landmarks.centerHip;
+    const hand = handCenter(frame.landmarks);
+    const relativeHand = { ...hand, x: hand.x - hip.x, y: hand.y - hip.y };
+    return distance(relativeHand, firstRelativeHand) / torsoScale(frame.landmarks);
   }));
 
   return [
@@ -212,7 +343,7 @@ function qualityChecks(frames: PoseFrame[], expectedSamples: number): QualityChe
       key: "motion",
       label: "Swing motion",
       status: motionSpan >= 0.48 ? "pass" : motionSpan >= 0.28 ? "warn" : "fail",
-      detail: motionSpan >= 0.48 ? "Enough hand-to-torso motion was captured." : "Record one complete swing from setup through follow-through.",
+      detail: motionSpan >= 0.48 ? "Enough hand-to-torso motion was captured." : "Record one complete swing from the trigger through follow-through.",
     },
   ];
 }
@@ -226,7 +357,7 @@ export function analyzePoseSequence(
   const confidence = frames.length
     ? frames.reduce((sum, frame) => sum + frame.confidence, 0) / frames.length
     : 0;
-  const phases = detectPhases(frames);
+  const phases = detectPhases(frames, handedness);
   const canCoach = frames.length >= 8 && phases.length === 4 && !quality.some((check) => check.status === "fail");
 
   if (!canCoach) {
@@ -239,22 +370,32 @@ export function analyzePoseSequence(
       phases: [],
       quality,
       strengths: [],
-      adjustments: ["Retake in landscape with the full body visible from setup through follow-through."],
+      adjustments: ["Retake in landscape with the full body visible from the trigger through follow-through."],
       disclaimer: "Evidence quality was too low, so SwingLens withheld the mechanics score.",
     };
   }
 
-  const setupFrame = frames[phases[0].frameIndex];
-  const phaseResults = phases.map((phase) => {
+  const triggerFrame = frames[phases[0].frameIndex];
+  const basePhases = phases.map((phase) => {
     const frame = frames[phase.frameIndex];
-    const metrics = phaseMetrics(phase.key, frame, setupFrame, handedness);
+    return { ...phase, frame, metrics: phaseMetrics(phase.key, frame, triggerFrame, handedness) };
+  });
+
+  const impactPhase = basePhases.find((phase) => phase.key === "impact") ?? basePhases[2];
+  const followBase = basePhases.find((phase) => phase.key === "follow");
+  const swingPath = followBase ? computeSwingPath(frames, impactPhase.frameIndex, followBase.frameIndex) : null;
+
+  const phaseResults = basePhases.map((phase) => {
+    const isFollow = phase.key === "follow" && swingPath !== null;
+    const metrics = isFollow ? [...phase.metrics, swingPathMetric(swingPath!)] : phase.metrics;
     return {
       ...phase,
-      frame,
       metrics,
+      swingPath: isFollow ? swingPath! : undefined,
       score: Math.round(metrics.reduce((sum, metric) => sum + metric.score, 0) / metrics.length),
     };
   });
+
   const allMetrics = phaseResults.flatMap((phase) =>
     phase.metrics.map((metric) => ({ ...metric, phaseLabel: phase.label })),
   );

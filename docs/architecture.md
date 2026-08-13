@@ -5,9 +5,16 @@
 1. The user records or selects a clip through a file input with `capture="environment"`.
 2. The browser `<video>` decoder seeks real timestamps within the first 12 seconds.
 3. Each frame is resampled to a 640–720 px long edge and receives conservative contrast normalization.
-4. Bundled MediaPipe Pose Landmarker Lite/WASM estimates 33 body landmarks.
-5. The pipeline finds setup, launch, contact-candidate, and follow-through samples around peak wrist-center speed.
-6. Torso-normalized 2D cues are compared with checkpoint-specific prototype ranges.
+4. Bundled MediaPipe Pose Landmarker Lite/WASM estimates 33 body landmarks, which are mapped to this
+   project's 17-point body-labeling scheme (`Baseball Resources/body-labeling.md`: head, torso,
+   center hip, and left/right shoulder, elbow, hand, hip-joint, knee, foot).
+5. The pipeline finds four checkpoints in the batting sequence: **Trigger** (first departure from the
+   still starting pose), **Execution** (the lead foot's most-planted sample, i.e. the stride landing),
+   **Impact** (peak hand-center speed, the bat-ball contact candidate), and **Follow-through**
+   (the deceleration window after Impact).
+6. Torso-normalized 2D cues are compared with checkpoint-specific prototype ranges. Follow-through
+   additionally gets a tracked hand-path polyline from Impact onward, checked against a circular,
+   slightly upward reference shape (the honest proxy for bat barrel path — the bat itself isn't tracked).
 7. Pose coverage, joint confidence, subject scale, clipping, and actual swing motion act as score gates.
 8. The report exposes the evidence through checkpoint tabs, Frame Lab scrubbing, side-by-side comparison, and rule-based practice cards.
 
