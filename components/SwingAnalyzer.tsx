@@ -132,15 +132,8 @@ export function SwingAnalyzer() {
         </div>
         <div className="hero-visual" aria-hidden="true">
           <div className="motion-orbit orbit-one" /><div className="motion-orbit orbit-two" />
-          <svg viewBox="0 0 420 520" className="hero-skeleton">
-            <path className="motion-trail" d="M359 61C289 90 270 154 190 188" />
-            <path d="M223 155 174 235l-43 86m43-86 77 57 83 26m-160-83 23 132-62 96m62-96 70 74" />
-            <path d="m198 218 67 29 69-74" /><circle cx="230" cy="111" r="35" /><path className="hero-bat" d="m334 173 69-131" />
-            {["223,155","174,235","131,321","251,292","334,318","197,377","135,473","267,451","198,218","265,247","334,173"].map((point) => {
-              const [cx, cy] = point.split(",");
-              return <circle key={point} className="hero-joint" cx={cx} cy={cy} r="7" />;
-            })}
-          </svg>
+          {/* eslint-disable-next-line @next/next/no-img-element -- static local asset, no next/image config needed */}
+          <img className="hero-photo" src="/hero-swing.jpg" alt="" />
           <div className="visual-chip chip-top"><b>17</b><span>BODY LANDMARKS</span></div>
           <div className="visual-chip chip-bottom"><span>LOCAL MODEL</span><b>READY</b></div>
         </div>

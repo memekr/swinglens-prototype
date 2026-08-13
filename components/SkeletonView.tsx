@@ -1,7 +1,18 @@
 "use client";
 
 import { EMPHASIZED_POINTS, SKELETON_CONNECTIONS, SKELETON_POINTS } from "@/lib/skeleton";
-import type { PoseFrame, PoseLandmark } from "@/lib/types";
+import type { BodyJoint, PoseFrame, PoseLandmark, Skeleton } from "@/lib/types";
+
+/**
+ * MediaPipe normalizes x independently of y (x = pixel_x / width, y = pixel_y
+ * / height), so both are already in [0, 1] on their own axis. The viewBox
+ * width is `aspectRatio` (not 1), so any x that stays in [0, 1] renders
+ * compressed into the left slice of the frame — this is the single
+ * conversion every landmark must go through before it's drawn.
+ */
+function toDisplay(point: PoseLandmark, aspectRatio: number): PoseLandmark {
+  return { ...point, x: point.x * aspectRatio };
+}
 
 export function SkeletonView({
   frame,
@@ -14,14 +25,15 @@ export function SkeletonView({
   label: string;
   showSkeleton?: boolean;
   pathPoints?: PoseLandmark[];
-  /** Analyzed-frame width / height. MediaPipe normalizes x and y against these
-   * independently, so the viewBox must use the same ratio or the image and
-   * the skeleton it's plotted on drift apart for any non-square video. */
+  /** Analyzed-frame width / height. */
   aspectRatio?: number;
 }) {
-  const landmarks = frame.landmarks;
-  const path = pathPoints && pathPoints.length > 1 ? pathPoints.map((point) => `${point.x},${point.y}`).join(" ") : null;
-  const pathEnd = path && pathPoints ? pathPoints[pathPoints.length - 1] : null;
+  const landmarks = Object.fromEntries(
+    SKELETON_POINTS.map((joint) => [joint, toDisplay(frame.landmarks[joint], aspectRatio)]),
+  ) as Skeleton;
+  const displayPath = pathPoints?.map((point) => toDisplay(point, aspectRatio));
+  const path = displayPath && displayPath.length > 1 ? displayPath.map((point) => `${point.x},${point.y}`).join(" ") : null;
+  const pathEnd = path && displayPath ? displayPath[displayPath.length - 1] : null;
 
   return (
     <figure className="skeleton-stage" aria-label={`${label} skeleton overlay`}>
@@ -57,7 +69,7 @@ export function SkeletonView({
             ))}
           </g>
           <g className="skeleton-points">
-            {SKELETON_POINTS.map((joint) => (
+            {SKELETON_POINTS.map((joint: BodyJoint) => (
               <circle key={joint} cx={landmarks[joint].x} cy={landmarks[joint].y} r={EMPHASIZED_POINTS.includes(joint) ? 0.013 : 0.01} />
             ))}
           </g>
