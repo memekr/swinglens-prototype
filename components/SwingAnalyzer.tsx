@@ -4,12 +4,35 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { analyzePoseSequence } from "@/lib/analysis";
 import { createDemoFrames } from "@/lib/demo";
 import { PoseEngine } from "@/lib/pose-engine";
-import type { AnalysisResult, Handedness } from "@/lib/types";
+import { SKELETON_CONNECTIONS, SKELETON_POINTS } from "@/lib/skeleton";
+import type { AnalysisResult, BodyJoint, Handedness } from "@/lib/types";
 import { analyzeVideoFile, type VideoAnalysisOutput } from "@/lib/video-analysis";
 import { AnalysisReport } from "./AnalysisReport";
 import { Icon } from "./Icon";
 
 type RunStatus = "idle" | "processing" | "done" | "error";
+
+// Hand-authored batter-mid-swing pose for the hero illustration, in the same
+// 15-point body-labeling.md scheme (lib/skeleton.ts) the real analysis uses —
+// not arbitrary decorative path data. Side view, front leg planted, bat up.
+const HERO_POSE: Record<BodyJoint, { x: number; y: number }> = {
+  head: { x: 235, y: 78 },
+  torso: { x: 222, y: 232 },
+  centerHip: { x: 213, y: 322 },
+  leftShoulder: { x: 185, y: 168 },
+  rightShoulder: { x: 270, y: 195 },
+  leftElbow: { x: 158, y: 232 },
+  rightElbow: { x: 308, y: 162 },
+  leftHand: { x: 240, y: 122 },
+  rightHand: { x: 258, y: 104 },
+  leftHipJoint: { x: 193, y: 317 },
+  rightHipJoint: { x: 238, y: 325 },
+  leftKnee: { x: 145, y: 400 },
+  rightKnee: { x: 292, y: 412 },
+  leftFoot: { x: 105, y: 495 },
+  rightFoot: { x: 312, y: 500 },
+};
+const HERO_DOTS = SKELETON_POINTS.filter((joint) => joint !== "head");
 
 export function SwingAnalyzer() {
   const [file, setFile] = useState<File | null>(null);
@@ -69,7 +92,14 @@ export function SwingAnalyzer() {
     setResult(null);
     setIsDemo(false);
     try {
-      engine.current ??= new PoseEngine();
+      // MediaPipe's VIDEO-mode landmarker requires strictly increasing
+      // timestamps for its whole lifetime. Every analysis run restarts
+      // sample timestamps at 0 (see video-analysis.ts), so reusing one
+      // landmarker across videos trips its monotonic-timestamp check on
+      // the second run. A fresh engine per run keeps each video's clock
+      // independent.
+      engine.current?.close();
+      engine.current = new PoseEngine();
       const output = await analyzeVideoFile(file, engine.current, (completed, total, stage) => {
         setProgress({ completed, total, stage });
       });
@@ -132,8 +162,17 @@ export function SwingAnalyzer() {
         </div>
         <div className="hero-visual" aria-hidden="true">
           <div className="motion-orbit orbit-one" /><div className="motion-orbit orbit-two" />
-          {/* eslint-disable-next-line @next/next/no-img-element -- static local asset, no next/image config needed */}
-          <img className="hero-photo" src="/hero-swing.jpg" alt="" />
+          <svg viewBox="0 0 420 520" className="hero-skeleton">
+            <path className="motion-trail" d="M372 10C336 58 302 88 260 103" />
+            <path className="hero-bat" d="M250 114 378 8" />
+            {SKELETON_CONNECTIONS.map(([from, to]) => (
+              <line key={`${from}-${to}`} x1={HERO_POSE[from].x} y1={HERO_POSE[from].y} x2={HERO_POSE[to].x} y2={HERO_POSE[to].y} />
+            ))}
+            <circle className="hero-head" cx={HERO_POSE.head.x} cy={HERO_POSE.head.y} r="34" />
+            {HERO_DOTS.map((joint) => (
+              <circle key={joint} className="hero-joint" cx={HERO_POSE[joint].x} cy={HERO_POSE[joint].y} r="7" />
+            ))}
+          </svg>
           <div className="visual-chip chip-top"><b>17</b><span>BODY LANDMARKS</span></div>
           <div className="visual-chip chip-bottom"><span>LOCAL MODEL</span><b>READY</b></div>
         </div>
