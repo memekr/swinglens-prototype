@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { getDrillSuggestions } from "@/lib/drills";
 import type { AnalysisResult, MetricUnit, PhaseKey } from "@/lib/types";
 import { MAX_ANALYZED_SECONDS, type VideoAnalysisOutput } from "@/lib/video-analysis";
+import { CueScience } from "./CueScience";
 import { Icon } from "./Icon";
 import { ReviewStudio } from "./ReviewStudio";
 import { SkeletonView } from "./SkeletonView";
@@ -79,6 +80,12 @@ export function AnalysisReport({
           <p className="eyebrow"><span /> {isDemo ? "SAMPLE REPORT" : "YOUR REPORT"}</p>
           <h2 id="result-title">{result.canCoach ? "Your swing is ready to review." : "Let’s improve the capture first."}</h2>
           <p>{isDemo ? "A functional demo built from synthetic pose landmarks — not a real athlete result." : `${result.sampledFrames} timestamps were inspected entirely on this device.`}</p>
+          {result.canCoach && result.score !== null && (
+            <p className="ask-coach no-print">
+              <a href="#how-cues">How this number is computed</a>
+              <a href="#coach">Ask the hitting coach why you scored {result.score}</a>
+            </p>
+          )}
         </div>
         <div className={`score-ring ${result.score === null ? "no-score" : ""}`} style={{ "--score": result.score ?? 0 } as React.CSSProperties}>
           <strong>{result.score ?? "—"}</strong><span>{result.score === null ? "RETAKE" : "PROTOTYPE SCORE"}</span>
@@ -114,7 +121,7 @@ export function AnalysisReport({
             <div className="metric-panel">
               <div className="metric-heading"><div><p>{selectedPhase.description}</p><h3>{selectedPhase.label}</h3></div><strong>{selectedPhase.score}</strong></div>
               {selectedPhase.key === "impact" && (
-                <p className="impact-note">This is the frame from your video at peak hand speed. Use it to check whether the batter is squaring up to the pitch.</p>
+                <p className="impact-note">This is the contact-window sample: the last high-speed frame where the hands are still below the head. It is not confirmed ball-bat contact — if it still looks like a finish, scrub Frame Lab one or two samples earlier.</p>
               )}
               <div className="metric-list">
                 {selectedPhase.metrics.map((metric) => (
@@ -131,13 +138,15 @@ export function AnalysisReport({
         </div>
       )}
 
+      {result.canCoach && <CueScience expanded={viewMode === "coach"} />}
+
       <div className="coaching-grid">
         <article className="coach-card strength"><span className="card-kicker">KEEP</span><h3>What held up</h3><ul>{result.strengths.length ? result.strengths.map((item) => <li key={item}><Icon name="check" />{item}</li>) : <li>Pass the capture checks first, then SwingLens can identify strengths.</li>}</ul></article>
         <article className="coach-card adjustment"><span className="card-kicker">NEXT</span><h3>What to try next</h3><ul>{result.adjustments.map((item) => <li key={item}><Icon name="arrow" />{item}</li>)}</ul></article>
       </div>
 
       <section className="drill-section" aria-labelledby="drill-title">
-        <div className="section-minihead"><div><p className="eyebrow"><span /> NEXT REPS</p><h3 id="drill-title">Turn the evidence into a short practice plan.</h3></div><p>Rule-based suggestions tied to the lowest-scoring 2D cues. Stop if anything hurts.</p></div>
+        <div className="section-minihead"><div><p className="eyebrow"><span /> NEXT REPS</p><h3 id="drill-title">Turn the evidence into a short practice plan.</h3></div><p>Drills from the hitting notes (hip load, Roll, Drop-Bat, front-foot plane) mapped to the weakest 2D checkpoints. Stop if anything hurts.</p></div>
         <div className="drill-grid">
           {drills.map((drill, index) => (
             <article key={drill.key} className="drill-card">
@@ -156,7 +165,7 @@ export function AnalysisReport({
 
       <div className="evidence-note">
         <Icon name="warn" />
-        <div><b>What this report does not claim</b><p>The contact candidate is a wrist-speed peak, not detected ball contact. A single 2D video cannot provide bat speed, exit velocity, true attack angle, or 3D rotation. Checkpoint ranges remain coach-validation-pending prototype values.</p></div>
+        <div><b>What this report does not claim</b><p>Impact is a contact-window sample (hands still below the head in the high-speed stretch), not detected ball contact. A single 2D video cannot provide bat speed, exit velocity, true attack angle, or 3D rotation. Checkpoint ranges remain coach-validation-pending prototype values.</p></div>
       </div>
       <div className="result-footer"><p>{result.disclaimer}</p><button className="button ghost-dark no-print" onClick={onReset}>Review another swing</button></div>
     </section>

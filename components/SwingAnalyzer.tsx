@@ -8,6 +8,7 @@ import { SKELETON_CONNECTIONS, SKELETON_POINTS } from "@/lib/skeleton";
 import type { AnalysisResult, BodyJoint, Handedness } from "@/lib/types";
 import { analyzeVideoFile, type VideoAnalysisOutput } from "@/lib/video-analysis";
 import { AnalysisReport } from "./AnalysisReport";
+import { CoachChat } from "./CoachChat";
 import { Icon } from "./Icon";
 
 type RunStatus = "idle" | "processing" | "done" | "error";
@@ -92,12 +93,8 @@ export function SwingAnalyzer() {
     setResult(null);
     setIsDemo(false);
     try {
-      // MediaPipe's VIDEO-mode landmarker requires strictly increasing
-      // timestamps for its whole lifetime. Every analysis run restarts
-      // sample timestamps at 0 (see video-analysis.ts), so reusing one
-      // landmarker across videos trips its monotonic-timestamp check on
-      // the second run. A fresh engine per run keeps each video's clock
-      // independent.
+      // IMAGE-mode pose: each seeked frame is independent, so a new engine
+      // per run is optional. Recreating still drops GPU state between clips.
       engine.current?.close();
       engine.current = new PoseEngine();
       const output = await analyzeVideoFile(file, engine.current, (completed, total, stage) => {
@@ -144,7 +141,7 @@ export function SwingAnalyzer() {
           <span>SwingLens <small>LAB</small></span>
         </a>
         <div className="nav-links">
-          <a href="#how">How it works</a><a href="#analyze">Analyze</a><a href="#privacy">Privacy</a>
+          <a href="#how">How it works</a><a href="#analyze">Analyze</a><a href="#coach">Coach</a><a href="#privacy">Privacy</a>
         </div>
         <a className="privacy-pill" href="#privacy"><Icon name="lock" /> Your video stays on your device</a>
       </nav>
@@ -216,6 +213,7 @@ export function SwingAnalyzer() {
           <div className="stance-fieldset"><span>BATTER</span><div className="segmented" role="group" aria-label="Batter side"><button className={handedness === "right" ? "active" : ""} onClick={() => setHandedness("right")}>Right</button><button className={handedness === "left" ? "active" : ""} onClick={() => setHandedness("left")}>Left</button></div></div>
         </div>
 
+        <div className="workspace-panel">
         <div className="upload-card">
           <input ref={fileInput} className="visually-hidden" type="file" accept="video/mp4,video/quicktime,video/webm,video/*" capture="environment" onChange={onFile} />
           {previewUrl ? (
@@ -229,6 +227,11 @@ export function SwingAnalyzer() {
           {error && <div className="error-box" role="alert"><Icon name="warn" />{error}</div>}
           <div className="local-proof"><Icon name="lock" /><span><b>0 bytes of video uploaded</b>The selected video disappears from memory when this tab closes.</span></div>
         </div>
+        </div>
+      </section>
+
+      <section className="coach-dock no-print" aria-label="Hitting coach">
+        <CoachChat analysis={result} />
       </section>
 
       {result && <AnalysisReport result={result} videoMeta={videoMeta} isDemo={isDemo} onReset={() => { setResult(null); setStatus("idle"); document.querySelector("#analyze")?.scrollIntoView({ behavior: "smooth" }); }} />}

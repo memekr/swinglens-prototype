@@ -1,3 +1,4 @@
+import { buildCoaching } from "./coaching";
 import {
   angleDegrees,
   axisAngleDifference,
@@ -41,7 +42,7 @@ const PHASE_COPY: Record<PhaseKey, Pick<PhaseDefinition, "label" | "description"
   },
   impact: {
     label: "Impact",
-    description: "Peak hand-speed sample — the impact candidate, not confirmed ball contact",
+    description: "Contact window: last high-speed sample with the hands still below the head — not confirmed ball contact",
   },
   follow: {
     label: "Follow-through",
@@ -96,11 +97,51 @@ function leadJoints(handedness: Handedness): { hip: BodyJoint; knee: BodyJoint; 
 }
 
 /**
- * Frame-index detector for the four checkpoints. Impact anchors the search
- * (peak hand speed, unchanged from the prior "contact" heuristic). Trigger
- * and Execution are then found by walking backward from Impact: Trigger at
- * the first meaningful departure from the still starting position, Execution
- * at the lead foot's most-planted sample after that.
+ * Contact is near the start of the high-speed window, not the absolute
+ * peak. Peak wrist speed on a phone clip is usually already wrapping
+ * (hands up by the head). Prefer the last fast sample where the hands
+ * are still below the head — the hitting zone, not the finish.
+ */
+export function pickImpactIndex(frames: PoseFrame[], speeds: number[], searchStart: number, searchEnd: number): number {
+  let peakIndex = searchStart;
+  for (let index = searchStart + 1; index < searchEnd; index += 1) {
+    if (speeds[index] > speeds[peakIndex]) peakIndex = index;
+  }
+  const peak = Math.max(speeds[peakIndex], 1e-6);
+  let riseIndex = peakIndex;
+  for (let index = searchStart; index <= peakIndex; index += 1) {
+    if (speeds[index] >= peak * 0.82) {
+      riseIndex = index;
+      break;
+    }
+  }
+
+  const handsBelowHead = (index: number) => {
+    const landmarks = frames[index].landmarks;
+    const hands = handCenter(landmarks);
+    return hands.y >= landmarks.head.y + 0.035;
+  };
+
+  let contactIndex = riseIndex;
+  for (let index = riseIndex; index <= peakIndex; index += 1) {
+    if (handsBelowHead(index)) contactIndex = index;
+  }
+  if (!handsBelowHead(contactIndex)) {
+    for (let index = riseIndex - 1; index >= searchStart; index -= 1) {
+      if (handsBelowHead(index)) {
+        contactIndex = index;
+        break;
+      }
+    }
+  }
+  return Math.max(searchStart, Math.min(contactIndex, searchEnd - 1));
+}
+
+/**
+ * Frame-index detector for the four checkpoints. Impact anchors the search.
+ * Trigger and Execution are then found by walking backward from Impact:
+ * Trigger at the first meaningful departure from the still starting
+ * position, Execution at the lead foot's most-planted sample after that.
  */
 export function detectPhases(frames: PoseFrame[], handedness: Handedness): PhaseDefinition[] {
   if (frames.length < 4) return [];
@@ -119,10 +160,7 @@ export function detectPhases(frames: PoseFrame[], handedness: Handedness): Phase
 
   const searchStart = Math.max(1, Math.floor(frames.length * 0.2));
   const searchEnd = Math.max(searchStart + 1, Math.ceil(frames.length * 0.84));
-  let impactIndex = searchStart;
-  for (let index = searchStart + 1; index < searchEnd; index += 1) {
-    if (speeds[index] > speeds[impactIndex]) impactIndex = index;
-  }
+  const impactIndex = pickImpactIndex(frames, speeds, searchStart, searchEnd);
 
   // Trigger: first sample where hands + hips + lead knee have moved
   // meaningfully from the still starting frame (motion onset).
@@ -396,19 +434,7 @@ export function analyzePoseSequence(
     };
   });
 
-  const allMetrics = phaseResults.flatMap((phase) =>
-    phase.metrics.map((metric) => ({ ...metric, phaseLabel: phase.label })),
-  );
-  const sorted = [...allMetrics].sort((a, b) => b.score - a.score);
-  const strengths = sorted
-    .filter((metric) => metric.status === "good")
-    .slice(0, 2)
-    .map((metric) => `${metric.phaseLabel}: ${metric.note}`);
-  const adjustments = [...allMetrics]
-    .sort((a, b) => a.score - b.score)
-    .filter((metric) => metric.status === "watch")
-    .slice(0, 2)
-    .map((metric) => `${metric.phaseLabel}: ${metric.note}`);
+  const { strengths, adjustments } = buildCoaching(phaseResults);
   const score = Math.round(phaseResults.reduce((sum, phase) => sum + phase.score, 0) / phaseResults.length);
 
   return {
@@ -419,8 +445,8 @@ export function analyzePoseSequence(
     durationMs: frames.at(-1)?.timestampMs ?? 0,
     phases: phaseResults,
     quality,
-    strengths: strengths.length ? strengths : ["The full-body pose remained stable across the swing."],
-    adjustments: adjustments.length ? adjustments : ["No major departure appears against the current prototype ranges."],
-    disclaimer: "These are 2D screen-space cues, not medical advice, injury diagnosis, or a replacement for a qualified coach.",
+    strengths,
+    adjustments,
+    disclaimer: "These are 2D screen-space cues, not medical advice, injury diagnosis, or a replacement for a qualified coach. Impact is a contact-window sample, not confirmed ball-bat contact.",
   };
 }

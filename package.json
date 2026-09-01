@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
+    "dev:rag": "python3 rag/server.py",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",

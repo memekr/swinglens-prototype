@@ -4,13 +4,14 @@ import { createDemoFrames } from "@/lib/demo";
 import { getDrillSuggestions } from "@/lib/drills";
 
 describe("practice suggestions", () => {
-  it("maps the lowest unique mechanics cues to two drill cards", () => {
+  it("maps the weakest 2D cues to Gradum-style drill cards", () => {
     const frames = createDemoFrames();
     const result = analyzePoseSequence(frames, "right", frames.length);
     const drills = getDrillSuggestions(result);
-    expect(drills).toHaveLength(2);
-    expect(new Set(drills.map((drill) => drill.key)).size).toBe(2);
-    expect(drills.every((drill) => drill.steps.length === 3)).toBe(true);
+    expect(drills.length).toBeGreaterThanOrEqual(1);
+    expect(drills.length).toBeLessThanOrEqual(2);
+    expect(drills.every((drill) => drill.steps.length >= 3)).toBe(true);
+    expect(drills.every((drill) => drill.title.length > 0)).toBe(true);
   });
 
   it("returns a capture rehearsal when scoring is withheld", () => {

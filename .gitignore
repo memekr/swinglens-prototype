@@ -9,3 +9,6 @@ output/playwright
 graphify-out/20??-??-??/
 .DS_Store
 *.log
+rag/__pycache__/
+rag_data/RAG Resources/rag_index/answer_report.json
+tsconfig.tsbuildinfo

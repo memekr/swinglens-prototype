@@ -36,8 +36,12 @@ export function SkeletonView({
   const pathEnd = path && displayPath ? displayPath[displayPath.length - 1] : null;
 
   return (
-    <figure className="skeleton-stage" aria-label={`${label} skeleton overlay`}>
-      <svg viewBox={`0 0 ${aspectRatio} 1`} role="img">
+    <figure
+      className="skeleton-stage"
+      aria-label={`${label} skeleton overlay`}
+      style={{ ["--frame-aspect" as string]: String(aspectRatio) }}
+    >
+      <svg viewBox={`0 0 ${aspectRatio} 1`} preserveAspectRatio="xMidYMid meet" role="img">
         <defs>
           <linearGradient id="demo-bg" x1="0" x2="1" y1="0" y2="1">
             <stop offset="0" stopColor="#12251d" />

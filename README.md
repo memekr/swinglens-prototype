@@ -11,6 +11,22 @@ npm install
 npm run dev
 ```
 
+Hitting-coach chat (RAG + local Gemma) needs a second process and Ollama:
+
+```bash
+# from this folder, using the repo venv that already has chromadb + sentence-transformers
+../../.venv/bin/python rag/server.py
+```
+
+Then keep `npm run dev` running and ask hitting questions in the chat. After a report, the chat sits under the analysis and can explain that clip’s score. Follow-ups stay in the same thread.
+
+Rebuild the copied index after editing notes:
+
+```bash
+../../.venv/bin/python rag/rag_ingest.py --rebuild
+../../.venv/bin/python rag/rag_eval.py
+```
+
 Real-video analysis requires the bundled `public/models/pose_landmarker_lite.task` and `public/wasm/` assets. They are checked into the private repository so the deployed app does not depend on a model CDN at inference time.
 
 ## Validate
@@ -36,7 +52,7 @@ npm run test:e2e
 - Player and Coach report views
 - Frame Lab with sample scrubbing, skeleton toggle, and side-by-side checkpoint comparison
 - Cue-specific practice cards, Web Share summary, and print-to-PDF report
-- Synthetic landmark demo for testers without a swing video
+- Hitting-coach chat (local RAG + Gemma). After a report, the chat can see this clip’s prototype score and checkpoint numbers. Off-topic replies stay short and do not attach a drill.
 - PWA manifest and model/WASM runtime caching
 
 ## Important limits

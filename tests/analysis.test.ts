@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { analyzePoseSequence, detectPhases } from "@/lib/analysis";
 import { createDemoFrames } from "@/lib/demo";
+import { midpoint } from "@/lib/geometry";
+import { mapLandmarkFromSquare } from "@/lib/pose-engine";
 
 describe("swing phase analysis", () => {
   it("orders four evidence frames: trigger, execution, impact, follow-through", () => {
@@ -20,6 +22,8 @@ describe("swing phase analysis", () => {
     const core = result.phases.filter((phase) => phase.key !== "follow");
     expect(core.every((phase) => phase.metrics.length === 4)).toBe(true);
     expect(result.quality.every((check) => check.status === "pass")).toBe(true);
+    expect(result.strengths.length).toBeGreaterThan(0);
+    expect(result.adjustments.length).toBeGreaterThan(0);
   });
 
   it("computes a follow-through hand path with a fifth swing-path metric", () => {
@@ -55,5 +59,39 @@ describe("swing phase analysis", () => {
     expect(result.canCoach).toBe(false);
     expect(result.score).toBeNull();
     expect(result.quality.find((check) => check.key === "motion")?.status).toBe("fail");
+  });
+
+  it("picks impact while the hands are still below the head, not on the wrap", () => {
+    const frames = createDemoFrames(48).map((frame, index, all) => {
+      if (index < Math.floor(all.length * 0.72)) return frame;
+      const head = frame.landmarks.head;
+      const t = (index / all.length - 0.72) / 0.28;
+      return {
+        ...frame,
+        landmarks: {
+          ...frame.landmarks,
+          leftHand: { ...frame.landmarks.leftHand, x: frame.landmarks.leftHand.x - t * 0.1, y: head.y - 0.02 },
+          rightHand: { ...frame.landmarks.rightHand, x: frame.landmarks.rightHand.x - t * 0.12, y: head.y - 0.04 },
+        },
+      };
+    });
+    const phases = detectPhases(frames, "right");
+    const impact = phases.find((phase) => phase.key === "impact");
+    expect(impact).toBeDefined();
+    const sample = frames[impact!.frameIndex];
+    const hands = midpoint(sample.landmarks.leftHand, sample.landmarks.rightHand);
+    expect(hands.y).toBeGreaterThan(sample.landmarks.head.y);
+    expect(impact!.frameIndex).toBeLessThan(phases.find((phase) => phase.key === "follow")!.frameIndex);
+  });
+});
+
+describe("square-pad landmark mapping", () => {
+  it("maps letterboxed square coordinates back onto a 16:9 frame", () => {
+    const pad = { size: 1600, dx: 0, dy: 350, width: 1600, height: 900 };
+    const top = mapLandmarkFromSquare({ x: 0.5, y: 350 / 1600, z: 0, visibility: 1 }, pad);
+    const bottom = mapLandmarkFromSquare({ x: 0.5, y: 1250 / 1600, z: 0, visibility: 1 }, pad);
+    expect(top.y).toBeCloseTo(0, 5);
+    expect(bottom.y).toBeCloseTo(1, 5);
+    expect(top.x).toBeCloseTo(0.5, 5);
   });
 });
