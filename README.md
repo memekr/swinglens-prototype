@@ -42,8 +42,9 @@ npm run test:e2e
 ## Current feature set
 
 - iOS and Android browser recording or video selection
-- Local sampling of up to 72 real timestamps from the first 12 seconds
-- High-quality spatial resampling and conservative contrast normalization
+- Local sampling of native-fps frames (capped at 60 fps) from the first 60 seconds
+- Separate playback vs analysis resolution: original File/Blob URL for review; MediaPipe frames capped at 1280 / 960 / 720 (never upscaled, never 4K)
+- Optional inference-only contrast lift; SVG skeleton overlay on the original video
 - On-device 33-landmark pose estimation, mapped to a 17-point body map
 - Trigger, execution, impact, and follow-through checkpoints (front-foot-plant and hand-speed based)
 - 2D lead-knee, torso-lean, shoulder–hip-line, and relative-head-travel cues

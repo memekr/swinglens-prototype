@@ -33,14 +33,22 @@ export type BodyJoint =
 
 export type Skeleton = Record<BodyJoint, PoseLandmark>;
 
+export type BallSpot = {
+  x: number;
+  y: number;
+  score: number;
+};
+
 export type PoseFrame = {
   timestampMs: number;
   landmarks: Skeleton;
   confidence: number;
   previewDataUrl?: string;
+  /** Normalized image coords if a baseball candidate was found on this still. */
+  ball?: BallSpot | null;
 };
 
-export type PhaseKey = "trigger" | "execution" | "impact" | "follow";
+export type PhaseKey = "trigger" | "execution" | "backspace" | "impact";
 
 export type PhaseDefinition = {
   key: PhaseKey;
@@ -49,13 +57,26 @@ export type PhaseDefinition = {
   frameIndex: number;
 };
 
-/** The four cues computed identically at every checkpoint. */
+/** Shared 2D geometry cues. */
 export type CoreMetricKey = "leadKnee" | "torsoLean" | "separation" | "headMovement";
 
-/** Core cues plus the follow-through-only swing-path cue. */
-export type MetricKey = CoreMetricKey | "swingPath";
+export type MetricKey =
+  | CoreMetricKey
+  | "triggerStyle"
+  | "hipHinge"
+  | "scapLoad"
+  | "landingStyle"
+  | "chainLand"
+  | "chainFoot"
+  | "chainKnee"
+  | "chainHip"
+  | "chainUpper"
+  | "backspace"
+  | "deliveryStyle"
+  | "ballContact"
+  | "contactPlane";
 
-export type MetricUnit = "°" | "torso" | "ratio";
+export type MetricUnit = "°" | "torso" | "ratio" | "cue";
 
 export type MetricResult = {
   key: MetricKey;
@@ -66,6 +87,8 @@ export type MetricResult = {
   score: number;
   status: "good" | "watch";
   note: string;
+  /** Short tag shown instead of a number (trigger style, delivery, and so on). */
+  display?: string;
 };
 
 /**
@@ -83,8 +106,10 @@ export type SwingPath = {
 export type PhaseResult = PhaseDefinition & {
   frame: PoseFrame;
   metrics: MetricResult[];
-  score: number;
+  score: number | null;
   swingPath?: SwingPath;
+  /** Vertical contact-plane x in normalized image coords (front foot). */
+  contactPlaneX?: number;
 };
 
 export type QualityCheck = {
@@ -105,4 +130,5 @@ export type AnalysisResult = {
   strengths: string[];
   adjustments: string[];
   disclaimer: string;
+  ballDetected: boolean;
 };

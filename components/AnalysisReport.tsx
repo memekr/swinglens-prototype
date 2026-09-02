@@ -9,9 +9,11 @@ import { Icon } from "./Icon";
 import { ReviewStudio } from "./ReviewStudio";
 import { SkeletonView } from "./SkeletonView";
 
-const PHASE_ORDER: PhaseKey[] = ["trigger", "execution", "impact", "follow"];
+const PHASE_ORDER: PhaseKey[] = ["trigger", "execution", "backspace", "impact"];
 
-function MetricValue({ value, unit }: { value: number; unit: MetricUnit }) {
+function MetricValue({ value, unit, display }: { value: number; unit: MetricUnit; display?: string }) {
+  if (display) return <>{display}</>;
+  if (unit === "cue") return <>{Math.round(value)}</>;
   if (unit === "°") return <>{Math.round(value)}°</>;
   if (unit === "torso") return <>{value.toFixed(2)}×</>;
   return <>{value.toFixed(2)}</>;
@@ -20,15 +22,17 @@ function MetricValue({ value, unit }: { value: number; unit: MetricUnit }) {
 export function AnalysisReport({
   result,
   videoMeta,
+  videoSrc,
   isDemo,
   onReset,
 }: {
   result: AnalysisResult;
   videoMeta: VideoAnalysisOutput | null;
+  videoSrc?: string | null;
   isDemo: boolean;
   onReset: () => void;
 }) {
-  const [activePhase, setActivePhase] = useState<PhaseKey>("impact");
+  const [activePhase, setActivePhase] = useState<PhaseKey>("trigger");
   const [viewMode, setViewMode] = useState<"player" | "coach">("player");
   const [shareLabel, setShareLabel] = useState("Share summary");
   const selectedPhase = useMemo(
@@ -36,9 +40,11 @@ export function AnalysisReport({
     [activePhase, result.phases],
   );
   const drills = useMemo(() => getDrillSuggestions(result), [result]);
-  const aspectRatio = videoMeta && videoMeta.analyzedHeight > 0
-    ? videoMeta.analyzedWidth / videoMeta.analyzedHeight
-    : 1;
+  const aspectRatio = videoMeta && videoMeta.sourceHeight > 0
+    ? videoMeta.sourceWidth / videoMeta.sourceHeight
+    : videoMeta && videoMeta.analyzedHeight > 0
+      ? videoMeta.analyzedWidth / videoMeta.analyzedHeight
+      : 1;
 
   async function shareReport() {
     const summary = [
@@ -103,6 +109,20 @@ export function AnalysisReport({
 
       {videoMeta?.truncated && <p className="notice"><Icon name="warn" /> This clip was longer than {MAX_ANALYZED_SECONDS} seconds, so only the first {MAX_ANALYZED_SECONDS} seconds were analyzed.</p>}
 
+      {viewMode === "coach" && !isDemo && videoMeta?.diagnostics ? (
+        <details className="pose-diagnostics no-print">
+          <summary>Pose diagnostics (this device only)</summary>
+          <dl>
+            <dt>Source</dt><dd>{videoMeta.sourceWidth}×{videoMeta.sourceHeight}</dd>
+            <dt>Analysis</dt><dd>{videoMeta.analyzedWidth}×{videoMeta.analyzedHeight} · {videoMeta.quality}</dd>
+            <dt>Preprocess</dt><dd>{videoMeta.diagnostics.preprocessMs.toFixed(1)} ms / frame</dd>
+            <dt>Inference</dt><dd>{videoMeta.diagnostics.inferenceMs.toFixed(1)} ms / frame</dd>
+            <dt>Missing joints</dt><dd>{videoMeta.diagnostics.missingLandmarkCount.toFixed(2)} mean</dd>
+            <dt>Visibility</dt><dd>{(videoMeta.diagnostics.averageVisibility * 100).toFixed(0)}%</dd>
+          </dl>
+        </details>
+      ) : null}
+
       {result.canCoach && selectedPhase && (
         <div className={`phase-report ${viewMode}-view`}>
           <div className="phase-tabs" role="tablist" aria-label="Swing checkpoints">
@@ -115,21 +135,27 @@ export function AnalysisReport({
             <SkeletonView
               frame={selectedPhase.frame}
               label={selectedPhase.label}
-              pathPoints={selectedPhase.key === "follow" ? selectedPhase.swingPath?.points : undefined}
               aspectRatio={aspectRatio}
+              contactPlaneX={selectedPhase.contactPlaneX}
+              videoSrc={videoSrc}
             />
             <div className="metric-panel">
-              <div className="metric-heading"><div><p>{selectedPhase.description}</p><h3>{selectedPhase.label}</h3></div><strong>{selectedPhase.score}</strong></div>
-              {selectedPhase.key === "impact" && (
-                <p className="impact-note">This is the contact-window sample: the last high-speed frame where the hands are still below the head. It is not confirmed ball-bat contact — if it still looks like a finish, scrub Frame Lab one or two samples earlier.</p>
+              <div className="metric-heading"><div><p>{selectedPhase.description}</p><h3>{selectedPhase.label}</h3></div><strong>{selectedPhase.score ?? "—"}</strong></div>
+              {selectedPhase.key === "impact" && !result.ballDetected && (
+                <p className="impact-note">Ball not detected - no impact can be found.</p>
+              )}
+              {selectedPhase.key === "impact" && result.ballDetected && (
+                <p className="impact-note">The lime vertical line is the front-foot contact plane. A good contact area is the ball’s location relative to that line, not dumping your weight onto the front foot.</p>
               )}
               <div className="metric-list">
                 {selectedPhase.metrics.map((metric) => (
                   <article key={metric.key} className={metric.status}>
-                    <div className="metric-top"><span>{metric.label}</span><b><MetricValue value={metric.value} unit={metric.unit} /></b></div>
+                    <div className="metric-top"><span>{metric.label}</span><b><MetricValue value={metric.value} unit={metric.unit} display={metric.display} /></b></div>
                     <div className="metric-bar"><span style={{ width: `${Math.max(4, metric.score)}%` }} /></div>
                     <p>{metric.note}</p>
-                    <small>Prototype range {metric.reference[0]}–{metric.reference[1]}{metric.unit === "torso" ? "× torso" : metric.unit === "ratio" ? " roundness" : metric.unit}</small>
+                    {metric.unit !== "cue" && (
+                      <small>Prototype range {metric.reference[0]}–{metric.reference[1]}{metric.unit === "torso" ? "× torso" : metric.unit === "ratio" ? " roundness" : metric.unit}</small>
+                    )}
                   </article>
                 ))}
               </div>
@@ -160,12 +186,19 @@ export function AnalysisReport({
       </section>
 
       {result.canCoach && videoMeta?.frames.length ? (
-        <ReviewStudio frames={videoMeta.frames} phases={result.phases} aspectRatio={aspectRatio} />
+        <ReviewStudio
+          frames={videoMeta.frames}
+          phases={result.phases}
+          aspectRatio={aspectRatio}
+          videoSrc={videoSrc}
+          sourceWidth={videoMeta.sourceWidth}
+          sourceHeight={videoMeta.sourceHeight}
+        />
       ) : null}
 
       <div className="evidence-note">
         <Icon name="warn" />
-        <div><b>What this report does not claim</b><p>Impact is a contact-window sample (hands still below the head in the high-speed stretch), not detected ball contact. A single 2D video cannot provide bat speed, exit velocity, true attack angle, or 3D rotation. Checkpoint ranges remain coach-validation-pending prototype values.</p></div>
+        <div><b>What this report does not claim</b><p>If the baseball is not found, Impact will say exactly that. A single 2D video cannot provide bat speed, exit velocity, true attack angle, or 3D rotation. Mechanism reads are 2D proxies from the on-device skeleton.</p></div>
       </div>
       <div className="result-footer"><p>{result.disclaimer}</p><button className="button ghost-dark no-print" onClick={onReset}>Review another swing</button></div>
     </section>

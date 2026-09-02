@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { EMPHASIZED_POINTS, SKELETON_CONNECTIONS, SKELETON_POINTS } from "@/lib/skeleton";
 import type { BodyJoint, PoseFrame, PoseLandmark, Skeleton } from "@/lib/types";
 
@@ -10,7 +11,7 @@ import type { BodyJoint, PoseFrame, PoseLandmark, Skeleton } from "@/lib/types";
  * compressed into the left slice of the frame — this is the single
  * conversion every landmark must go through before it's drawn.
  */
-function toDisplay(point: PoseLandmark, aspectRatio: number): PoseLandmark {
+function toDisplay(point: { x: number; y: number }, aspectRatio: number) {
   return { ...point, x: point.x * aspectRatio };
 }
 
@@ -20,20 +21,39 @@ export function SkeletonView({
   showSkeleton = true,
   pathPoints,
   aspectRatio = 1,
+  contactPlaneX,
+  videoSrc,
 }: {
   frame: PoseFrame;
   label: string;
   showSkeleton?: boolean;
   pathPoints?: PoseLandmark[];
-  /** Analyzed-frame width / height. */
   aspectRatio?: number;
+  contactPlaneX?: number;
+  /** Original File/Blob URL for review. Never a 480px analysis JPEG. */
+  videoSrc?: string | null;
 }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
   const landmarks = Object.fromEntries(
-    SKELETON_POINTS.map((joint) => [joint, toDisplay(frame.landmarks[joint], aspectRatio)]),
+    SKELETON_POINTS.map((joint) => [joint, { ...toDisplay(frame.landmarks[joint], aspectRatio), z: frame.landmarks[joint].z, visibility: frame.landmarks[joint].visibility }]),
   ) as Skeleton;
   const displayPath = pathPoints?.map((point) => toDisplay(point, aspectRatio));
   const path = displayPath && displayPath.length > 1 ? displayPath.map((point) => `${point.x},${point.y}`).join(" ") : null;
   const pathEnd = path && displayPath ? displayPath[displayPath.length - 1] : null;
+  const ball = frame.ball ? toDisplay(frame.ball, aspectRatio) : null;
+  const planeX = contactPlaneX !== undefined ? contactPlaneX * aspectRatio : null;
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !videoSrc) return;
+    const seconds = Math.max(0, frame.timestampMs / 1000);
+    const seekToFrame = () => {
+      if (Math.abs(video.currentTime - seconds) > 0.01) video.currentTime = seconds;
+    };
+    if (video.readyState >= 1) seekToFrame();
+    else video.addEventListener("loadedmetadata", seekToFrame, { once: true });
+    return () => video.removeEventListener("loadedmetadata", seekToFrame);
+  }, [videoSrc, frame.timestampMs]);
 
   return (
     <figure
@@ -41,7 +61,23 @@ export function SkeletonView({
       aria-label={`${label} skeleton overlay`}
       style={{ ["--frame-aspect" as string]: String(aspectRatio) }}
     >
-      <svg viewBox={`0 0 ${aspectRatio} 1`} preserveAspectRatio="xMidYMid meet" role="img">
+      {videoSrc ? (
+        <video
+          ref={videoRef}
+          className="stage-media"
+          src={videoSrc}
+          muted
+          playsInline
+          preload="auto"
+          disablePictureInPicture
+        />
+      ) : null}
+      <svg
+        className={videoSrc ? "skeleton-overlay" : undefined}
+        viewBox={`0 0 ${aspectRatio} 1`}
+        preserveAspectRatio="xMidYMid meet"
+        role="img"
+      >
         <defs>
           <linearGradient id="demo-bg" x1="0" x2="1" y1="0" y2="1">
             <stop offset="0" stopColor="#12251d" />
@@ -52,14 +88,21 @@ export function SkeletonView({
             <stop offset="1" stopColor="#07110d" stopOpacity="0" />
           </radialGradient>
         </defs>
-        {frame.previewDataUrl ? (
-          <image href={frame.previewDataUrl} width={aspectRatio} height="1" preserveAspectRatio="none" />
-        ) : (
-          <>
-            <rect width={aspectRatio} height="1" fill="url(#demo-bg)" />
-            <ellipse cx={aspectRatio / 2} cy=".9" rx={aspectRatio * 0.46} ry=".16" fill="url(#field-glow)" />
-            <path d={`M0 .83H${aspectRatio}M${aspectRatio / 2} .83V1`} stroke="#8da197" strokeOpacity=".12" strokeWidth=".004" />
-          </>
+        {!videoSrc && (
+          frame.previewDataUrl ? (
+            <image href={frame.previewDataUrl} width={aspectRatio} height="1" preserveAspectRatio="none" />
+          ) : (
+            <>
+              <rect width={aspectRatio} height="1" fill="url(#demo-bg)" />
+              <ellipse cx={aspectRatio / 2} cy=".9" rx={aspectRatio * 0.46} ry=".16" fill="url(#field-glow)" />
+              <path d={`M0 .83H${aspectRatio}M${aspectRatio / 2} .83V1`} stroke="#8da197" strokeOpacity=".12" strokeWidth=".004" />
+            </>
+          )
+        )}
+        {planeX !== null && (
+          <g className="contact-plane" aria-label="Front-foot contact plane">
+            <line x1={planeX} y1="0.02" x2={planeX} y2="0.98" />
+          </g>
         )}
         {showSkeleton && <>
           <g className="skeleton-shadow" opacity=".45" transform="translate(.006 .008)">
@@ -78,8 +121,9 @@ export function SkeletonView({
             ))}
           </g>
         </>}
+        {ball && <circle className="skeleton-ball" cx={ball.x} cy={ball.y} r="0.018" />}
         {path && (
-          <g className="skeleton-path" aria-label="Tracked hand path from impact through follow-through">
+          <g className="skeleton-path" aria-label="Tracked path">
             <polyline points={path} />
             {pathEnd && <circle className="path-end" cx={pathEnd.x} cy={pathEnd.y} r="0.015" />}
           </g>

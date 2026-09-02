@@ -14,6 +14,7 @@ export type IconName =
   | "print"
   | "share"
   | "spark"
+  | "upload"
   | "warn";
 
 export function Icon({ name }: { name: IconName }) {
@@ -32,6 +33,7 @@ export function Icon({ name }: { name: IconName }) {
     eyeOff: <><path d="m3 3 18 18M10.6 6.1A10 10 0 0 1 12 6c6 0 9.5 6 9.5 6a14 14 0 0 1-2.2 2.9M6.1 6.1C3.8 7.7 2.5 12 2.5 12s3.5 6 9.5 6a9 9 0 0 0 3-.5" /><path d="M10.5 10.5a2.2 2.2 0 0 0 3 3" /></>,
     share: <><circle cx="18" cy="5" r="2" /><circle cx="6" cy="12" r="2" /><circle cx="18" cy="19" r="2" /><path d="m8 11 8-5m-8 7 8 5" /></>,
     print: <><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3" /><path d="M7 14h10v7H7z" /></>,
+    upload: <><path d="M12 16V5m0 0-4 4m4-4 4 4" /><path d="M4 19v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1" /></>,
   };
   return <svg className="icon" viewBox="0 0 24 24" aria-hidden="true">{paths[name]}</svg>;
 }

@@ -13,22 +13,25 @@ describe("report brief for the hitting coach", () => {
     expect(result.score).toBeTypeOf("number");
     expect(brief).toContain(`Prototype score: ${result.score}`);
     expect(brief).toContain("Score recipe");
-    expect(brief).toContain("Lead-knee angle");
-    expect(brief).toContain("Torso lean");
-    expect(brief).toContain("Shoulder–hip line gap");
-    expect(brief).toContain("Relative head travel");
-    expect(brief).toContain("Swing path shape");
+    expect(brief).toContain("Trigger variation");
+    expect(brief).toContain("Power position");
+    expect(brief).toContain("Backspace");
+    expect(brief).toContain("Ball / bat contact");
     expect(brief).toContain("2D screen-space");
   });
 
   it("documents every on-screen cue", () => {
     expect(CUE_EXPLAINERS.map((cue) => cue.key)).toEqual([
       "prototypeScore",
-      "leadKnee",
-      "torsoLean",
-      "separation",
-      "headMovement",
-      "swingPath",
+      "triggerStyle",
+      "hipHinge",
+      "scapLoad",
+      "landingStyle",
+      "chainFoot",
+      "backspace",
+      "deliveryStyle",
+      "ballContact",
+      "contactPlane",
     ]);
   });
 });

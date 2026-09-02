@@ -38,7 +38,7 @@ const ROLL: DrillCard = {
 };
 
 const DROP_BAT: DrillCard = {
-  key: "swingPath",
+  key: "contactPlane",
   title: "Drop-Bat Drill",
   dose: "2 × 8 front toss",
   cue: "Barrel from behind the ball",
@@ -77,34 +77,29 @@ const LEAD_ARM: DrillCard = {
 };
 
 function drillFor(phaseKey: PhaseKey, metricKey: MetricKey): DrillCard {
-  if (metricKey === "swingPath") return DROP_BAT;
-  if (metricKey === "separation") return ROLL;
+  if (metricKey === "contactPlane" || metricKey === "ballContact") return FRONT_FOOT;
+  if (metricKey === "backspace" || metricKey === "deliveryStyle" || metricKey === "scapLoad") return ROLL;
+  if (metricKey === "hipHinge" || metricKey === "triggerStyle") return HIP_LOAD;
+  if (metricKey.startsWith("chain") || metricKey === "landingStyle" || metricKey === "leadKnee") return LEAD_ARM;
   if (metricKey === "torsoLean" && (phaseKey === "trigger" || phaseKey === "execution")) return HIP_LOAD;
-  if (metricKey === "headMovement" && (phaseKey === "impact" || phaseKey === "follow")) return FRONT_FOOT;
-  if (metricKey === "leadKnee") return LEAD_ARM;
+  if (metricKey === "headMovement") return FRONT_FOOT;
   if (metricKey === "torsoLean") return HIP_LOAD;
-  if (metricKey === "headMovement") return HIP_LOAD;
-  return DROP_BAT;
+  return ROLL;
 }
 
 const REASON: Partial<Record<`${PhaseKey}:${MetricKey}` | MetricKey, string>> = {
-  "trigger:torsoLean": "Trigger · athletic stance / hip hinge (Gradum hip load)",
-  "trigger:headMovement": "Trigger · stay inside the rear hip, not a sway",
-  "trigger:separation": "Trigger · start of upper/lower split",
-  "trigger:leadKnee": "Trigger · get to the power position first",
-  "execution:leadKnee": "Execution · land, then the kinetic chain",
-  "execution:separation": "Execution · Roll / back-space",
-  "execution:torsoLean": "Execution · one spine angle through plant",
-  "execution:headMovement": "Execution · do not rush the chest over the front foot",
-  "impact:leadKnee": "Impact · brace at the front-foot plane",
-  "impact:separation": "Impact · torso turns the barrel, not a hand-push",
-  "impact:torsoLean": "Impact · match shoulder plane to the pitch",
-  "impact:headMovement": "Impact · contact window, not a lunge",
-  "follow:swingPath": "Follow-through · Ferris-wheel path (Drop-Bat)",
-  "follow:leadKnee": "Follow-through · direction through the ball",
-  "follow:torsoLean": "Follow-through · same plane into the finish",
-  "follow:headMovement": "Follow-through · stay through the middle",
-  "follow:separation": "Follow-through · delayed rollover",
+  "trigger:hipHinge": "Trigger/Timing · hip hinge into the rear hip",
+  "trigger:scapLoad": "Trigger/Timing · rear scapula still on the back side",
+  "trigger:triggerStyle": "Trigger/Timing · rhythm move",
+  "execution:landingStyle": "Execution · toe tap vs stride",
+  "execution:chainFoot": "Execution · foot, then knee, hip, barrel",
+  "execution:chainKnee": "Execution · kinetic chain",
+  "execution:chainHip": "Execution · pelvis after the knee",
+  "execution:chainUpper": "Execution · bat last",
+  "backspace:backspace": "Backspace · rear arm and rear leg still loaded",
+  "backspace:deliveryStyle": "Backspace · rear-leg axis vs early dump",
+  "impact:contactPlane": "Impact · front-foot contact plane",
+  "impact:ballContact": "Impact · see the baseball",
 };
 
 export function getDrillSuggestions(result: AnalysisResult): DrillSuggestion[] {
@@ -142,7 +137,7 @@ export function getDrillSuggestions(result: AnalysisResult): DrillSuggestion[] {
   if (suggestions.length === 0) {
     suggestions.push({
       ...DROP_BAT,
-      reason: "Keep the barrel on a south-to-north path even when the 2D bands look clean.",
+      reason: "Keep the rear hip loaded and turn foot-knee-hip-barrel even when the 2D read looks clean.",
     });
   }
   return suggestions;

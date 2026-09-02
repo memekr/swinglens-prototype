@@ -2,7 +2,10 @@
 
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { analyzePoseSequence } from "@/lib/analysis";
+import { DEFAULT_ANALYSIS_QUALITY, type AnalysisQuality } from "@/lib/analysis-resolution";
 import { createDemoFrames } from "@/lib/demo";
+import { ObjectUrlStore } from "@/lib/object-url";
+import { emptyPoseDiagnostics } from "@/lib/pose-diagnostics";
 import { PoseEngine } from "@/lib/pose-engine";
 import { SKELETON_CONNECTIONS, SKELETON_POINTS } from "@/lib/skeleton";
 import type { AnalysisResult, BodyJoint, Handedness } from "@/lib/types";
@@ -45,9 +48,12 @@ export function SwingAnalyzer() {
   const [videoMeta, setVideoMeta] = useState<VideoAnalysisOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isDemo, setIsDemo] = useState(false);
-  const fileInput = useRef<HTMLInputElement>(null);
+  const [quality, setQuality] = useState<AnalysisQuality>(DEFAULT_ANALYSIS_QUALITY);
+  const [enhanceInference, setEnhanceInference] = useState(false);
+  const uploadInput = useRef<HTMLInputElement>(null);
+  const cameraInput = useRef<HTMLInputElement>(null);
   const engine = useRef<PoseEngine | null>(null);
-  const previewUrlRef = useRef<string | null>(null);
+  const objectUrls = useRef(new ObjectUrlStore());
 
   useEffect(() => {
     if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
@@ -55,9 +61,12 @@ export function SwingAnalyzer() {
     }
   }, []);
 
-  useEffect(() => () => {
-    engine.current?.close();
-    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+  useEffect(() => {
+    const store = objectUrls.current;
+    return () => {
+      engine.current?.close();
+      store.dispose();
+    };
   }, []);
 
   function resetOutput() {
@@ -70,8 +79,9 @@ export function SwingAnalyzer() {
 
   function onFile(event: ChangeEvent<HTMLInputElement>) {
     const selected = event.target.files?.[0];
+    event.target.value = "";
     if (!selected) return;
-    if (!selected.type.startsWith("video/")) {
+    if (!selected.type.startsWith("video/") && !/\.(mp4|mov|webm|m4v)$/i.test(selected.name)) {
       setError("Choose a video file to continue.");
       return;
     }
@@ -79,11 +89,11 @@ export function SwingAnalyzer() {
       setError("This prototype accepts videos up to 350 MB.");
       return;
     }
-    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
-    previewUrlRef.current = URL.createObjectURL(selected);
+    const nextUrl = objectUrls.current.set(selected);
     setFile(selected);
-    setPreviewUrl(previewUrlRef.current);
+    setPreviewUrl(nextUrl);
     resetOutput();
+    requestAnimationFrame(() => objectUrls.current.releasePrevious());
   }
 
   async function runAnalysis() {
@@ -97,9 +107,15 @@ export function SwingAnalyzer() {
       // per run is optional. Recreating still drops GPU state between clips.
       engine.current?.close();
       engine.current = new PoseEngine();
-      const output = await analyzeVideoFile(file, engine.current, (completed, total, stage) => {
-        setProgress({ completed, total, stage });
-      });
+      const output = await analyzeVideoFile(
+        file,
+        engine.current,
+        (completed, total, stage) => {
+          setProgress({ completed, total, stage });
+        },
+        handedness,
+        { quality, enhanceInference },
+      );
       const nextResult = analyzePoseSequence(output.frames, handedness, output.expectedSamples);
       setVideoMeta(output);
       setResult(nextResult);
@@ -121,9 +137,13 @@ export function SwingAnalyzer() {
       durationMs: frames.at(-1)?.timestampMs ?? 0,
       sourceWidth: 1280,
       sourceHeight: 720,
-      analyzedWidth: 720,
-      analyzedHeight: 405,
+      sourceFps: 30,
+      denseFps: 30,
+      analyzedWidth: 1280,
+      analyzedHeight: 720,
       truncated: false,
+      quality: "quality",
+      diagnostics: emptyPoseDiagnostics({ sampledFrames: frames.length, averageVisibility: 1 }),
     });
     setIsDemo(true);
     setStatus("done");
@@ -152,7 +172,8 @@ export function SwingAnalyzer() {
           <h1>See the move.<br /><em>Coach the next.</em></h1>
           <p className="hero-lead">Record one swing. Review the body landmarks, key checkpoints, and evidence behind every cue — without uploading your video.</p>
           <div className="hero-actions">
-            <button className="button primary" onClick={() => fileInput.current?.click()}><Icon name="camera" /> Choose a swing video</button>
+            <button className="button primary" onClick={() => cameraInput.current?.click()}><Icon name="camera" /> Record a swing</button>
+            <button className="button ghost" onClick={() => uploadInput.current?.click()}><Icon name="upload" /> Upload a video</button>
             <button className="button ghost" onClick={runDemo}><Icon name="spark" /> Explore sample report</button>
           </div>
           <p className="microcopy">No account · No video upload · Installable PWA</p>
@@ -185,9 +206,9 @@ export function SwingAnalyzer() {
           <p>We improve the spatial input for pose tracking, but never pretend low frame rate contains moments the camera did not record.</p>
         </div>
         <div className="pipeline-grid">
-          <article><span className="step-number">01</span><div className="step-icon"><Icon name="spark" /></div><h3>Prepare each frame</h3><p>High-quality resampling and conservative contrast normalization prepare the image for pose tracking.</p><small>NO SYNTHETIC ACTION</small></article>
+          <article><span className="step-number">01</span><div className="step-icon"><Icon name="spark" /></div><h3>Prepare each frame</h3><p>Analysis frames are capped (never upscaled) for pose. The original clip stays at full resolution for review.</p><small>NO SYNTHETIC ACTION</small></article>
           <article><span className="step-number">02</span><div className="step-icon"><Icon name="pose" /></div><h3>Track the body</h3><p>A bundled lightweight vision model finds 33 body landmarks, mapped to our 17-point body map, entirely inside the browser.</p><small>MEDIAPIPE POSE LITE</small></article>
-          <article><span className="step-number">03</span><div className="step-icon"><Icon name="compare" /></div><h3>Review checkpoints</h3><p>Transparent 2D cues are compared against checkpoint-specific prototype ranges and capture confidence.</p><small>EVIDENCE BEFORE SCORE</small></article>
+          <article><span className="step-number">03</span><div className="step-icon"><Icon name="compare" /></div><h3>Review checkpoints</h3><p>Transparent 2D cues follow trigger, landing, backspace, then contact if the baseball is seen.</p><small>EVIDENCE BEFORE SCORE</small></article>
         </div>
       </section>
 
@@ -195,7 +216,7 @@ export function SwingAnalyzer() {
         <div className="feature-intro"><p className="eyebrow light"><span /> BUILT FOR REVIEW</p><h2 id="review-features-title">More than a score.<br />A portable film room.</h2><p>Patterns from leading coaching and open-source motion tools, rebuilt around local-first privacy and honest 2D evidence.</p></div>
         <div className="feature-stack">
           <article><span>01</span><div><h3>Frame Lab</h3><p>Scrub tracked samples, toggle the skeleton, and inspect the exact evidence.</p></div></article>
-          <article><span>02</span><div><h3>Checkpoint Compare</h3><p>Place any tracked sample beside trigger, execution, impact, or follow-through.</p></div></article>
+          <article><span>02</span><div><h3>Checkpoint Compare</h3><p>Place any tracked sample beside Trigger/Timing, Execution, Backspace, or Impact.</p></div></article>
           <article><span>03</span><div><h3>Player / Coach Views</h3><p>Switch between concise cues and technical prototype ranges without rerunning analysis.</p></div></article>
           <article><span>04</span><div><h3>Practice + PDF</h3><p>Turn the weakest 2D cues into short drill cards, then print or share the summary.</p></div></article>
         </div>
@@ -207,19 +228,32 @@ export function SwingAnalyzer() {
           <h2 id="analyze-title">One swing.<br />Full body in frame.</h2>
           <ol className="capture-tips">
             <li><b>Landscape</b><span>Phone at belt height, roughly 10–16 ft (3–5 m) away</span></li>
-            <li><b>Full body</b><span>Keep the head, both feet, and complete bat path in frame</span></li>
+            <li><b>Full body</b><span>Fill about 65–85% of the frame. Keep the head, both feet, both hands, and the complete bat path visible</span></li>
             <li><b>Stable view</b><span>Use bright light and a fixed side or open-side camera</span></li>
           </ol>
-          <div className="stance-fieldset"><span>BATTER</span><div className="segmented" role="group" aria-label="Batter side"><button className={handedness === "right" ? "active" : ""} onClick={() => setHandedness("right")}>Right</button><button className={handedness === "left" ? "active" : ""} onClick={() => setHandedness("left")}>Left</button></div></div>
+          <div className="analysis-options">
+            <div className="stance-fieldset"><span>BATTER</span><div className="segmented" role="group" aria-label="Batter side"><button className={handedness === "right" ? "active" : ""} onClick={() => setHandedness("right")}>Right</button><button className={handedness === "left" ? "active" : ""} onClick={() => setHandedness("left")}>Left</button></div></div>
+            <div className="stance-fieldset"><span>POSE</span><div className="segmented" role="group" aria-label="Analysis quality"><button className={quality === "quality" ? "active" : ""} onClick={() => setQuality("quality")}>Quality</button><button className={quality === "balanced" ? "active" : ""} onClick={() => setQuality("balanced")}>Balanced</button><button className={quality === "fast" ? "active" : ""} onClick={() => setQuality("fast")}>Fast</button></div></div>
+            <label className="enhance-toggle"><input type="checkbox" checked={enhanceInference} onChange={(event) => setEnhanceInference(event.target.checked)} /> Brighten frames for pose only</label>
+          </div>
         </div>
 
         <div className="workspace-panel">
         <div className="upload-card">
-          <input ref={fileInput} className="visually-hidden" type="file" accept="video/mp4,video/quicktime,video/webm,video/*" capture="environment" onChange={onFile} />
+          <input ref={uploadInput} className="visually-hidden" type="file" accept="video/mp4,video/quicktime,video/webm,video/*" onChange={onFile} />
+          <input ref={cameraInput} className="visually-hidden" type="file" accept="video/mp4,video/quicktime,video/webm,video/*" capture="environment" onChange={onFile} />
           {previewUrl ? (
-            <div className="video-preview"><video src={previewUrl} controls playsInline preload="metadata" /><div className="file-row"><div><b>{file?.name}</b><span>{file ? (file.size / 1024 / 1024).toFixed(1) : 0} MB · processed locally</span></div><button onClick={() => fileInput.current?.click()}>Replace</button></div></div>
+            <div className="video-preview"><video src={previewUrl} controls playsInline preload="metadata" /><div className="file-row"><div><b>{file?.name}</b><span>{file ? (file.size / 1024 / 1024).toFixed(1) : 0} MB · processed locally</span></div><div className="row-actions"><button type="button" onClick={() => uploadInput.current?.click()}>Upload another</button><button type="button" onClick={() => cameraInput.current?.click()}>Record instead</button></div></div></div>
           ) : (
-            <button className="drop-zone" onClick={() => fileInput.current?.click()}><span className="drop-icon"><Icon name="camera" /></span><b>Record or choose a video</b><span>MP4 · MOV · WebM / up to 350 MB</span></button>
+            <div className="drop-zone">
+              <span className="drop-icon"><Icon name="camera" /></span>
+              <b>Record or upload one swing</b>
+              <span className="drop-hint">MP4 · MOV · WebM / up to 350 MB · stays on this device</span>
+              <div className="capture-choice">
+                <button type="button" className="button primary" onClick={() => cameraInput.current?.click()}><Icon name="camera" /> Record</button>
+                <button type="button" className="button secondary" onClick={() => uploadInput.current?.click()}><Icon name="upload" /> Upload</button>
+              </div>
+            </div>
           )}
           {status === "processing" ? (
             <div className="progress-panel" aria-live="polite"><div><b>{progress.stage}</b><span>{progressPercent}%</span></div><div className="progress-track"><span style={{ width: `${progressPercent}%` }} /></div><p>Keep this tab open. Frames are processed only in this browser.</p></div>
@@ -234,7 +268,7 @@ export function SwingAnalyzer() {
         <CoachChat analysis={result} />
       </section>
 
-      {result && <AnalysisReport result={result} videoMeta={videoMeta} isDemo={isDemo} onReset={() => { setResult(null); setStatus("idle"); document.querySelector("#analyze")?.scrollIntoView({ behavior: "smooth" }); }} />}
+      {result && <AnalysisReport result={result} videoMeta={videoMeta} videoSrc={isDemo ? null : previewUrl} isDemo={isDemo} onReset={() => { setResult(null); setStatus("idle"); document.querySelector("#analyze")?.scrollIntoView({ behavior: "smooth" }); }} />}
 
       <section className="privacy-section" id="privacy">
         <div><p className="eyebrow light"><span /> PRIVACY BY DESIGN</p><h2>Your video lives<br />on your device.</h2></div>

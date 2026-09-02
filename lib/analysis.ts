@@ -1,80 +1,54 @@
 import { buildCoaching } from "./coaching";
+import { findBallImpactIndex, stabilizeBallTrack } from "./ball-detect";
 import {
-  angleDegrees,
-  axisAngleDifference,
   distance,
-  lineAngleDegrees,
   midpoint,
   torsoScale,
 } from "./geometry";
-import { CORE_JOINTS } from "./skeleton";
+import {
+  backspaceMetrics,
+  executionMetrics,
+  impactMetrics,
+  leadJoints,
+  pickBackspaceIndex,
+  triggerMetrics,
+} from "./mechanism";
+import { framingCheck, poseFillRatio } from "./framing";
 import type {
   AnalysisResult,
-  CoreMetricKey,
   Handedness,
-  MetricResult,
-  MetricUnit,
   PhaseDefinition,
   PhaseKey,
   PoseFrame,
   QualityCheck,
   Skeleton,
-  SwingPath,
 } from "./types";
-import type { BodyJoint } from "./types";
 
 /**
- * Four checkpoints, in the batting sequence the coaching team defined:
- * Trigger — the initial movement that sets rhythm and timing.
- * Execution — front foot plants, then the kinetic chain fires foot, knee,
- *   hip, upper body.
- * Impact — the bat-ball contact candidate (peak hand speed).
- * Follow-through — after impact; shows the finish and the tracked hand path.
+ * Four checkpoints from Basic Hitting Mechanism:
+ * Trigger/Timing — first move and power position.
+ * Execution — front foot lands, then foot, knee, hip, upper body.
+ * Backspace — rear-leg / rear-arm coil before the ball.
+ * Impact — ball meets the bat (or not found).
  */
 const PHASE_COPY: Record<PhaseKey, Pick<PhaseDefinition, "label" | "description">> = {
   trigger: {
-    label: "Trigger",
-    description: "The first move that sets rhythm and timing, before the ground-up rotation begins",
+    label: "Trigger/Timing",
+    description: "The first move that sets rhythm, then the hip-hinge power position",
   },
   execution: {
     label: "Execution",
-    description: "Front foot plants, then the kinetic chain fires: foot, knee, hip, upper body",
+    description: "Front foot lands, then foot, knee, hip, and the bat",
+  },
+  backspace: {
+    label: "Backspace",
+    description: "Rear-leg and rear-arm space after plant, before the ball",
   },
   impact: {
     label: "Impact",
-    description: "Contact window: last high-speed sample with the hands still below the head — not confirmed ball contact",
-  },
-  follow: {
-    label: "Follow-through",
-    description: "After impact. The finish, and the tracked hand path across it",
+    description: "Ball-bat contact at the front-foot plane — only if the ball is found",
   },
 };
-
-type ReferenceMap = Record<CoreMetricKey, [number, number]>;
-
-// Inherited 1:1 from the prior setup/launch/contact/follow bands. Still
-// prototype values pending coach and dataset validation, not re-derived —
-// the swing's rough progression (stance-like → mid-rotation → peak → extension)
-// still holds under the new checkpoint definitions.
-const REFERENCES: Record<PhaseKey, ReferenceMap> = {
-  trigger: { leadKnee: [145, 178], torsoLean: [0, 18], separation: [0, 18], headMovement: [0, 0.24] },
-  execution: { leadKnee: [132, 172], torsoLean: [2, 24], separation: [4, 28], headMovement: [0, 0.34] },
-  impact: { leadKnee: [118, 168], torsoLean: [2, 28], separation: [7, 36], headMovement: [0, 0.42] },
-  follow: { leadKnee: [120, 175], torsoLean: [0, 34], separation: [0, 38], headMovement: [0, 0.58] },
-};
-
-// Roundness = max perpendicular bow off the impact-to-follow-through chord,
-// as a fraction of the chord length. 0 is a straight line; higher is more arced.
-const SWING_PATH_REFERENCE: [number, number] = [0.07, 0.55];
-const MIN_UPWARD_RATIO = 0.04;
-
-function rangeScore(value: number, [min, max]: [number, number]): number {
-  if (!Number.isFinite(value)) return 0;
-  if (value >= min && value <= max) return 100;
-  const width = Math.max(max - min, max * 0.2, 1);
-  const gap = value < min ? min - value : value - max;
-  return Math.max(0, Math.round(72 - (gap / width) * 45));
-}
 
 function smooth(values: number[]): number[] {
   return values.map((_, index) => {
@@ -87,13 +61,6 @@ function smooth(values: number[]): number[] {
 
 function handCenter(landmarks: Skeleton) {
   return midpoint(landmarks.leftHand, landmarks.rightHand);
-}
-
-/** The lead (front, pitcher-side) leg's joints for this batter's stance. */
-function leadJoints(handedness: Handedness): { hip: BodyJoint; knee: BodyJoint; foot: BodyJoint } {
-  return handedness === "right"
-    ? { hip: "leftHipJoint", knee: "leftKnee", foot: "leftFoot" }
-    : { hip: "rightHipJoint", knee: "rightKnee", foot: "rightFoot" };
 }
 
 /**
@@ -197,134 +164,16 @@ export function detectPhases(frames: PoseFrame[], handedness: Handedness): Phase
   }
   executionIndex = Math.max(triggerIndex + 1, Math.min(executionIndex, impactIndex - 1));
 
-  const followIndex = Math.min(frames.length - 1, impactIndex + Math.max(2, Math.round(frames.length * 0.16)));
+  const ballImpact = findBallImpactIndex(frames, executionIndex, Math.min(frames.length - 1, impactIndex + 6));
+  const contactIndex = ballImpact ?? impactIndex;
+  const backspaceIndex = pickBackspaceIndex(frames, executionIndex, contactIndex, handedness);
 
   return [
     { key: "trigger", ...PHASE_COPY.trigger, frameIndex: triggerIndex },
     { key: "execution", ...PHASE_COPY.execution, frameIndex: executionIndex },
-    { key: "impact", ...PHASE_COPY.impact, frameIndex: impactIndex },
-    { key: "follow", ...PHASE_COPY.follow, frameIndex: followIndex },
+    { key: "backspace", ...PHASE_COPY.backspace, frameIndex: backspaceIndex },
+    { key: "impact", ...PHASE_COPY.impact, frameIndex: contactIndex },
   ];
-}
-
-function phaseMetrics(
-  phase: PhaseKey,
-  frame: PoseFrame,
-  triggerFrame: PoseFrame,
-  handedness: Handedness,
-): MetricResult[] {
-  const landmarks = frame.landmarks;
-  const lead = leadJoints(handedness);
-  const shoulders = midpoint(landmarks.leftShoulder, landmarks.rightShoulder);
-  const hips = landmarks.centerHip;
-  const triggerHips = triggerFrame.landmarks.centerHip;
-  const triggerHead = triggerFrame.landmarks.head;
-  const currentHeadOffset = { ...landmarks.head, x: landmarks.head.x - hips.x, y: landmarks.head.y - hips.y };
-  const triggerHeadOffset = { ...triggerHead, x: triggerHead.x - triggerHips.x, y: triggerHead.y - triggerHips.y };
-  const values: Record<CoreMetricKey, number> = {
-    leadKnee: angleDegrees(landmarks[lead.hip], landmarks[lead.knee], landmarks[lead.foot]),
-    torsoLean: Math.abs((Math.atan2(shoulders.x - hips.x, hips.y - shoulders.y) * 180) / Math.PI),
-    separation: axisAngleDifference(
-      lineAngleDegrees(landmarks.leftShoulder, landmarks.rightShoulder),
-      lineAngleDegrees(landmarks.leftHipJoint, landmarks.rightHipJoint),
-    ),
-    headMovement: distance(currentHeadOffset, triggerHeadOffset) / torsoScale(triggerFrame.landmarks),
-  };
-  const copy: Record<CoreMetricKey, { label: string; unit: MetricUnit; good: string; watch: string }> = {
-    leadKnee: {
-      label: "Lead-knee angle",
-      unit: "°",
-      good: "Your lead leg is supporting this checkpoint inside the prototype range.",
-      watch: "Review lead-knee flexion on the frame; camera angle can change this 2D value.",
-    },
-    torsoLean: {
-      label: "Torso lean",
-      unit: "°",
-      good: "Torso lean sits inside the prototype range for this checkpoint.",
-      watch: "Check whether the upper body is standing up early or collapsing over the plate.",
-    },
-    separation: {
-      label: "Shoulder–hip line gap",
-      unit: "°",
-      good: "The on-screen shoulder and hip lines sit inside the prototype range.",
-      watch: "Review rotation timing. This is a 2D screen-space proxy, not a 3D separation angle.",
-    },
-    headMovement: {
-      label: "Relative head travel",
-      unit: "torso",
-      good: "Head position stays relatively stable against the pelvis.",
-      watch: "Head travel is large relative to the pelvis. Check both weight shift and camera shake.",
-    },
-  };
-
-  return (Object.keys(values) as CoreMetricKey[]).map((key) => {
-    const reference = REFERENCES[phase][key];
-    const score = rangeScore(values[key], reference);
-    const inRange = Number.isFinite(values[key]) && values[key] >= reference[0] && values[key] <= reference[1];
-    return {
-      key,
-      label: copy[key].label,
-      value: values[key],
-      unit: copy[key].unit,
-      reference,
-      score,
-      status: inRange ? "good" : "watch",
-      note: inRange ? copy[key].good : copy[key].watch,
-    };
-  });
-}
-
-/**
- * The tracked hand path from Impact through Follow-through: the honest
- * proxy for bat barrel path (the bat itself isn't tracked). Checked against
- * the desired shape: a circular, slightly upward arc.
- */
-function computeSwingPath(frames: PoseFrame[], impactIndex: number, followIndex: number): SwingPath {
-  const start = Math.max(0, Math.min(impactIndex, followIndex));
-  const end = Math.min(frames.length - 1, Math.max(impactIndex, followIndex));
-  const points = frames.slice(start, end + 1).map((frame) => handCenter(frame.landmarks));
-  const first = points[0];
-  const last = points[points.length - 1];
-  const dx = last.x - first.x;
-  const dy = last.y - first.y;
-  const chord = Math.max(Math.hypot(dx, dy), 1e-4);
-  // Image y grows downward, so a rising path has a negative dy.
-  const upwardRatio = -dy / chord;
-  const bow = points.map((point) => {
-    const t = ((point.x - first.x) * dx + (point.y - first.y) * dy) / (chord * chord);
-    const projX = first.x + t * dx;
-    const projY = first.y + t * dy;
-    return Math.hypot(point.x - projX, point.y - projY);
-  });
-  const roundness = Math.max(...bow, 0) / chord;
-  const trendsUp = upwardRatio >= MIN_UPWARD_RATIO;
-  const inRange = trendsUp && roundness >= SWING_PATH_REFERENCE[0] && roundness <= SWING_PATH_REFERENCE[1];
-
-  return {
-    points,
-    upwardRatio,
-    roundness,
-    status: inRange ? "good" : "watch",
-    note: inRange
-      ? "The tracked hand path arcs upward through the follow-through, consistent with a circular, slightly upward bat path."
-      : trendsUp
-        ? "The hand path trends upward but looks flatter than a circular finish here. This tracks hand position, not the bat barrel."
-        : "The hand path is flat or trends down here, short of the circular, slightly upward target shape. This tracks hand position, not the bat barrel.",
-  };
-}
-
-function swingPathMetric(path: SwingPath): MetricResult {
-  const penalty = path.upwardRatio < MIN_UPWARD_RATIO ? 20 : 0;
-  return {
-    key: "swingPath",
-    label: "Swing path shape",
-    value: path.roundness,
-    unit: "ratio",
-    reference: SWING_PATH_REFERENCE,
-    score: Math.max(0, rangeScore(path.roundness, SWING_PATH_REFERENCE) - penalty),
-    status: path.status,
-    note: path.note,
-  };
 }
 
 function qualityChecks(frames: PoseFrame[], expectedSamples: number): QualityCheck[] {
@@ -333,11 +182,8 @@ function qualityChecks(frames: PoseFrame[], expectedSamples: number): QualityChe
   }
   const coverage = frames.length / Math.max(expectedSamples, 1);
   const averageConfidence = frames.reduce((sum, frame) => sum + frame.confidence, 0) / frames.length;
-  const bodyHeights = frames.map((frame) => {
-    const ys = CORE_JOINTS.map((joint) => frame.landmarks[joint]?.y).filter(Number.isFinite);
-    return Math.max(...ys) - Math.min(...ys);
-  });
-  const bodyHeight = bodyHeights.reduce((sum, value) => sum + value, 0) / bodyHeights.length;
+  const firstReliable = frames.find((frame) => frame.confidence >= 0.5 && poseFillRatio(frame.landmarks) >= 0.12) ?? frames[0];
+  const framing = framingCheck(poseFillRatio(firstReliable.landmarks));
   const clippedRatio = frames.filter((frame) => {
     const points = [frame.landmarks.head, frame.landmarks.leftFoot, frame.landmarks.rightFoot];
     return points.some((point) => point.x < 0.025 || point.x > 0.975 || point.y < 0.025 || point.y > 0.975);
@@ -365,12 +211,7 @@ function qualityChecks(frames: PoseFrame[], expectedSamples: number): QualityChe
       status: averageConfidence >= 0.68 ? "pass" : averageConfidence >= 0.5 ? "warn" : "fail",
       detail: `Key-joint confidence averages ${Math.round(averageConfidence * 100)}%.`,
     },
-    {
-      key: "framing",
-      label: "Subject scale",
-      status: bodyHeight >= 0.46 && bodyHeight <= 0.94 ? "pass" : bodyHeight >= 0.33 ? "warn" : "fail",
-      detail: bodyHeight < 0.46 ? "The hitter is small in frame. Move the camera slightly closer." : "Full-body scale is suitable for analysis.",
-    },
+    framing,
     {
       key: "clipping",
       label: "Frame clearance",
@@ -381,7 +222,7 @@ function qualityChecks(frames: PoseFrame[], expectedSamples: number): QualityChe
       key: "motion",
       label: "Swing motion",
       status: motionSpan >= 0.48 ? "pass" : motionSpan >= 0.28 ? "warn" : "fail",
-      detail: motionSpan >= 0.48 ? "Enough hand-to-torso motion was captured." : "Record one complete swing from the trigger through follow-through.",
+      detail: motionSpan >= 0.48 ? "Enough hand-to-torso motion was captured." : "Record one complete swing from the trigger through contact.",
     },
   ];
 }
@@ -391,12 +232,13 @@ export function analyzePoseSequence(
   handedness: Handedness,
   expectedSamples = frames.length,
 ): AnalysisResult {
-  const quality = qualityChecks(frames, expectedSamples);
-  const confidence = frames.length
-    ? frames.reduce((sum, frame) => sum + frame.confidence, 0) / frames.length
+  const tracked = stabilizeBallTrack(frames);
+  const quality = qualityChecks(tracked, expectedSamples);
+  const confidence = tracked.length
+    ? tracked.reduce((sum, frame) => sum + frame.confidence, 0) / tracked.length
     : 0;
-  const phases = detectPhases(frames, handedness);
-  const canCoach = frames.length >= 8 && phases.length === 4 && !quality.some((check) => check.status === "fail");
+  const phases = detectPhases(tracked, handedness);
+  const canCoach = tracked.length >= 8 && phases.length === 4 && !quality.some((check) => check.status === "fail");
 
   if (!canCoach) {
     return {
@@ -404,49 +246,64 @@ export function analyzePoseSequence(
       confidence,
       canCoach: false,
       sampledFrames: expectedSamples,
-      durationMs: frames.at(-1)?.timestampMs ?? 0,
+      durationMs: tracked.at(-1)?.timestampMs ?? 0,
       phases: [],
       quality,
       strengths: [],
-      adjustments: ["Retake in landscape with the full body visible from the trigger through follow-through."],
+      adjustments: ["Retake in landscape with the full body visible from the trigger through contact."],
       disclaimer: "Evidence quality was too low, so SwingLens withheld the mechanics score.",
+      ballDetected: false,
     };
   }
 
-  const triggerFrame = frames[phases[0].frameIndex];
-  const basePhases = phases.map((phase) => {
-    const frame = frames[phase.frameIndex];
-    return { ...phase, frame, metrics: phaseMetrics(phase.key, frame, triggerFrame, handedness) };
-  });
+  const triggerIndex = phases.find((phase) => phase.key === "trigger")!.frameIndex;
+  const executionIndex = phases.find((phase) => phase.key === "execution")!.frameIndex;
+  const backspaceIndex = phases.find((phase) => phase.key === "backspace")!.frameIndex;
+  const impactIndex = phases.find((phase) => phase.key === "impact")!.frameIndex;
+  const ballDetected = findBallImpactIndex(tracked, executionIndex, Math.min(tracked.length - 1, impactIndex + 2)) !== null
+    && Boolean(tracked[impactIndex]?.ball);
 
-  const impactPhase = basePhases.find((phase) => phase.key === "impact") ?? basePhases[2];
-  const followBase = basePhases.find((phase) => phase.key === "follow");
-  const swingPath = followBase ? computeSwingPath(frames, impactPhase.frameIndex, followBase.frameIndex) : null;
+  const metricsFor = (key: PhaseKey) => {
+    if (key === "trigger") return triggerMetrics(tracked, triggerIndex, executionIndex, handedness);
+    if (key === "execution") return executionMetrics(tracked, triggerIndex, executionIndex, impactIndex, handedness);
+    if (key === "backspace") return backspaceMetrics(tracked, executionIndex, backspaceIndex, handedness);
+    return impactMetrics(tracked[impactIndex], handedness, ballDetected);
+  };
 
-  const phaseResults = basePhases.map((phase) => {
-    const isFollow = phase.key === "follow" && swingPath !== null;
-    const metrics = isFollow ? [...phase.metrics, swingPathMetric(swingPath!)] : phase.metrics;
+  const phaseResults = phases.map((phase) => {
+    const frame = tracked[phase.frameIndex];
+    const metrics = metricsFor(phase.key);
+    const scored = phase.key === "impact" && !ballDetected
+      ? null
+      : Math.round(metrics.reduce((sum, metric) => sum + metric.score, 0) / Math.max(metrics.length, 1));
     return {
       ...phase,
+      frame,
       metrics,
-      swingPath: isFollow ? swingPath! : undefined,
-      score: Math.round(metrics.reduce((sum, metric) => sum + metric.score, 0) / metrics.length),
+      score: scored,
+      contactPlaneX: phase.key === "impact" && ballDetected ? frame.landmarks[handedness === "right" ? "leftFoot" : "rightFoot"].x : undefined,
     };
   });
 
   const { strengths, adjustments } = buildCoaching(phaseResults);
-  const score = Math.round(phaseResults.reduce((sum, phase) => sum + phase.score, 0) / phaseResults.length);
+  const numbered = phaseResults.filter((phase) => phase.score !== null) as Array<{ score: number }>;
+  const score = numbered.length
+    ? Math.round(numbered.reduce((sum, phase) => sum + phase.score, 0) / numbered.length)
+    : null;
 
   return {
     score,
     confidence,
     canCoach: true,
     sampledFrames: expectedSamples,
-    durationMs: frames.at(-1)?.timestampMs ?? 0,
+    durationMs: tracked.at(-1)?.timestampMs ?? 0,
     phases: phaseResults,
     quality,
     strengths,
     adjustments,
-    disclaimer: "These are 2D screen-space cues, not medical advice, injury diagnosis, or a replacement for a qualified coach. Impact is a contact-window sample, not confirmed ball-bat contact.",
+    ballDetected,
+    disclaimer: ballDetected
+      ? "These are 2D screen-space cues, not medical advice or a replacement for a qualified coach. Contact is an on-device ball candidate next to the hands, not a stadium TrackNet measurement."
+      : "These are 2D screen-space cues, not medical advice or a replacement for a qualified coach. Ball not detected - no impact can be found.",
   };
 }

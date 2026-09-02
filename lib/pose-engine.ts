@@ -1,4 +1,5 @@
 import { meanVisibility } from "./geometry";
+import { countMissingLandmarks } from "./pose-diagnostics";
 import { CORE_JOINTS, toSkeleton } from "./skeleton";
 import type { PoseLandmark, Skeleton } from "./types";
 
@@ -9,7 +10,12 @@ type MediaPipePoseLandmarker = {
   close: () => void;
 };
 
-export type PoseDetection = { landmarks: Skeleton; confidence: number } | null;
+export type PoseDetection = {
+  landmarks: Skeleton;
+  confidence: number;
+  inferenceMs: number;
+  missingLandmarkCount: number;
+} | null;
 
 export type SquarePad = {
   size: number;
@@ -19,7 +25,11 @@ export type SquarePad = {
   height: number;
 };
 
-/** Map a landmark from a square letterboxed tensor back onto the source frame. */
+/**
+ * Legacy mapper from when we letterboxed to a square before detect().
+ * MediaPipe now receives the rectangular analysis frame; keep this for tests
+ * and any caller that still has square-tensor coordinates.
+ */
 export function mapLandmarkFromSquare(
   landmark: { x: number; y: number; z: number; visibility?: number },
   pad: SquarePad,
@@ -32,25 +42,12 @@ export function mapLandmarkFromSquare(
   };
 }
 
-function padToSquare(source: HTMLCanvasElement, target: HTMLCanvasElement): SquarePad {
-  const size = Math.max(source.width, source.height);
-  if (target.width !== size || target.height !== size) {
-    target.width = size;
-    target.height = size;
-  }
-  const dx = Math.floor((size - source.width) / 2);
-  const dy = Math.floor((size - source.height) / 2);
-  const context = target.getContext("2d", { alpha: false });
-  if (!context) throw new Error("SwingLens could not create a pose canvas.");
-  context.fillStyle = "#000";
-  context.fillRect(0, 0, size, size);
-  context.drawImage(source, dx, dy);
-  return { size, dx, dy, width: source.width, height: source.height };
+function toLandmark(raw: { x: number; y: number; z: number; visibility?: number }): PoseLandmark {
+  return { x: raw.x, y: raw.y, z: raw.z, visibility: raw.visibility ?? 0.5 };
 }
 
 export class PoseEngine {
   private landmarker: MediaPipePoseLandmarker | null = null;
-  private padCanvas: HTMLCanvasElement | null = null;
 
   async load(): Promise<void> {
     if (this.landmarker) return;
@@ -82,19 +79,22 @@ export class PoseEngine {
 
   detect(canvas: HTMLCanvasElement): PoseDetection {
     if (!this.landmarker) throw new Error("The on-device pose model is not ready.");
-    this.padCanvas ??= document.createElement("canvas");
-    const pad = padToSquare(canvas, this.padCanvas);
-    const result = this.landmarker.detect(this.padCanvas);
+    const started = performance.now();
+    const result = this.landmarker.detect(canvas);
+    const inferenceMs = performance.now() - started;
     const raw = result.landmarks[0];
     if (!raw || raw.length < 29) return null;
-    const normalized = raw.map((landmark) => mapLandmarkFromSquare(landmark, pad));
-    const landmarks = toSkeleton(normalized);
-    return { landmarks, confidence: meanVisibility(landmarks, CORE_JOINTS) };
+    const landmarks = toSkeleton(raw.map(toLandmark));
+    return {
+      landmarks,
+      confidence: meanVisibility(landmarks, CORE_JOINTS),
+      inferenceMs,
+      missingLandmarkCount: countMissingLandmarks(landmarks),
+    };
   }
 
   close(): void {
     this.landmarker?.close();
     this.landmarker = null;
-    this.padCanvas = null;
   }
 }

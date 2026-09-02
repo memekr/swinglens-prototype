@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { renderExportStill } from "@/lib/export-still";
 import type { PhaseResult, PoseFrame } from "@/lib/types";
 import { Icon } from "./Icon";
 import { SkeletonView } from "./SkeletonView";
@@ -9,22 +10,55 @@ export function ReviewStudio({
   frames,
   phases,
   aspectRatio = 1,
+  videoSrc,
+  sourceWidth,
+  sourceHeight,
 }: {
   frames: PoseFrame[];
   phases: PhaseResult[];
   aspectRatio?: number;
+  videoSrc?: string | null;
+  sourceWidth?: number;
+  sourceHeight?: number;
 }) {
   const defaultIndex = Math.max(0, frames.findIndex((frame) => frame === phases.find((phase) => phase.key === "impact")?.frame));
   const [frameIndex, setFrameIndex] = useState(defaultIndex);
   const [showSkeleton, setShowSkeleton] = useState(true);
   const [compare, setCompare] = useState(false);
   const [compareIndex, setCompareIndex] = useState(2);
+  const [exportLabel, setExportLabel] = useState("Save still");
   const frame = frames[Math.min(frameIndex, frames.length - 1)];
   const comparison = phases[Math.min(compareIndex, phases.length - 1)];
   const phaseMarkers = useMemo(() => phases.map((phase) => ({
     ...phase,
     index: Math.max(0, frames.findIndex((candidate) => candidate === phase.frame)),
   })), [frames, phases]);
+
+  async function downloadStill() {
+    if (!videoSrc || !frame || !sourceWidth || !sourceHeight) return;
+    setExportLabel("Saving…");
+    try {
+      const blob = await renderExportStill({
+        videoSrc,
+        timestampMs: frame.timestampMs,
+        landmarks: frame.landmarks,
+        sourceWidth,
+        sourceHeight,
+        contactPlaneX: phases.find((phase) => phase.frame === frame)?.contactPlaneX,
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `swinglens-${frame.timestampMs}ms.png`;
+      link.click();
+      URL.revokeObjectURL(url);
+      setExportLabel("Saved");
+      window.setTimeout(() => setExportLabel("Save still"), 1600);
+    } catch {
+      setExportLabel("Save failed");
+      window.setTimeout(() => setExportLabel("Save still"), 1800);
+    }
+  }
 
   if (!frame) return null;
 
@@ -43,18 +77,23 @@ export function ReviewStudio({
           <button className={compare ? "active" : ""} onClick={() => setCompare((value) => !value)}>
             <Icon name="compare" /> Compare
           </button>
+          {videoSrc ? (
+            <button onClick={() => void downloadStill()} disabled={exportLabel === "Saving…"}>
+              <Icon name="print" /> {exportLabel}
+            </button>
+          ) : null}
         </div>
       </div>
 
       <div className={`studio-frames ${compare ? "is-comparing" : ""}`}>
-        <SkeletonView frame={frame} label={`Sample ${frameIndex + 1}`} showSkeleton={showSkeleton} aspectRatio={aspectRatio} />
+        <SkeletonView frame={frame} label={`Sample ${frameIndex + 1}`} showSkeleton={showSkeleton} aspectRatio={aspectRatio} videoSrc={videoSrc} />
         {compare && comparison && (
           <SkeletonView
             frame={comparison.frame}
             label={comparison.label}
             showSkeleton={showSkeleton}
-            pathPoints={comparison.key === "follow" ? comparison.swingPath?.points : undefined}
             aspectRatio={aspectRatio}
+            videoSrc={videoSrc}
           />
         )}
       </div>

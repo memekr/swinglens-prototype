@@ -5,38 +5,35 @@ import { midpoint } from "@/lib/geometry";
 import { mapLandmarkFromSquare } from "@/lib/pose-engine";
 
 describe("swing phase analysis", () => {
-  it("orders four evidence frames: trigger, execution, impact, follow-through", () => {
+  it("orders four evidence frames: trigger, execution, backspace, impact", () => {
     const phases = detectPhases(createDemoFrames(), "right");
-    expect(phases.map((phase) => phase.key)).toEqual(["trigger", "execution", "impact", "follow"]);
+    expect(phases.map((phase) => phase.key)).toEqual(["trigger", "execution", "backspace", "impact"]);
     expect(phases[0].frameIndex).toBeLessThan(phases[1].frameIndex);
-    expect(phases[1].frameIndex).toBeLessThan(phases[2].frameIndex);
-    expect(phases[2].frameIndex).toBeLessThan(phases[3].frameIndex);
+    expect(phases[1].frameIndex).toBeLessThanOrEqual(phases[2].frameIndex);
+    expect(phases[2].frameIndex).toBeLessThanOrEqual(phases[3].frameIndex);
   });
 
-  it("produces a phase-specific report for a traceable demo sequence", () => {
+  it("produces a mechanism report for a traceable demo sequence", () => {
     const frames = createDemoFrames();
     const result = analyzePoseSequence(frames, "right", frames.length);
     expect(result.canCoach).toBe(true);
     expect(result.score).toBeTypeOf("number");
     expect(result.phases).toHaveLength(4);
-    const core = result.phases.filter((phase) => phase.key !== "follow");
-    expect(core.every((phase) => phase.metrics.length === 4)).toBe(true);
+    expect(result.phases.find((phase) => phase.key === "trigger")?.metrics.length).toBe(3);
+    expect(result.phases.find((phase) => phase.key === "execution")?.metrics.length).toBe(6);
+    expect(result.phases.find((phase) => phase.key === "backspace")?.metrics.length).toBe(2);
     expect(result.quality.every((check) => check.status === "pass")).toBe(true);
     expect(result.strengths.length).toBeGreaterThan(0);
     expect(result.adjustments.length).toBeGreaterThan(0);
   });
 
-  it("computes a follow-through hand path with a fifth swing-path metric", () => {
+  it("states the ball was not found when no baseball is in the stills", () => {
     const frames = createDemoFrames();
     const result = analyzePoseSequence(frames, "right", frames.length);
-    const follow = result.phases.find((phase) => phase.key === "follow");
-    expect(follow?.metrics).toHaveLength(5);
-    expect(follow?.swingPath).toBeDefined();
-    expect(follow!.swingPath!.points.length).toBeGreaterThan(1);
-    expect(Number.isFinite(follow!.swingPath!.upwardRatio)).toBe(true);
-    expect(Number.isFinite(follow!.swingPath!.roundness)).toBe(true);
-    const pathMetric = follow?.metrics.find((metric) => metric.key === "swingPath");
-    expect(pathMetric?.unit).toBe("ratio");
+    const impact = result.phases.find((phase) => phase.key === "impact");
+    expect(result.ballDetected).toBe(false);
+    expect(impact?.score).toBeNull();
+    expect(impact?.metrics[0]?.note).toContain("Ball not detected - no impact can be found");
   });
 
   it("abstains instead of inventing a score when evidence is insufficient", () => {
@@ -61,7 +58,7 @@ describe("swing phase analysis", () => {
     expect(result.quality.find((check) => check.key === "motion")?.status).toBe("fail");
   });
 
-  it("picks impact while the hands are still below the head, not on the wrap", () => {
+  it("keeps a hand-speed impact candidate below the head when the ball is missing", () => {
     const frames = createDemoFrames(48).map((frame, index, all) => {
       if (index < Math.floor(all.length * 0.72)) return frame;
       const head = frame.landmarks.head;
@@ -81,7 +78,7 @@ describe("swing phase analysis", () => {
     const sample = frames[impact!.frameIndex];
     const hands = midpoint(sample.landmarks.leftHand, sample.landmarks.rightHand);
     expect(hands.y).toBeGreaterThan(sample.landmarks.head.y);
-    expect(impact!.frameIndex).toBeLessThan(phases.find((phase) => phase.key === "follow")!.frameIndex);
+    expect(phases.find((phase) => phase.key === "backspace")!.frameIndex).toBeLessThanOrEqual(impact!.frameIndex);
   });
 });
 
