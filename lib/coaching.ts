@@ -1,4 +1,4 @@
-import type { AnalysisResult, MetricKey, MetricResult, PhaseKey, PhaseResult } from "./types";
+import type { AnalysisResult, MetricResult, PhaseKey, PhaseResult } from "./types";
 
 type RankedCue = {
   phaseKey: PhaseKey;

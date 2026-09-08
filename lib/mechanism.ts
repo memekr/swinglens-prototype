@@ -6,7 +6,7 @@ import {
   midpoint,
   torsoScale,
 } from "./geometry";
-import type { BodyJoint, Handedness, MetricResult, PoseFrame, Skeleton } from "./types";
+import type { BodyJoint, Handedness, MetricResult, PoseFrame } from "./types";
 
 export function leadJoints(handedness: Handedness): { hip: BodyJoint; knee: BodyJoint; foot: BodyJoint; shoulder: BodyJoint; elbow: BodyJoint; hand: BodyJoint } {
   return handedness === "right"

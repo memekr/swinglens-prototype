@@ -119,6 +119,8 @@ export function AnalysisReport({
             <dt>Inference</dt><dd>{videoMeta.diagnostics.inferenceMs.toFixed(1)} ms / frame</dd>
             <dt>Missing joints</dt><dd>{videoMeta.diagnostics.missingLandmarkCount.toFixed(2)} mean</dd>
             <dt>Visibility</dt><dd>{(videoMeta.diagnostics.averageVisibility * 100).toFixed(0)}%</dd>
+            {videoMeta.objectInferenceMs !== undefined && <><dt>Objects</dt><dd>{videoMeta.objectTiled ? "5-view oversampled" : "single-view"} · {videoMeta.objectInferenceMs.toFixed(1)} ms / frame</dd></>}
+            {videoMeta.objectError && <><dt>Objects</dt><dd>Unavailable: {videoMeta.objectError}</dd></>}
           </dl>
         </details>
       ) : null}
@@ -142,7 +144,7 @@ export function AnalysisReport({
             <div className="metric-panel">
               <div className="metric-heading"><div><p>{selectedPhase.description}</p><h3>{selectedPhase.label}</h3></div><strong>{selectedPhase.score ?? "—"}</strong></div>
               {selectedPhase.key === "impact" && !result.ballDetected && (
-                <p className="impact-note">Ball not detected - no impact can be found.</p>
+                <p className="impact-note">Ball not detected — no impact can be found. A bright-pixel candidate is never treated as contact.</p>
               )}
               {selectedPhase.key === "impact" && result.ballDetected && (
                 <p className="impact-note">The lime vertical line is the front-foot contact plane. A good contact area is the ball’s location relative to that line, not dumping your weight onto the front foot.</p>

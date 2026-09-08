@@ -13,6 +13,7 @@ import { analyzeVideoFile, type VideoAnalysisOutput } from "@/lib/video-analysis
 import { AnalysisReport } from "./AnalysisReport";
 import { CoachChat } from "./CoachChat";
 import { Icon } from "./Icon";
+import { ObjectReview } from "./ObjectReview";
 
 type RunStatus = "idle" | "processing" | "done" | "error";
 
@@ -50,9 +51,11 @@ export function SwingAnalyzer() {
   const [isDemo, setIsDemo] = useState(false);
   const [quality, setQuality] = useState<AnalysisQuality>(DEFAULT_ANALYSIS_QUALITY);
   const [enhanceInference, setEnhanceInference] = useState(false);
+  const [tiledObjects, setTiledObjects] = useState(true);
   const uploadInput = useRef<HTMLInputElement>(null);
   const cameraInput = useRef<HTMLInputElement>(null);
   const engine = useRef<PoseEngine | null>(null);
+  const controller = useRef<AbortController | null>(null);
   const objectUrls = useRef(new ObjectUrlStore());
 
   useEffect(() => {
@@ -64,7 +67,8 @@ export function SwingAnalyzer() {
   useEffect(() => {
     const store = objectUrls.current;
     return () => {
-      engine.current?.close();
+      controller.current?.abort();
+      if (!controller.current) engine.current?.close();
       store.dispose();
     };
   }, []);
@@ -81,6 +85,7 @@ export function SwingAnalyzer() {
     const selected = event.target.files?.[0];
     event.target.value = "";
     if (!selected) return;
+    if (controller.current) return;
     if (!selected.type.startsWith("video/") && !/\.(mp4|mov|webm|m4v)$/i.test(selected.name)) {
       setError("Choose a video file to continue.");
       return;
@@ -101,7 +106,10 @@ export function SwingAnalyzer() {
     setStatus("processing");
     setError(null);
     setResult(null);
+    setVideoMeta(null);
     setIsDemo(false);
+    const runController = new AbortController();
+    controller.current = runController;
     try {
       // IMAGE-mode pose: each seeked frame is independent, so a new engine
       // per run is optional. Recreating still drops GPU state between clips.
@@ -114,7 +122,7 @@ export function SwingAnalyzer() {
           setProgress({ completed, total, stage });
         },
         handedness,
-        { quality, enhanceInference },
+        { quality, enhanceInference, tiledObjects, signal: runController.signal },
       );
       const nextResult = analyzePoseSequence(output.frames, handedness, output.expectedSamples);
       setVideoMeta(output);
@@ -122,12 +130,15 @@ export function SwingAnalyzer() {
       setStatus("done");
       requestAnimationFrame(() => document.querySelector("#analysis-result")?.scrollIntoView({ behavior: "smooth" }));
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Something unexpected stopped the analysis.");
-      setStatus("error");
+      setError(runController.signal.aborted ? "Analysis cancelled. Your original video is unchanged." : caught instanceof Error ? caught.message : "Something unexpected stopped the analysis.");
+      setStatus(runController.signal.aborted ? "idle" : "error");
+    } finally {
+      controller.current = null;
     }
   }
 
   function runDemo() {
+    if (controller.current) return;
     const frames = createDemoFrames();
     const nextResult = analyzePoseSequence(frames, handedness, frames.length);
     setResult(nextResult);
@@ -191,8 +202,8 @@ export function SwingAnalyzer() {
               <circle key={joint} className="hero-joint" cx={HERO_POSE[joint].x} cy={HERO_POSE[joint].y} r="7" />
             ))}
           </svg>
-          <div className="visual-chip chip-top"><b>17</b><span>BODY LANDMARKS</span></div>
-          <div className="visual-chip chip-bottom"><span>LOCAL MODEL</span><b>READY</b></div>
+          <div className="visual-chip chip-top"><b>15</b><span>BODY JOINTS</span></div>
+          <div className="visual-chip chip-bottom"><span>LOCAL VISION</span><b>POSE + OBJECTS</b></div>
         </div>
         <div className="hero-proof">
           <span><b>01</b>Frame evidence</span><span><b>02</b>Confidence gates</span><span><b>03</b>Actionable reps</span>
@@ -207,7 +218,7 @@ export function SwingAnalyzer() {
         </div>
         <div className="pipeline-grid">
           <article><span className="step-number">01</span><div className="step-icon"><Icon name="spark" /></div><h3>Prepare each frame</h3><p>Analysis frames are capped (never upscaled) for pose. The original clip stays at full resolution for review.</p><small>NO SYNTHETIC ACTION</small></article>
-          <article><span className="step-number">02</span><div className="step-icon"><Icon name="pose" /></div><h3>Track the body</h3><p>A bundled lightweight vision model finds 33 body landmarks, mapped to our 17-point body map, entirely inside the browser.</p><small>MEDIAPIPE POSE LITE</small></article>
+          <article><span className="step-number">02</span><div className="step-icon"><Icon name="pose" /></div><h3>Track the body, bat + ball</h3><p>Pose Lite maps 33 landmarks to 15 body joints. EfficientDet searches for bats and sports balls; online tracking filters isolated candidates.</p><small>TWO LOCAL VISION MODELS</small></article>
           <article><span className="step-number">03</span><div className="step-icon"><Icon name="compare" /></div><h3>Review checkpoints</h3><p>Transparent 2D cues follow trigger, landing, backspace, then contact if the baseball is seen.</p><small>EVIDENCE BEFORE SCORE</small></article>
         </div>
       </section>
@@ -235,6 +246,7 @@ export function SwingAnalyzer() {
             <div className="stance-fieldset"><span>BATTER</span><div className="segmented" role="group" aria-label="Batter side"><button className={handedness === "right" ? "active" : ""} onClick={() => setHandedness("right")}>Right</button><button className={handedness === "left" ? "active" : ""} onClick={() => setHandedness("left")}>Left</button></div></div>
             <div className="stance-fieldset"><span>POSE</span><div className="segmented" role="group" aria-label="Analysis quality"><button className={quality === "quality" ? "active" : ""} onClick={() => setQuality("quality")}>Quality</button><button className={quality === "balanced" ? "active" : ""} onClick={() => setQuality("balanced")}>Balanced</button><button className={quality === "fast" ? "active" : ""} onClick={() => setQuality("fast")}>Fast</button></div></div>
             <label className="enhance-toggle"><input type="checkbox" checked={enhanceInference} onChange={(event) => setEnhanceInference(event.target.checked)} /> Brighten frames for pose only</label>
+            <label className="enhance-toggle"><input type="checkbox" checked={tiledObjects} onChange={(event) => setTiledObjects(event.target.checked)} /> Oversample object search (5 views)</label>
           </div>
         </div>
 
@@ -256,13 +268,15 @@ export function SwingAnalyzer() {
             </div>
           )}
           {status === "processing" ? (
-            <div className="progress-panel" aria-live="polite"><div><b>{progress.stage}</b><span>{progressPercent}%</span></div><div className="progress-track"><span style={{ width: `${progressPercent}%` }} /></div><p>Keep this tab open. Frames are processed only in this browser.</p></div>
+            <div className="progress-panel" aria-live="polite"><div><b>{progress.stage}</b><span>{progressPercent}%</span></div><div className="progress-track"><span style={{ width: `${progressPercent}%` }} /></div><p>Keep this tab open. Object tracking can take several minutes on a phone.</p><button onClick={() => controller.current?.abort()}>Cancel analysis</button></div>
           ) : <button className="button analyze-button" disabled={!file} onClick={runAnalysis}>Analyze this swing <Icon name="arrow" /></button>}
           {error && <div className="error-box" role="alert"><Icon name="warn" />{error}</div>}
           <div className="local-proof"><Icon name="lock" /><span><b>0 bytes of video uploaded</b>The selected video disappears from memory when this tab closes.</span></div>
         </div>
         </div>
       </section>
+
+      {!isDemo && videoMeta && previewUrl && file && <ObjectReview key={`${file.name}-${file.lastModified}-${file.size}`} output={videoMeta} videoSrc={previewUrl} file={file} />}
 
       <section className="coach-dock no-print" aria-label="Hitting coach">
         <CoachChat analysis={result} />

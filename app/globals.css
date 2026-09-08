@@ -229,6 +229,37 @@ a { color: inherit; text-decoration: none; }
 .skeleton-lines line, .skeleton-shadow line { stroke: var(--lime); stroke-width: .005; stroke-linecap: round; }
 .skeleton-shadow line { stroke: #000; stroke-width: .009; }
 .skeleton-lines .bat-line { stroke: var(--coral); stroke-width: .012; }
+.skeleton-bat-box rect { fill: none; stroke: #ff8c5a; stroke-width: .008; stroke-dasharray: .02 .012; }
+.skeleton-bat-box text { fill: #ff8c5a; font: 700 .045rem ui-monospace, monospace; letter-spacing: .01em; }
+.skeleton-ball { fill: #d9ff50; stroke: #10241a; stroke-width: .006; }
+.object-review { margin: 64px auto; max-width: 1180px; padding: 32px; color: #eff5eb; background: #13261e; border-radius: 24px; }
+.object-review-head { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-bottom: 28px; }
+.object-review h2 { font-size: clamp(28px, 4vw, 48px); line-height: 1.08; margin: 12px 0; }
+.object-review-head p { max-width: 560px; color: #b2c3b8; }
+.object-counts { display: flex; gap: 12px; }
+.object-counts > div { border: 1px solid #425648; border-radius: 12px; padding: 16px; min-width: 124px; }
+.object-counts span, .object-counts strong, .object-counts small { display: block; }
+.object-counts strong { font-size: 36px; margin: 6px 0; }
+.object-counts .ball { color: #d9ff50; }
+.object-counts .bat { color: #ff966d; }
+.object-video { position: relative; max-height: 70vh; margin: auto; background: #07100b; }
+.object-video video { width: 100%; height: 100%; display: block; object-fit: contain; }
+.object-video svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.object-timeline { display: flex; gap: 12px; align-items: center; margin: 16px 0; }
+.object-timeline input { flex: 1; min-width: 20px; accent-color: #d9ff50; }
+.object-timeline output { font: 12px ui-monospace, monospace; }
+.object-review button, .object-review select { color: #eef8ed; background: #263b30; border: 1px solid #5b7362; border-radius: 8px; padding: 10px 12px; cursor: pointer; }
+.object-review button:disabled { opacity: .5; cursor: not-allowed; }
+.object-tools, .object-export { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin: 16px 0; }
+.object-tools label { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.object-evidence { font: 12px/1.7 ui-monospace, monospace; color: #cdddbe; padding: 12px; border: 1px solid #405647; border-radius: 8px; }
+.object-limits { font-size: 12px; line-height: 1.8; color: #acbfb0; }
+@media (max-width: 700px) {
+  .object-review { margin: 32px 12px; padding: 20px 14px; }
+  .object-review-head { flex-direction: column; align-items: stretch; }
+  .object-counts > div { flex: 1; min-width: 0; }
+  .object-export button { flex: 1; }
+}
 .skeleton-points circle { fill: var(--paper); stroke: var(--ink); stroke-width: .004; }
 .skeleton-path polyline { fill: none; stroke: var(--coral); stroke-width: .012; stroke-linecap: round; stroke-linejoin: round; opacity: .9; }
 .skeleton-path .path-end { fill: var(--coral); stroke: var(--paper); stroke-width: .004; }

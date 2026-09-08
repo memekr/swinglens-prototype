@@ -1,5 +1,7 @@
 import { PoseEngine } from "./pose-engine";
-import { detectBall } from "./ball-detect";
+import { ObjectEngine } from "./object-engine";
+import { openFrameReader } from "./frame-reader";
+import { OnlineObjectTracker, type ObjectTrackFrame } from "./object-tracking";
 import {
   DEFAULT_ANALYSIS_QUALITY,
   getAnalysisDimensions,
@@ -17,8 +19,8 @@ export const POSE_LONG_EDGE = 1280;
 export const PREVIEW_MAX_WIDTH = 480;
 const COARSE_FPS = 12;
 const COARSE_MAX_SAMPLES = 48;
-const DENSE_MAX_FPS = 60;
-const DENSE_MAX_SAMPLES = 120;
+const DENSE_MAX_FPS = 120;
+const DENSE_MAX_SAMPLES = 240;
 
 export type VideoAnalysisOutput = {
   frames: PoseFrame[];
@@ -33,12 +35,22 @@ export type VideoAnalysisOutput = {
   truncated: boolean;
   quality: AnalysisQuality;
   diagnostics: PoseRunDiagnostics;
+  objectFrames?: ObjectTrackFrame[];
+  objectError?: string;
+  objectInferenceMs?: number;
+  objectTiled?: boolean;
+  /** Requested sampling rate is not a claim about unique decoded frame rate. */
+  effectiveSampleFps?: number;
+  timestampMode?: "decoded-pts" | "seek-estimate";
 };
 
 export type AnalyzeVideoOptions = {
   quality?: AnalysisQuality;
   /** Low-light lift on the MediaPipe canvas only. Never applied to playback. */
   enhanceInference?: boolean;
+  tiledObjects?: boolean;
+  sourceFps?: number;
+  signal?: AbortSignal;
 };
 
 type FrameCallbackVideo = HTMLVideoElement & {
@@ -49,7 +61,12 @@ type FrameCallbackVideo = HTMLVideoElement & {
 
 function waitForEvent(target: HTMLMediaElement, event: "loadedmetadata" | "loadeddata" | "seeked"): Promise<void> {
   return new Promise((resolve, reject) => {
+    const timeout = window.setTimeout(() => {
+      cleanup();
+      reject(new Error(`Video ${event} timed out. Try a shorter MP4 clip.`));
+    }, 15000);
     const cleanup = () => {
+      window.clearTimeout(timeout);
       target.removeEventListener(event, onDone);
       target.removeEventListener("error", onError);
     };
@@ -93,15 +110,19 @@ async function estimateSourceFps(video: HTMLVideoElement): Promise<number> {
   if (!requestFrame) return 30;
 
   const times: number[] = [];
+  // Slow presentation so a 60 Hz display can expose 120 fps source deltas.
+  video.playbackRate = 0.25;
   await new Promise<void>((resolve) => {
     let settled = false;
     const finish = () => {
       if (settled) return;
       settled = true;
       video.pause();
+      video.playbackRate = 1;
       resolve();
     };
     const onFrame = (_now: number, metadata: { mediaTime: number }) => {
+      if (settled) return;
       times.push(metadata.mediaTime);
       if (times.length >= 20 || (times.length >= 8 && metadata.mediaTime - times[0] >= 0.35)) {
         finish();
@@ -112,7 +133,7 @@ async function estimateSourceFps(video: HTMLVideoElement): Promise<number> {
     requestFrame.call(video, onFrame);
     const playback = video.play();
     if (playback && typeof playback.catch === "function") playback.catch(() => finish());
-    window.setTimeout(finish, 1200);
+    window.setTimeout(finish, 1600);
   });
 
   if (times.length < 3) return 30;
@@ -274,6 +295,9 @@ export async function analyzeVideoFile(
 ): Promise<VideoAnalysisOutput> {
   const quality = options.quality ?? DEFAULT_ANALYSIS_QUALITY;
   const enhanceInference = options.enhanceInference ?? false;
+  const checkCancelled = () => options.signal?.throwIfAborted();
+  const objects = new ObjectEngine();
+  let reader: Awaited<ReturnType<typeof openFrameReader>> | undefined;
   const url = URL.createObjectURL(file);
   const video = document.createElement("video");
   video.src = url;
@@ -289,11 +313,32 @@ export async function analyzeVideoFile(
     }
     const durationSeconds = Math.min(video.duration, MAX_ANALYZED_SECONDS);
     onProgress(0, 1, "Reading the camera frame rate");
-    const sourceFps = await estimateSourceFps(video);
+    checkCancelled();
+    const analysisSize = getAnalysisDimensions(video.videoWidth, video.videoHeight, quality);
+    try { reader = await openFrameReader(file, Math.max(analysisSize.width, analysisSize.height)); }
+    catch { /* HTMLVideoElement remains a supported, explicitly labeled fallback. */ }
+    const sourceFps = reader?.fps && Number.isFinite(reader.fps) ? reader.fps
+      : options.sourceFps && [24, 30, 60, 120, 240].includes(options.sourceFps)
+      ? options.sourceFps : await estimateSourceFps(video);
     video.pause();
     await seek(video, 0);
     const denseFps = Math.min(sourceFps, DENSE_MAX_FPS);
-    const analysisSize = getAnalysisDimensions(video.videoWidth, video.videoHeight, quality);
+    const readFrame = async (seconds: number, enhance: boolean) => {
+      if (!reader) {
+        await seek(video, seconds);
+        return { canvas: analysisFrame(video, analysisSize, enhance), timestampMs: seconds * 1000 };
+      }
+      const sample = await reader.sink.getCanvas(seconds);
+      if (!sample) return null;
+      const canvas = document.createElement("canvas");
+      canvas.width = sample.canvas.width;
+      canvas.height = sample.canvas.height;
+      const context = canvas.getContext("2d", { alpha: false });
+      if (!context) throw new Error("Cannot create the decoded frame canvas.");
+      if (enhance) context.filter = "contrast(1.055) saturate(0.97)";
+      context.drawImage(sample.canvas, 0, 0);
+      return { canvas, timestampMs: sample.timestamp * 1000 };
+    };
 
     onProgress(0, 1, "Loading the on-device pose model");
     await engine.load();
@@ -309,10 +354,14 @@ export async function analyzeVideoFile(
 
     const detectTimes = async (times: number[], stage: string, total: number): Promise<PoseFrame[]> => {
       const frames: PoseFrame[] = [];
+      const seen = new Set<number>();
       for (let index = 0; index < times.length; index += 1) {
-        await seek(video, times[index]);
+        checkCancelled();
         const preprocessStarted = performance.now();
-        const canvas = analysisFrame(video, analysisSize, enhanceInference);
+        const sample = await readFrame(times[index], enhanceInference);
+        if (!sample || seen.has(sample.timestampMs)) continue;
+        seen.add(sample.timestampMs);
+        const { canvas, timestampMs } = sample;
         preprocessTotal += performance.now() - preprocessStarted;
         preprocessCount += 1;
         const detection = engine.detect(canvas);
@@ -322,11 +371,11 @@ export async function analyzeVideoFile(
           missingTotal += detection.missingLandmarkCount;
           visibilityTotal += detection.confidence;
           frames.push({
-            timestampMs: Math.round(times[index] * 1000),
+            timestampMs,
             landmarks: detection.landmarks,
             confidence: detection.confidence,
             previewDataUrl: thumbnailJpeg(canvas, video.videoWidth, video.videoHeight),
-            ball: detectBall(canvas, detection.landmarks),
+            ball: null,
           });
         }
         completed += 1;
@@ -339,6 +388,7 @@ export async function analyzeVideoFile(
     const coarse = await detectTimes(coarseTimes, "Finding the swing window", coarseTimes.length + 36);
     const window = swingWindowSeconds(coarse, durationSeconds, handedness);
     let frames = coarse;
+    let finalTimes = coarseTimes;
     let attempted = coarseTimes.length;
     if (window) {
       const denseTimes = evenlySpaced(window.end - window.start, denseFps, DENSE_MAX_SAMPLES).map(
@@ -352,9 +402,47 @@ export async function analyzeVideoFile(
       if (dense.length >= 8) {
         frames = dense;
         attempted = denseTimes.length;
+        finalTimes = denseTimes;
       }
     }
 
+    // Objects do not depend on pose detection succeeding. No person is required.
+    const objectTimes = window ? finalTimes : evenlySpaced(Math.min(durationSeconds, 8), denseFps, DENSE_MAX_SAMPLES);
+    const objectFrames: ObjectTrackFrame[] = [];
+    let objectError: string | undefined;
+    let objectInferenceMs = 0;
+    try {
+      onProgress(0, objectTimes.length, "Loading the local bat + ball model");
+      await objects.load();
+      checkCancelled();
+      const tracker = new OnlineObjectTracker(video.videoWidth / video.videoHeight);
+      const seen = new Set<number>();
+      for (let i = 0; i < objectTimes.length; i++) {
+        checkCancelled();
+        const sample = await readFrame(objectTimes[i], false);
+        if (!sample || seen.has(sample.timestampMs)) continue;
+        seen.add(sample.timestampMs);
+        const { canvas, timestampMs } = sample;
+        const started = performance.now();
+        const candidates = objects.detect(canvas, options.tiledObjects ?? false);
+        objectInferenceMs += performance.now() - started;
+        const observations = tracker.update(candidates, timestampMs);
+        objectFrames.push({ timestampMs, objects: observations });
+        const pose = frames.find((frame) => frame.timestampMs === timestampMs);
+        if (pose) {
+          const ball = observations.filter((o) => o.kind === "ball" && o.confirmed).sort((a, b) => b.score - a.score)[0];
+          const bat = observations.find((o) => o.kind === "bat" && o.confirmed);
+          pose.ball = ball ? { x: ball.x, y: ball.y, score: ball.score, trackId: ball.trackId } : null;
+          pose.batBox = bat?.box ?? null;
+        }
+        onProgress(i + 1, objectTimes.length, `Tracking bat + ball${options.tiledObjects ? " · 5-view scan" : ""}`);
+        await nextPaint();
+      }
+      objectInferenceMs /= Math.max(1, objectFrames.length);
+    } catch (error) {
+      checkCancelled();
+      objectError = error instanceof Error ? error.message : "Object tracking failed.";
+    }
     const diagnostics: PoseRunDiagnostics = {
       sourceWidth: video.videoWidth,
       sourceHeight: video.videoHeight,
@@ -382,8 +470,19 @@ export async function analyzeVideoFile(
       truncated: video.duration > MAX_ANALYZED_SECONDS,
       quality,
       diagnostics,
+      objectFrames,
+      objectError,
+      objectInferenceMs,
+      objectTiled: options.tiledObjects ?? false,
+      effectiveSampleFps: objectFrames.length > 1
+        ? (objectFrames.length - 1) * 1000 / (objectFrames.at(-1)!.timestampMs - objectFrames[0].timestampMs) : 0,
+      timestampMode: reader ? "decoded-pts" : "seek-estimate",
     };
   } finally {
+    objects.close();
+    reader?.dispose();
+    engine.close();
+    video.pause();
     video.removeAttribute("src");
     video.load();
     URL.revokeObjectURL(url);

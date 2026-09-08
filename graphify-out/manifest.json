@@ -15,18 +15,18 @@
     "semantic_hash": ""
   },
   "components/SkeletonView.tsx": {
-    "mtime": 1786245488.8235538,
-    "ast_hash": "15342c3616852658b1acbfae37f97ece",
+    "mtime": 1788857096.091211,
+    "ast_hash": "64863c57c7f4b0862bc0c63fecf754e5",
     "semantic_hash": ""
   },
   "components/SwingAnalyzer.tsx": {
-    "mtime": 1786245360.6450121,
-    "ast_hash": "1cebc92a944c4d78fa1d2a7b4194bdf5",
+    "mtime": 1788870585.7060566,
+    "ast_hash": "c59c35403e2521768c6cc7271e8e5a51",
     "semantic_hash": ""
   },
   "e2e/mobile.spec.ts": {
-    "mtime": 1786245488.82376,
-    "ast_hash": "a149118c94ed0a9203c0d9c26eb4ab8a",
+    "mtime": 1788870984.5220568,
+    "ast_hash": "bd1e31729bcda5ccd982671e40fb70f1",
     "semantic_hash": ""
   },
   "eslint.config.mjs": {
@@ -35,37 +35,37 @@
     "semantic_hash": ""
   },
   "lib/analysis.ts": {
-    "mtime": 1786245120.6144357,
-    "ast_hash": "28f1e33f1a37a55cec18815d67831929",
+    "mtime": 1788826199.7085807,
+    "ast_hash": "71d1784d4722af0f0de8011458cf8c14",
     "semantic_hash": ""
   },
   "lib/demo.ts": {
-    "mtime": 1786243546.6274867,
-    "ast_hash": "b6f19591b1798e32cfc56485abaa8012",
+    "mtime": 1788826199.7088184,
+    "ast_hash": "787d95b6bac83958e1b861b80a3a6c8b",
     "semantic_hash": ""
   },
   "lib/geometry.ts": {
-    "mtime": 1786243546.6271858,
-    "ast_hash": "61321d091e39b1538ecc5528eb700320",
+    "mtime": 1788826199.7091718,
+    "ast_hash": "f1fb6101976158c89682357f012e6957",
     "semantic_hash": ""
   },
   "lib/pose-engine.ts": {
-    "mtime": 1786245112.4128537,
-    "ast_hash": "54400e80fa4250386b803d3d1b5a3959",
+    "mtime": 1788826199.7094646,
+    "ast_hash": "30af53b9a4e8b03afad8f0cd676e75d6",
     "semantic_hash": ""
   },
   "lib/types.ts": {
-    "mtime": 1786245120.6141455,
-    "ast_hash": "a05e3c5eb5de1a29f9f164255d1885e4",
+    "mtime": 1788857043.615582,
+    "ast_hash": "a7e821c87d75607c5548a844acd5b161",
     "semantic_hash": ""
   },
   "lib/video-analysis.ts": {
-    "mtime": 1786245112.4133298,
-    "ast_hash": "4a85aa13685630c5d240641b8d82a782",
+    "mtime": 1788870429.6207933,
+    "ast_hash": "d4a27aff2924bc590502737ccb1e51ef",
     "semantic_hash": ""
   },
   "next-env.d.ts": {
-    "mtime": 1786245735.4852152,
+    "mtime": 1788871246.0588162,
     "ast_hash": "8195d2c60ce847a459ae9d308d6a5724",
     "semantic_hash": ""
   },
@@ -75,8 +75,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1786244033.319983,
-    "ast_hash": "f807f0332ca06290c4d91da4f9463f6d",
+    "mtime": 1788870319.3423114,
+    "ast_hash": "9f1e49359a3240679f6cd620e9fe6286",
     "semantic_hash": ""
   },
   "playwright.config.ts": {
@@ -105,8 +105,8 @@
     "semantic_hash": ""
   },
   "tests/analysis.test.ts": {
-    "mtime": 1786244300.0620759,
-    "ast_hash": "926ffaada9d0524495b55df6b55350d1",
+    "mtime": 1788826199.7285452,
+    "ast_hash": "0bfe2397dc9858d4064b854628875b23",
     "semantic_hash": ""
   },
   "tests/geometry.test.ts": {
@@ -165,8 +165,8 @@
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1786244052.9040437,
-    "ast_hash": "01e8142356e15c3404e0d84c48187cd0",
+    "mtime": 1788826199.7064917,
+    "ast_hash": "29ccabb1aec377a455068efaa652f5de",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
@@ -175,13 +175,13 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1786245563.1013553,
-    "ast_hash": "cef6fbd577b28574c3f39aacdb2feccd",
+    "mtime": 1788870747.3138347,
+    "ast_hash": "a50230561d3aa4f6b4116481eea965e1",
     "semantic_hash": ""
   },
   "docs/architecture.md": {
-    "mtime": 1786245563.1015255,
-    "ast_hash": "8c23b0707699d029548accd27ec6051d",
+    "mtime": 1788826199.7084165,
+    "ast_hash": "29fe96b13ab55d148331ac9dd3304c76",
     "semantic_hash": ""
   },
   "docs/competitive-analysis.md": {
@@ -195,33 +195,363 @@
     "semantic_hash": ""
   },
   "components/AnalysisReport.tsx": {
-    "mtime": 1786245271.0229225,
-    "ast_hash": "4d17af8d6c0d5823b9ca352c7fd57b27",
+    "mtime": 1788857096.092577,
+    "ast_hash": "ae426b5ebcb8fd4fd924880a1eb0e8b2",
     "semantic_hash": ""
   },
   "components/Icon.tsx": {
-    "mtime": 1786245194.9928803,
-    "ast_hash": "926a5035166da3930a2efc0322112216",
+    "mtime": 1788826199.7078948,
+    "ast_hash": "c88369219d5e12d28a696e289d933be1",
     "semantic_hash": ""
   },
   "components/ReviewStudio.tsx": {
-    "mtime": 1786245194.993122,
-    "ast_hash": "63e40883c09cbb903040572e8bf2616a",
+    "mtime": 1788826199.707986,
+    "ast_hash": "5bb8598f55f01a21cddd8003adffd1de",
     "semantic_hash": ""
   },
   "lib/drills.ts": {
-    "mtime": 1786245194.9930255,
-    "ast_hash": "1bb0e7219a92640fd9c697d1511a056a",
+    "mtime": 1788826199.7088997,
+    "ast_hash": "77bf21b1bf9c6e2503d45164fe050176",
     "semantic_hash": ""
   },
   "tests/drills.test.ts": {
-    "mtime": 1786245488.8239074,
-    "ast_hash": "80f658776461ba21da8d2f6678f58ee2",
+    "mtime": 1788826199.7286339,
+    "ast_hash": "e28764b772e8cc63722cc3e701c3ec20",
     "semantic_hash": ""
   },
   "THIRD_PARTY_NOTICES.md": {
-    "mtime": 1786244432.87783,
-    "ast_hash": "18465b7ec03e74b2927741a2cbbc5fae",
+    "mtime": 1788870747.3132646,
+    "ast_hash": "27e98cd7e9fe67e8a7802c30576c3ba7",
+    "semantic_hash": ""
+  },
+  "app/api/rag/chat/route.ts": {
+    "mtime": 1788826199.706869,
+    "ast_hash": "ebfcd64ceb72606c194f4a333301f7ab",
+    "semantic_hash": ""
+  },
+  "components/CoachChat.tsx": {
+    "mtime": 1788826199.7075686,
+    "ast_hash": "588d0b1fccf841732df3c00b5e1c6fdc",
+    "semantic_hash": ""
+  },
+  "components/CueScience.tsx": {
+    "mtime": 1788826199.7076297,
+    "ast_hash": "0e7045fe4d8f8859e822582a317135ea",
+    "semantic_hash": ""
+  },
+  "components/ObjectReview.tsx": {
+    "mtime": 1788870604.4277153,
+    "ast_hash": "47668f948e8b190fe01b0fa8941701fe",
+    "semantic_hash": ""
+  },
+  "lib/analysis-resolution.ts": {
+    "mtime": 1788826199.7084718,
+    "ast_hash": "87479c7fc43a33ff83f25b98c818d9a4",
+    "semantic_hash": ""
+  },
+  "lib/ball-detect.ts": {
+    "mtime": 1788826199.7086356,
+    "ast_hash": "c02981b837417433f742e6ec8b669709",
+    "semantic_hash": ""
+  },
+  "lib/coaching.ts": {
+    "mtime": 1788870898.6262865,
+    "ast_hash": "89e6f59eeb08483db90fe8e6c5060b6c",
+    "semantic_hash": ""
+  },
+  "lib/cue-science.ts": {
+    "mtime": 1788826199.7087448,
+    "ast_hash": "9236306c64b9232f0d83ddf4ae25455b",
+    "semantic_hash": ""
+  },
+  "lib/export-review.ts": {
+    "mtime": 1788870429.6203682,
+    "ast_hash": "b4733b5e832b122bc0b43f2f9a078c1f",
+    "semantic_hash": ""
+  },
+  "lib/export-still.ts": {
+    "mtime": 1788826199.7089446,
+    "ast_hash": "a8e82616d78e45f6a9451a964f860c9f",
+    "semantic_hash": ""
+  },
+  "lib/frame-reader.ts": {
+    "mtime": 1788870429.6201205,
+    "ast_hash": "296452277f401e325a856c0393f49bc3",
+    "semantic_hash": ""
+  },
+  "lib/framing.ts": {
+    "mtime": 1788826199.7089894,
+    "ast_hash": "1aae92c804db56aa610007d874916dfb",
+    "semantic_hash": ""
+  },
+  "lib/mechanism.ts": {
+    "mtime": 1788870898.6267703,
+    "ast_hash": "0f8ed5008961fbf5b1bf2123b6f9b0ca",
+    "semantic_hash": ""
+  },
+  "lib/object-engine.ts": {
+    "mtime": 1788856989.6193,
+    "ast_hash": "0b738618c31ad8847e82743429b3b625",
+    "semantic_hash": ""
+  },
+  "lib/object-tracking.ts": {
+    "mtime": 1788856989.6190207,
+    "ast_hash": "2aa695313f42cedc10b5a36cbef7dfcd",
+    "semantic_hash": ""
+  },
+  "lib/object-url.ts": {
+    "mtime": 1788826199.7093048,
+    "ast_hash": "ad7f70b7f7ec19b3b52c45ef2f8e3fcd",
+    "semantic_hash": ""
+  },
+  "lib/pose-diagnostics.ts": {
+    "mtime": 1788826199.7093499,
+    "ast_hash": "8dc4a1d334efa6606701584f35f373b7",
+    "semantic_hash": ""
+  },
+  "lib/report-brief.ts": {
+    "mtime": 1788826199.709525,
+    "ast_hash": "3ba444330c76f81debf90d317870851a",
+    "semantic_hash": ""
+  },
+  "lib/skeleton.ts": {
+    "mtime": 1788826199.7095714,
+    "ast_hash": "363fbb50ec80f0ddd5d284974211f1ac",
+    "semantic_hash": ""
+  },
+  "rag/config.py": {
+    "mtime": 1788826199.7100694,
+    "ast_hash": "35f819683f2e747f59216f698fb561fd",
+    "semantic_hash": ""
+  },
+  "rag/rag_answer.py": {
+    "mtime": 1788826199.7101488,
+    "ast_hash": "32ebda94819d6c1a037883edf5de32d9",
+    "semantic_hash": ""
+  },
+  "rag/rag_chunk.py": {
+    "mtime": 1788826199.7102382,
+    "ast_hash": "8191c6d76880440c4ed3fe54b1288ee7",
+    "semantic_hash": ""
+  },
+  "rag/rag_eval.py": {
+    "mtime": 1788826199.7103326,
+    "ast_hash": "24a8bcdae879f2c23628940809060cff",
+    "semantic_hash": ""
+  },
+  "rag/rag_ingest.py": {
+    "mtime": 1788826199.7104115,
+    "ast_hash": "a9492178fd33c8e1499702c9eca19a7a",
+    "semantic_hash": ""
+  },
+  "rag/server.py": {
+    "mtime": 1788826199.7105281,
+    "ast_hash": "9e78f54abf9f44e9d1a03fbbdbe43b41",
+    "semantic_hash": ""
+  },
+  "tests/analysis-resolution.test.ts": {
+    "mtime": 1788826199.727367,
+    "ast_hash": "a5ad717b91befc21ca2bea99fa2ebae4",
+    "semantic_hash": ""
+  },
+  "tests/framing.test.ts": {
+    "mtime": 1788826199.728679,
+    "ast_hash": "223764a613c82c037aefe2407b85e076",
+    "semantic_hash": ""
+  },
+  "tests/object-tracking.test.ts": {
+    "mtime": 1788870842.4864056,
+    "ast_hash": "037fd503939e5fde5e1f1c6d9a8b7fea",
+    "semantic_hash": ""
+  },
+  "tests/object-url.test.ts": {
+    "mtime": 1788826199.7287233,
+    "ast_hash": "479e22298bf0bb2f2cc2390213bccacf",
+    "semantic_hash": ""
+  },
+  "tests/report-brief.test.ts": {
+    "mtime": 1788826199.7287717,
+    "ast_hash": "2b3e6e82b4e6773da152f230b45d4798",
+    "semantic_hash": ""
+  },
+  "rag/requirements.txt": {
+    "mtime": 1788826199.7104695,
+    "ast_hash": "956720692f8e30503dd12912da2707a0",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Attack Angle.md": {
+    "mtime": 1788826199.710644,
+    "ast_hash": "19bba52fa2c000ef7edf2bee0276d0db",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Basic Hitting Mechanism.md": {
+    "mtime": 1788826199.7107012,
+    "ast_hash": "a071d575026d2c940f345087f1f29531",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Bat Path or Swing Plane Adjustment.md": {
+    "mtime": 1788826199.7107677,
+    "ast_hash": "3369fdd5c77299c8bacdfbe8df6e768d",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Batter's Mental Game.md": {
+    "mtime": 1788826199.7108254,
+    "ast_hash": "538c6e896c45fd16d232aa9ee71446a9",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Contact Hitter - Cody Bellinger.md": {
+    "mtime": 1788826199.710879,
+    "ast_hash": "27e980852c680965ced280c0a7df5bd3",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Contact Hitter - Jung-Hoo Lee.md": {
+    "mtime": 1788826199.710935,
+    "ast_hash": "431694132bffff4d946a85c2bf67ceb3",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Contact Hitter - Luis Arraez.md": {
+    "mtime": 1788826199.7110078,
+    "ast_hash": "9225ba668dd37d3c85e26acbcceb8e99",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Contact Hitter - Masataka Yoshida.md": {
+    "mtime": 1788826199.7110841,
+    "ast_hash": "d3009e03f71fcfd77b5d1f526856f3d6",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Contact Point.md": {
+    "mtime": 1788826199.7111676,
+    "ast_hash": "6bb0f214e529276ee532170fbc2f1d41",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Episode 1- How to hit inside pitch.md": {
+    "mtime": 1788826199.7112317,
+    "ast_hash": "a3d4f8e7a092f427737078f2c3af4066",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Episode 13- Connection Lead Arm.md": {
+    "mtime": 1788826199.711285,
+    "ast_hash": "4960c76feb0e541fc6e19c62e996e85a",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Episode 2- Hitting Drills.md": {
+    "mtime": 1788826199.7113576,
+    "ast_hash": "e1a84e83487c875540eb64b2799710ee",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Episode 3- How to hit outside pitch.md": {
+    "mtime": 1788826199.711421,
+    "ast_hash": "7eca0fd3b651afa62bdf20c7c54f6588",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Episode 4- How to hit the High Pitch.md": {
+    "mtime": 1788826199.7114973,
+    "ast_hash": "64ebbecd7a415bf760745f3daa0c359c",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Episode 5- Hip Load or Power Position.md": {
+    "mtime": 1788826199.7127118,
+    "ast_hash": "f014903f6af7127f8856c166fa8c86a1",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Episode 7- Direction.md": {
+    "mtime": 1788826199.7128007,
+    "ast_hash": "ca702c5c05efb9e9d7b2724cbf840cfa",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Episode 8- Launch Angle.md": {
+    "mtime": 1788826199.712896,
+    "ast_hash": "790f61d14b9f50ab852950a0b74cf4c1",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Episode 9- The Roll and separation.md": {
+    "mtime": 1788826199.7129855,
+    "ast_hash": "261b7025423fc868d987c62e5b2c1bd2",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/How to hit a curve ball.md": {
+    "mtime": 1788826199.7130706,
+    "ast_hash": "c21f123bc7b12811570f574cbcaaf2fe",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Mentality and Logic of Hitting.md": {
+    "mtime": 1788826199.7131424,
+    "ast_hash": "e5a3df9d9a54b8ab6bfed03ba5974633",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Off-Speed Pitch Approach.md": {
+    "mtime": 1788826199.7132163,
+    "ast_hash": "49295dfdf95afb624f977a86c21b88ad",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Power Hitter - Corey Seager.md": {
+    "mtime": 1788826199.7133024,
+    "ast_hash": "8a18856890d73847c460d9cd5367d33b",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Power Hitter - Giancarlo Stanton.md": {
+    "mtime": 1788826199.7133894,
+    "ast_hash": "f1b68fec8e23b938ebc4e9e2d911e6d8",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Power Hitter - Gunnar Henderson.md": {
+    "mtime": 1788826199.7134514,
+    "ast_hash": "4eee8cbf0290b85fb3597577ef15febb",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Power Hitter - Kyle Schwarber.md": {
+    "mtime": 1788826199.7135139,
+    "ast_hash": "fc62679f2b271cf93c115ff65fbd31ad",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Power Hitter - Max Muncy.md": {
+    "mtime": 1788826199.7135708,
+    "ast_hash": "d733ba2ceb8c2549d9a585474ca8f9c3",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Power Hitter - Mike Trout.md": {
+    "mtime": 1788826199.713638,
+    "ast_hash": "27218d163c0d7faf654d75869f8186b6",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Power Hitter - Seiya Suzuki.md": {
+    "mtime": 1788826199.7137058,
+    "ast_hash": "e862128ee60e8a220c1ad1f0623c9b8a",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Power Hitter - Shohei Ohtani.md": {
+    "mtime": 1788826199.71379,
+    "ast_hash": "9d0ed2d096b9ca0b3ab72268f9a8323b",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Power Speed Hitter - Elly De La Cruz.md": {
+    "mtime": 1788826199.7138538,
+    "ast_hash": "c6fab5e4850795ff1a96df6d8f8e4e98",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Power and Contact Hitter - Aaron Judge.md": {
+    "mtime": 1788826199.7139225,
+    "ast_hash": "ff076dd70e60fcce40877000884c9b48",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Power and Contact Hitter - Pete Crow-Armstrong.md": {
+    "mtime": 1788826199.7139833,
+    "ast_hash": "ded37578ed76f5851867d9678d0791ff",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Power and Contact Hitter - Ronald Acu\u00f1a Jr.md": {
+    "mtime": 1788826199.7140586,
+    "ast_hash": "5233fb0f4e539225b35a6a2ab704178d",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Swing 101.md": {
+    "mtime": 1788826199.7141113,
+    "ast_hash": "9d9f5cc0ac3207ac7b9170c9b047da11",
+    "semantic_hash": ""
+  },
+  "rag_data/RAG Resources/Top-Hand Connection and Barrel Control.md": {
+    "mtime": 1788826199.7141774,
+    "ast_hash": "ab76b59838e1374068bc0f3081df7632",
     "semantic_hash": ""
   }
 }

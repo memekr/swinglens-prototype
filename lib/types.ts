@@ -37,6 +37,7 @@ export type BallSpot = {
   x: number;
   y: number;
   score: number;
+  trackId?: number;
 };
 
 export type PoseFrame = {
@@ -46,6 +47,8 @@ export type PoseFrame = {
   previewDataUrl?: string;
   /** Normalized image coords if a baseball candidate was found on this still. */
   ball?: BallSpot | null;
+  /** Neural bat proposal, not an inferred wrist line or a barrel endpoint. */
+  batBox?: { x: number; y: number; width: number; height: number } | null;
 };
 
 export type PhaseKey = "trigger" | "execution" | "backspace" | "impact";

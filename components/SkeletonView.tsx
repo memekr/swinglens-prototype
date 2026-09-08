@@ -41,6 +41,12 @@ export function SkeletonView({
   const path = displayPath && displayPath.length > 1 ? displayPath.map((point) => `${point.x},${point.y}`).join(" ") : null;
   const pathEnd = path && displayPath ? displayPath[displayPath.length - 1] : null;
   const ball = frame.ball ? toDisplay(frame.ball, aspectRatio) : null;
+  const bat = frame.batBox ? {
+    x: frame.batBox.x * aspectRatio,
+    y: frame.batBox.y,
+    width: frame.batBox.width * aspectRatio,
+    height: frame.batBox.height,
+  } : null;
   const planeX = contactPlaneX !== undefined ? contactPlaneX * aspectRatio : null;
 
   useEffect(() => {
@@ -122,6 +128,12 @@ export function SkeletonView({
           </g>
         </>}
         {ball && <circle className="skeleton-ball" cx={ball.x} cy={ball.y} r="0.018" />}
+        {bat && (
+          <g className="skeleton-bat-box" aria-label="Neural bat detection">
+            <rect x={bat.x} y={bat.y} width={bat.width} height={bat.height} rx=".01" />
+            <text x={bat.x} y={Math.max(.025, bat.y - .012)}>BAT</text>
+          </g>
+        )}
         {path && (
           <g className="skeleton-path" aria-label="Tracked path">
             <polyline points={path} />

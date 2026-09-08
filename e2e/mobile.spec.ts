@@ -8,8 +8,8 @@ test("mobile visitor can open a transparent sample report", async ({ page }) => 
   await expect(page.getByRole("heading", { name: "Your swing is ready to review." })).toBeVisible();
   await expect(page.getByText(/synthetic pose landmarks/)).toBeVisible();
   await page.getByRole("button", { name: "Coach view" }).click();
-  await page.getByRole("tab", { name: /Follow-through/ }).click();
-  await expect(page.getByRole("heading", { name: "Follow-through" })).toBeVisible();
+  await page.getByRole("tab", { name: /Backspace/ }).click();
+  await expect(page.getByRole("heading", { name: "Backspace" })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Inspect the evidence/ })).toBeVisible();
   await page.getByRole("button", { name: /Compare/ }).click();
   await expect(page.getByText("Compare against")).toBeVisible();
