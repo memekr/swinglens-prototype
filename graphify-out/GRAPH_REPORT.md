@@ -1,16 +1,16 @@
 # Graph Report - swinglens-prototype  (2026-09-08)
 
 ## Corpus Check
-- 105 files · ~186,824 words
+- 141 files · ~423,283 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1578 nodes · 2222 edges · 112 communities (78 shown, 34 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 20 edges (avg confidence: 0.71)
+- 2731 nodes · 3659 edges · 218 communities (119 shown, 99 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 36 edges (avg confidence: 0.68)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f79852ad`
+- Built from commit: `b1b101c0`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -108,19 +108,110 @@
 - [[_COMMUNITY_English|English]]
 - [[_COMMUNITY_English|English]]
 - [[_COMMUNITY_한국어|한국어]]
+- [[_COMMUNITY_vision_wasm_nosimd_internal.js|vision_wasm_nosimd_internal.js]]
 - [[_COMMUNITY_English|English]]
 - [[_COMMUNITY_English|English]]
 - [[_COMMUNITY_Power and Contact Hitter - Aaron Judge|Power and Contact Hitter - Aaron Judge.md]]
 - [[_COMMUNITY_Contact Hitter - Masataka Yoshida|Contact Hitter - Masataka Yoshida.md]]
 - [[_COMMUNITY_Mentality and Logic of Hitting|Mentality and Logic of Hitting.md]]
 - [[_COMMUNITY_Swing 101|Swing 101.md]]
+- [[_COMMUNITY_vision_wasm_internal.js|vision_wasm_internal.js]]
 - [[_COMMUNITY_object-tracking.ts|object-tracking.ts]]
 - [[_COMMUNITY_drills.ts|drills.ts]]
 - [[_COMMUNITY_analysis-resolution.ts|analysis-resolution.ts]]
 - [[_COMMUNITY_coaching.ts|coaching.ts]]
+- [[_COMMUNITY_abort|abort]]
+- [[_COMMUNITY_abort|abort]]
+- [[_COMMUNITY_abort|abort]]
+- [[_COMMUNITY_ExceptionInfo|ExceptionInfo]]
+- [[_COMMUNITY_ExceptionInfo|ExceptionInfo]]
+- [[_COMMUNITY_ExceptionInfo|ExceptionInfo]]
+- [[_COMMUNITY_ExceptionInfo|ExceptionInfo]]
+- [[_COMMUNITY_makeEntry|makeEntry]]
+- [[_COMMUNITY_makeEntry|makeEntry]]
+- [[_COMMUNITY_makeEntry|makeEntry]]
+- [[_COMMUNITY_makeEntry|makeEntry]]
+- [[_COMMUNITY_ExampleInstrumentedTest.java|ExampleInstrumentedTest.java]]
+- [[_COMMUNITY_makeBlendState|makeBlendState]]
+- [[_COMMUNITY_makeVertexAttributes|makeVertexAttributes]]
+- [[_COMMUNITY_makeBlendState|makeBlendState]]
+- [[_COMMUNITY_makeVertexAttributes|makeVertexAttributes]]
+- [[_COMMUNITY_makeBlendState|makeBlendState]]
+- [[_COMMUNITY_makeVertexAttributes|makeVertexAttributes]]
+- [[_COMMUNITY_makeBlendState|makeBlendState]]
+- [[_COMMUNITY_makeVertexAttributes|makeVertexAttributes]]
+- [[_COMMUNITY____syscall_ioctl|___syscall_ioctl]]
+- [[_COMMUNITY_makeColorAttachments|makeColorAttachments]]
+- [[_COMMUNITY____syscall_ioctl|___syscall_ioctl]]
+- [[_COMMUNITY_makeColorAttachments|makeColorAttachments]]
+- [[_COMMUNITY_ExampleUnitTest.java|ExampleUnitTest.java]]
+- [[_COMMUNITY____syscall_ioctl|___syscall_ioctl]]
+- [[_COMMUNITY_makeColorAttachments|makeColorAttachments]]
+- [[_COMMUNITY____syscall_ioctl|___syscall_ioctl]]
+- [[_COMMUNITY_makeColorAttachments|makeColorAttachments]]
+- [[_COMMUNITY_write|write]]
+- [[_COMMUNITY_write|write]]
+- [[_COMMUNITY_MainActivity.java|MainActivity.java]]
+- [[_COMMUNITY_write|write]]
+- [[_COMMUNITY_write|write]]
+- [[_COMMUNITY_close|close]]
+- [[_COMMUNITY_convertReturnValue|convertReturnValue]]
+- [[_COMMUNITY_ExitStatus|ExitStatus]]
+- [[_COMMUNITY_fromWireType|fromWireType]]
+- [[_COMMUNITY_get_char|get_char]]
+- [[_COMMUNITY_getFullscreenElement|getFullscreenElement]]
+- [[_COMMUNITY_lookupPath|lookupPath]]
+- [[_COMMUNITY_makeDepthStencilState|makeDepthStencilState]]
+- [[_COMMUNITY_mount|mount]]
+- [[_COMMUNITY_preRun|preRun]]
+- [[_COMMUNITY_registerType|registerType]]
+- [[_COMMUNITY_statfs|statfs]]
+- [[_COMMUNITY_close|close]]
+- [[_COMMUNITY_convertReturnValue|convertReturnValue]]
+- [[_COMMUNITY_ExitStatus|ExitStatus]]
+- [[_COMMUNITY_fromWireType|fromWireType]]
+- [[_COMMUNITY_get_char|get_char]]
+- [[_COMMUNITY_getFullscreenElement|getFullscreenElement]]
+- [[_COMMUNITY_init|init]]
+- [[_COMMUNITY_lookupPath|lookupPath]]
+- [[_COMMUNITY_makeDepthStencilState|makeDepthStencilState]]
+- [[_COMMUNITY_mount|mount]]
+- [[_COMMUNITY_preRun|preRun]]
+- [[_COMMUNITY_registerType|registerType]]
+- [[_COMMUNITY_statfs|statfs]]
+- [[_COMMUNITY_capacitor.config.ts|capacitor.config.ts]]
+- [[_COMMUNITY_close|close]]
+- [[_COMMUNITY_convertReturnValue|convertReturnValue]]
+- [[_COMMUNITY_ExitStatus|ExitStatus]]
+- [[_COMMUNITY_fromWireType|fromWireType]]
+- [[_COMMUNITY_get_char|get_char]]
+- [[_COMMUNITY_getFullscreenElement|getFullscreenElement]]
+- [[_COMMUNITY_init|init]]
+- [[_COMMUNITY_lookupPath|lookupPath]]
+- [[_COMMUNITY_makeDepthStencilState|makeDepthStencilState]]
+- [[_COMMUNITY_mount|mount]]
+- [[_COMMUNITY_preRun|preRun]]
+- [[_COMMUNITY_registerType|registerType]]
+- [[_COMMUNITY_statfs|statfs]]
+- [[_COMMUNITY_close|close]]
+- [[_COMMUNITY_convertReturnValue|convertReturnValue]]
+- [[_COMMUNITY_ExitStatus|ExitStatus]]
+- [[_COMMUNITY_fromWireType|fromWireType]]
+- [[_COMMUNITY_get_char|get_char]]
+- [[_COMMUNITY_getFullscreenElement|getFullscreenElement]]
+- [[_COMMUNITY_init|init]]
+- [[_COMMUNITY_lookupPath|lookupPath]]
+- [[_COMMUNITY_makeDepthStencilState|makeDepthStencilState]]
+- [[_COMMUNITY_mount|mount]]
+- [[_COMMUNITY_preRun|preRun]]
+- [[_COMMUNITY_registerType|registerType]]
+- [[_COMMUNITY_statfs|statfs]]
+- [[_COMMUNITY_Package.swift|Package.swift]]
+- [[_COMMUNITY_README|README.md]]
+- [[_COMMUNITY_init|init]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `module` - 47 edges
+1. `module` - 139 edges
 2. `analyzeVideoFile()` - 20 edges
 3. `midpoint()` - 18 edges
 4. `Retriever` - 17 edges
@@ -132,33 +223,33 @@
 10. `distance()` - 14 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `ObjectReview()` --calls--> `reviewAt()`  [EXTRACTED]
-  components/ObjectReview.tsx → lib/object-tracking.ts
-- `SkeletonView()` --indirect_call--> `point()`  [INFERRED]
-  components/SkeletonView.tsx → lib/demo.ts
-- `SkeletonView()` --references--> `EMPHASIZED_POINTS`  [EXTRACTED]
-  components/SkeletonView.tsx → lib/skeleton.ts
-- `scaleFill()` --indirect_call--> `point()`  [INFERRED]
-  tests/framing.test.ts → lib/demo.ts
 - `JsOnUint8ArrayImageListener()` --references--> `module`  [EXTRACTED]
-  public/wasm/vision_wasm_internal.js → tsconfig.json
+  android/app/src/main/assets/public/wasm/vision_wasm_internal.js → tsconfig.json
+- `JsOnFloat32ArrayImageListener()` --references--> `module`  [EXTRACTED]
+  android/app/src/main/assets/public/wasm/vision_wasm_internal.js → tsconfig.json
+- `JsOnWebGLTextureListener()` --references--> `module`  [EXTRACTED]
+  android/app/src/main/assets/public/wasm/vision_wasm_internal.js → tsconfig.json
+- `JsOnUint8ArrayImageVectorListener()` --references--> `module`  [EXTRACTED]
+  android/app/src/main/assets/public/wasm/vision_wasm_internal.js → tsconfig.json
+- `JsOnFloat32ArrayImageVectorListener()` --references--> `module`  [EXTRACTED]
+  android/app/src/main/assets/public/wasm/vision_wasm_internal.js → tsconfig.json
 
 ## Import Cycles
 - None detected.
 
-## Communities (112 total, 34 thin omitted)
+## Communities (218 total, 99 thin omitted)
 
 ### Community 2 - "analysis.ts"
-Cohesion: 0.16
-Nodes (14): SkeletonView(), toDisplay(), createDemoFrames(), point(), sigmoid(), meanVisibility(), countMissingLandmarks(), mapLandmarkFromSquare() (+6 more)
+Cohesion: 0.21
+Nodes (9): meanVisibility(), countMissingLandmarks(), mapLandmarkFromSquare(), MediaPipePoseLandmarker, PoseDetection, PoseEngine, SquarePad, toLandmark() (+1 more)
 
 ### Community 3 - "module"
-Cohesion: 0.04
-Nodes (47): JsOnEmptyPacketListener(), JsOnFloat32ArrayImageListener(), JsOnFloat32ArrayImageVectorListener(), JsOnSimpleListenerBinaryArray(), JsOnSimpleListenerBool(), JsOnSimpleListenerDouble(), JsOnSimpleListenerFloat(), JsOnSimpleListenerInt() (+39 more)
+Cohesion: 0.01
+Nodes (139): JsOnEmptyPacketListener(), JsOnFloat32ArrayImageListener(), JsOnFloat32ArrayImageVectorListener(), JsOnSimpleListenerBinaryArray(), JsOnSimpleListenerBool(), JsOnSimpleListenerDouble(), JsOnSimpleListenerFloat(), JsOnSimpleListenerInt() (+131 more)
 
 ### Community 4 - "devDependencies"
-Cohesion: 0.07
-Nodes (28): dependencies, mediabunny, @mediapipe/tasks-vision, next, react, react-dom, devDependencies, eslint (+20 more)
+Cohesion: 0.05
+Nodes (36): dependencies, @capacitor/android, @capacitor/cli, @capacitor/core, @capacitor/ios, mediabunny, @mediapipe/tasks-vision, next (+28 more)
 
 ### Community 5 - "compilerOptions"
 Cohesion: 0.11
@@ -166,7 +257,7 @@ Nodes (18): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModu
 
 ### Community 6 - "SwingLens Prototype"
 Cohesion: 0.10
-Nodes (17): Analysis vs display resolution, Features added from external pattern research, Native mobile path, Prototype architecture and decision boundaries, Runtime flow, Validation still required, Values intentionally not measured, Competitive and open-source feature research (+9 more)
+Nodes (18): Analysis vs display resolution, Features added from external pattern research, Native mobile path, Prototype architecture and decision boundaries, Runtime flow, Validation still required, Values intentionally not measured, Competitive and open-source feature research (+10 more)
 
 ### Community 7 - "abort"
 Cohesion: 0.13
@@ -217,8 +308,8 @@ Cohesion: 0.50
 Nodes (4): makeColorAttachment(), makeColorAttachments(), makeDepthStencilAttachment(), makeRenderPassDescriptor()
 
 ### Community 22 - "hardware_concurrency"
-Cohesion: 0.20
-Nodes (5): ObjectUrlStore, hardware_concurrency(), init(), safeSetTimeout(), ModuleFactory()
+Cohesion: 0.12
+Nodes (9): hardware_concurrency(), init(), safeSetTimeout(), ModuleFactory(), hardware_concurrency(), ModuleFactory(), ObjectUrlStore, hardware_concurrency() (+1 more)
 
 ### Community 23 - "write"
 Cohesion: 0.67
@@ -229,8 +320,8 @@ Cohesion: 0.67
 Nodes (3): msync(), put_char(), write()
 
 ### Community 34 - "init"
-Cohesion: 0.14
-Nodes (20): ObjectReview(), export120Review(), openFrameReader(), ObjectTrackFrame, PoseEngine, analysisFrame(), analyzeVideoFile(), AnalyzeVideoOptions (+12 more)
+Cohesion: 0.11
+Nodes (28): export120Review(), openFrameReader(), ObjectEngine, Box, boxIou(), centerOfHeatmap(), ObjectCandidate, ObjectKind (+20 more)
 
 ### Community 61 - "Third-party notices"
 Cohesion: 0.33
@@ -249,8 +340,8 @@ Cohesion: 0.05
 Nodes (40): 1. Land before starting the final barrel turn, 1. 마지막 배럴 회전을 시작하기 전에 착지합니다, 2. Establish the front-foot contact plane, 2. 앞발 컨택 평면을 설정합니다, 3. Adjust the barrel’s direction—not the entire contact depth, 3. 전체 컨택 깊이가 아니라 배럴의 방향을 조정합니다, 4. Continue through the ball, 4. 공을 통과해 계속 진행합니다 (+32 more)
 
 ### Community 65 - "types.ts"
-Cohesion: 0.13
-Nodes (17): PHASE_ORDER, ChatMessage, ChatRole, CoachChat(), linkify(), renderCoachText(), CueScience(), Icon() (+9 more)
+Cohesion: 0.07
+Nodes (39): AnalysisReport(), PHASE_ORDER, ChatMessage, ChatRole, CoachChat(), linkify(), renderCoachText(), CueScience() (+31 more)
 
 ### Community 66 - "English"
 Cohesion: 0.05
@@ -281,8 +372,8 @@ Cohesion: 0.12
 Nodes (26): abstain_response(), answer_question(), build_context(), _check_signal_scale(), format_analysis(), format_history(), is_off_topic(), is_report_question() (+18 more)
 
 ### Community 73 - "analysis.ts"
-Cohesion: 0.26
-Nodes (25): analyzePoseSequence(), detectPhases(), handCenter(), PHASE_COPY, pickImpactIndex(), qualityChecks(), smooth(), stabilizeBallTrack() (+17 more)
+Cohesion: 0.15
+Nodes (36): analyzePoseSequence(), detectPhases(), handCenter(), PHASE_COPY, pickImpactIndex(), qualityChecks(), smooth(), Blob (+28 more)
 
 ### Community 74 - "English"
 Cohesion: 0.11
@@ -309,16 +400,16 @@ Cohesion: 0.16
 Nodes (16): Paths for the copy of the hitting RAG stack inside swinglens-prototype., coverage_separation(), evaluate(), hit_rank(), inspect_question(), load_golden(), print_separation_detail(), Path (+8 more)
 
 ### Community 80 - "skeleton.ts"
-Cohesion: 0.18
-Nodes (18): drawSkeletonOverlay(), renderExportStill(), waitSeeked(), framingCheck(), poseFillRatio(), BODY_LABELS, CORE_JOINTS, EMPHASIZED_POINTS (+10 more)
+Cohesion: 0.17
+Nodes (21): SkeletonView(), toDisplay(), createDemoFrames(), point(), sigmoid(), drawSkeletonOverlay(), renderExportStill(), waitSeeked() (+13 more)
 
 ### Community 81 - "The hip load"
 Cohesion: 0.12
 Nodes (16): Avoid Becoming Quad-Dominant, English, Finding the Athletic Position, How to avoid not having any hinge or athletic stance feeling, How to get into hip load or athletic stance?, The hip load, What is the Hip Load?, Why is the hip load important? (+8 more)
 
 ### Community 82 - "SwingAnalyzer.tsx"
-Cohesion: 0.17
-Nodes (19): MotionReport(), HERO_DOTS, HERO_POSE, RunStatus, SwingAnalyzer(), angleDegrees(), analyzeMotion(), ANGLES (+11 more)
+Cohesion: 0.15
+Nodes (20): MotionReport(), ObjectReview(), HERO_DOTS, HERO_POSE, RunStatus, SwingAnalyzer(), analyzeMotion(), ANGLES (+12 more)
 
 ### Community 83 - "English"
 Cohesion: 0.13
@@ -376,10 +467,6 @@ Nodes (9): English, Ronald Acuna Junior's Mechanics. Power Hitting Mechanics, Wh
 Cohesion: 0.20
 Nodes (9): 6월 19일, 잭 그레인키 상대, English, Power Hitter/ Shohei Ohtani's Swing Mechanism:, What improved Ohtani to hit tanks?, 시애틀 루이스 카스티요 상대, 오타니가 발전한 계기를 보여주는 사례, 오타니가 실제로 좋아진 부분, 오타니의 거포 메커니즘 혹은 접근법 (+1 more)
 
-### Community 97 - "ball-detect.ts"
-Cohesion: 0.29
-Nodes (9): Blob, bodyExclusion(), detectBall(), findBallImpactIndex(), hands(), isBallish(), xyDistance(), BallSpot (+1 more)
-
 ### Community 98 - "English"
 Cohesion: 0.22
 Nodes (8): Batting Mechanics Adjustment from Alex Bregman and Anthony Rizzo, English, PCA's early MLB career batting mechanics, PCA의 초반 타격 메커니즘, The current season stats after batting mechanics adjustment, 브레그먼의 조언과 리조의 스탠스로 바꾼 타격 메커니즘, 타격 메커니즘 수정 후  시즌이 보여주는 것, 한국어
@@ -408,40 +495,148 @@ Nodes (5): 62홈런을 만든 자세를 왜 버렸는가, Aaron Judge's stance c
 Cohesion: 0.40
 Nodes (4): English, Masataka Yoshida's mechanics: compactness. Contact Hitter's Mechanics, 마사타카 요시다의 메커니즘: 컴팩트함. 교타자의 메커니즘, 한국어
 
-### Community 110 - "object-tracking.ts"
-Cohesion: 0.17
-Nodes (11): ObjectEngine, Box, boxIou(), centerOfHeatmap(), ObjectCandidate, ObjectKind, ObjectObservation, OnlineObjectTracker (+3 more)
-
 ### Community 111 - "drills.ts"
-Cohesion: 0.18
-Nodes (12): AnalysisReport(), DrillCard, drillFor(), DrillSuggestion, DROP_BAT, FRONT_FOOT, getDrillSuggestions(), HIP_LOAD (+4 more)
+Cohesion: 0.09
+Nodes (20): Any, Bool, Capacitor, AppDelegate, UIScene, UISceneSession, UIWindow, SceneDelegate (+12 more)
 
 ### Community 112 - "analysis-resolution.ts"
-Cohesion: 0.16
-Nodes (14): ANALYSIS_LONG_EDGE, AnalysisQuality, aspectRatio(), aspectRatiosMatch(), getAnalysisDimensions(), getExportStillDimensions(), getThumbnailDimensions(), MediaPipelinePlan (+6 more)
+Cohesion: 0.19
+Nodes (12): ANALYSIS_LONG_EDGE, AnalysisQuality, aspectRatio(), aspectRatiosMatch(), getAnalysisDimensions(), getExportStillDimensions(), getThumbnailDimensions(), MediaPipelinePlan (+4 more)
 
 ### Community 113 - "coaching.ts"
+Cohesion: 0.13
+Nodes (15): abort(), assert(), createLazyFile(), createWasm(), findWasmBinary(), forceLoadFile(), getBinarySync(), getMouseWheelDelta() (+7 more)
+
+### Community 114 - "abort"
+Cohesion: 0.13
+Nodes (15): abort(), assert(), createLazyFile(), createWasm(), findWasmBinary(), forceLoadFile(), getBinarySync(), getMouseWheelDelta() (+7 more)
+
+### Community 115 - "abort"
+Cohesion: 0.13
+Nodes (15): abort(), assert(), createLazyFile(), createWasm(), findWasmBinary(), forceLoadFile(), getBinarySync(), getMouseWheelDelta() (+7 more)
+
+### Community 116 - "abort"
+Cohesion: 0.13
+Nodes (15): abort(), assert(), createLazyFile(), createWasm(), findWasmBinary(), forceLoadFile(), getBinarySync(), getMouseWheelDelta() (+7 more)
+
+### Community 121 - "makeEntry"
 Cohesion: 0.33
-Nodes (6): buildCoaching(), RankedCue, rankedCues(), MetricResult, PhaseKey, PhaseResult
+Nodes (6): makeBufferEntry(), makeEntries(), makeEntry(), makeSamplerEntry(), makeStorageTextureEntry(), makeTextureEntry()
+
+### Community 122 - "makeEntry"
+Cohesion: 0.33
+Nodes (6): makeBufferEntry(), makeEntries(), makeEntry(), makeSamplerEntry(), makeStorageTextureEntry(), makeTextureEntry()
+
+### Community 123 - "makeEntry"
+Cohesion: 0.33
+Nodes (6): makeBufferEntry(), makeEntries(), makeEntry(), makeSamplerEntry(), makeStorageTextureEntry(), makeTextureEntry()
+
+### Community 124 - "makeEntry"
+Cohesion: 0.33
+Nodes (6): makeBufferEntry(), makeEntries(), makeEntry(), makeSamplerEntry(), makeStorageTextureEntry(), makeTextureEntry()
+
+### Community 125 - "ExampleInstrumentedTest.java"
+Cohesion: 0.60
+Nodes (3): ExampleInstrumentedTest, Test, RunWith
+
+### Community 126 - "makeBlendState"
+Cohesion: 0.40
+Nodes (5): makeBlendComponent(), makeBlendState(), makeColorState(), makeColorStates(), makeFragmentState()
+
+### Community 127 - "makeVertexAttributes"
+Cohesion: 0.40
+Nodes (5): makeVertexAttribute(), makeVertexAttributes(), makeVertexBuffer(), makeVertexBuffers(), makeVertexState()
+
+### Community 128 - "makeBlendState"
+Cohesion: 0.40
+Nodes (5): makeBlendComponent(), makeBlendState(), makeColorState(), makeColorStates(), makeFragmentState()
+
+### Community 129 - "makeVertexAttributes"
+Cohesion: 0.40
+Nodes (5): makeVertexAttribute(), makeVertexAttributes(), makeVertexBuffer(), makeVertexBuffers(), makeVertexState()
+
+### Community 130 - "makeBlendState"
+Cohesion: 0.40
+Nodes (5): makeBlendComponent(), makeBlendState(), makeColorState(), makeColorStates(), makeFragmentState()
+
+### Community 131 - "makeVertexAttributes"
+Cohesion: 0.40
+Nodes (5): makeVertexAttribute(), makeVertexAttributes(), makeVertexBuffer(), makeVertexBuffers(), makeVertexState()
+
+### Community 132 - "makeBlendState"
+Cohesion: 0.40
+Nodes (5): makeBlendComponent(), makeBlendState(), makeColorState(), makeColorStates(), makeFragmentState()
+
+### Community 133 - "makeVertexAttributes"
+Cohesion: 0.40
+Nodes (5): makeVertexAttribute(), makeVertexAttributes(), makeVertexBuffer(), makeVertexBuffers(), makeVertexState()
+
+### Community 134 - "___syscall_ioctl"
+Cohesion: 0.50
+Nodes (4): ioctl_tcgets(), ioctl_tcsets(), ioctl_tiocgwinsz(), ___syscall_ioctl()
+
+### Community 135 - "makeColorAttachments"
+Cohesion: 0.50
+Nodes (4): makeColorAttachment(), makeColorAttachments(), makeDepthStencilAttachment(), makeRenderPassDescriptor()
+
+### Community 136 - "___syscall_ioctl"
+Cohesion: 0.50
+Nodes (4): ioctl_tcgets(), ioctl_tcsets(), ioctl_tiocgwinsz(), ___syscall_ioctl()
+
+### Community 137 - "makeColorAttachments"
+Cohesion: 0.50
+Nodes (4): makeColorAttachment(), makeColorAttachments(), makeDepthStencilAttachment(), makeRenderPassDescriptor()
+
+### Community 139 - "___syscall_ioctl"
+Cohesion: 0.50
+Nodes (4): ioctl_tcgets(), ioctl_tcsets(), ioctl_tiocgwinsz(), ___syscall_ioctl()
+
+### Community 140 - "makeColorAttachments"
+Cohesion: 0.50
+Nodes (4): makeColorAttachment(), makeColorAttachments(), makeDepthStencilAttachment(), makeRenderPassDescriptor()
+
+### Community 141 - "___syscall_ioctl"
+Cohesion: 0.50
+Nodes (4): ioctl_tcgets(), ioctl_tcsets(), ioctl_tiocgwinsz(), ___syscall_ioctl()
+
+### Community 142 - "makeColorAttachments"
+Cohesion: 0.50
+Nodes (4): makeColorAttachment(), makeColorAttachments(), makeDepthStencilAttachment(), makeRenderPassDescriptor()
+
+### Community 143 - "write"
+Cohesion: 0.67
+Nodes (3): msync(), put_char(), write()
+
+### Community 144 - "write"
+Cohesion: 0.67
+Nodes (3): msync(), put_char(), write()
+
+### Community 146 - "write"
+Cohesion: 0.67
+Nodes (3): msync(), put_char(), write()
+
+### Community 147 - "write"
+Cohesion: 0.67
+Nodes (3): msync(), put_char(), write()
 
 ## Knowledge Gaps
-- **506 isolated node(s):** `metadata`, `viewport`, `PHASE_ORDER`, `ChatRole`, `ChatMessage` (+501 more)
+- **526 isolated node(s):** `EmscriptenEH`, `EmscriptenSjLj`, `EmscriptenEH`, `EmscriptenSjLj`, `metadata` (+521 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **34 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **99 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `ObjectUrlStore` connect `hardware_concurrency` to `SwingAnalyzer.tsx`?**
-  _High betweenness centrality (0.118) - this node is a cross-community bridge._
 - **Why does `module` connect `module` to `compilerOptions`?**
-  _High betweenness centrality (0.065) - this node is a cross-community bridge._
-- **Why does `init()` connect `hardware_concurrency` to `vision_wasm_internal.js`?**
-  _High betweenness centrality (0.060) - this node is a cross-community bridge._
+  _High betweenness centrality (0.327) - this node is a cross-community bridge._
+- **Why does `ObjectUrlStore` connect `hardware_concurrency` to `SwingAnalyzer.tsx`?**
+  _High betweenness centrality (0.085) - this node is a cross-community bridge._
+- **Why does `init()` connect `init` to `object-tracking.ts`, `hardware_concurrency`?**
+  _High betweenness centrality (0.018) - this node is a cross-community bridge._
 - **Are the 6 inferred relationships involving `Retriever` (e.g. with `answer_question()` and `run_golden()`) actually correct?**
   _`Retriever` has 6 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `metadata`, `viewport`, `PHASE_ORDER` to the rest of the system?**
-  _542 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `EmscriptenEH`, `EmscriptenSjLj`, `EmscriptenEH` to the rest of the system?**
+  _562 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `vision_wasm_internal.js` be split into smaller, more focused modules?**
   _Cohesion score 0.012121212121212121 - nodes in this community are weakly interconnected._
 - **Should `vision_wasm_nosimd_internal.js` be split into smaller, more focused modules?**
