@@ -424,7 +424,12 @@ export async function analyzeVideoFile(
         seen.add(sample.timestampMs);
         const { canvas, timestampMs } = sample;
         const started = performance.now();
-        const candidates = objects.detect(canvas, options.tiledObjects ?? false);
+        // Full-frame inference runs every sample. Tiled inference is the
+        // expensive recall pass, so stagger it across the sequence instead of
+        // paying for five views on every frame. This keeps temporal coverage
+        // dense while cutting the average detector cost by more than half.
+        const tiledPass = Boolean(options.tiledObjects) && (i === 0 || i % 3 === 0);
+        const candidates = objects.detect(canvas, tiledPass);
         objectInferenceMs += performance.now() - started;
         const observations = tracker.update(candidates, timestampMs);
         objectFrames.push({ timestampMs, objects: observations });
@@ -435,7 +440,7 @@ export async function analyzeVideoFile(
           pose.ball = ball ? { x: ball.x, y: ball.y, score: ball.score, trackId: ball.trackId } : null;
           pose.batBox = bat?.box ?? null;
         }
-        onProgress(i + 1, objectTimes.length, `Tracking bat + ball${options.tiledObjects ? " · 5-view scan" : ""}`);
+        onProgress(i + 1, objectTimes.length, `Tracking bat + ball${options.tiledObjects ? " · adaptive tiled scan" : ""}`);
         await nextPaint();
       }
       objectInferenceMs /= Math.max(1, objectFrames.length);
