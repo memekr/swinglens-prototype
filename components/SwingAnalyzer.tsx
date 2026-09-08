@@ -250,7 +250,7 @@ export function SwingAnalyzer() {
             <li><b>Stable view</b><span>Use bright light and one fixed camera position for comparisons.</span></li>
           </ol>
           <div className="analysis-options">
-            <div className="stance-fieldset"><span>SPORT</span><select aria-label="Sport" value={sport} onChange={(event) => setSport(event.target.value as SportId)}>{SPORTS.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></div>
+            <div className="stance-fieldset"><span>SPORT</span><select aria-label="Sport" value={sport} onChange={(event) => setSport(event.target.value as SportId)}>{SPORTS.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select><small>{getSport(sport).equipment}</small></div>
             {sport === "other" && <label className="custom-sport-field"><span>SPORT NAME</span><input value={customSport} maxLength={60} placeholder="e.g. fencing" onChange={(event) => setCustomSport(event.target.value)} /></label>}
             <div className="stance-fieldset"><span>CAMERA VIEW</span><div className="segmented" role="group" aria-label="Camera view">{(["side", "front", "oblique"] as const).map((view) => <button key={view} className={cameraView === view ? "active" : ""} onClick={() => setCameraView(view)}>{view}</button>)}</div></div>
             <div className="stance-fieldset"><span>REVIEW GOAL</span><div className="segmented" role="group" aria-label="Practice goal">{(["consistency", "timing", "control"] as const).map((goal) => <button key={goal} className={practiceGoal === goal ? "active" : ""} onClick={() => setPracticeGoal(goal)}>{goal}</button>)}</div></div>
