@@ -94,10 +94,43 @@ a { color: inherit; text-decoration: none; }
 
 .workspace { display: grid; grid-template-columns: .83fr 1.17fr; gap: clamp(45px, 7vw, 105px); padding: clamp(78px, 10vw, 132px) clamp(20px, 7vw, 112px); color: var(--paper); background: #102019; }
 .workspace-copy { align-self: center; }
+.workspace-intro { color: #a5b2ab; line-height: 1.6; max-width: 520px; font-size: 14px; }
 .capture-tips { list-style: none; padding: 0; margin: 40px 0; display: grid; gap: 18px; }
 .capture-tips li { display: grid; grid-template-columns: 96px 1fr; gap: 10px; align-items: baseline; border-bottom: 1px solid rgba(245, 241, 232, .12); padding-bottom: 17px; }
 .capture-tips b { color: var(--lime); font-size: 13px; }
 .capture-tips span { color: #a5b2ab; line-height: 1.5; font-size: 13px; }
+.analysis-options select, .custom-sport-field input { min-height: 42px; border: 1px solid rgba(245,241,232,.18); border-radius: 9px; background: rgba(245,241,232,.06); color: var(--paper); padding: 0 12px; }
+.custom-sport-field { display: grid; gap: 8px; color: #9fb0a7; font-size: 10px; letter-spacing: .08em; }
+.custom-sport-field input::placeholder { color: #7f9087; }
+.motion-report { padding: clamp(70px, 9vw, 120px) clamp(20px, 7vw, 112px); background: var(--paper); color: var(--ink); }
+.motion-report-header { display:flex; justify-content:space-between; gap:28px; align-items:flex-end; border-bottom:1px solid var(--line); padding-bottom:28px; }
+.motion-report-header h2 { margin:0 0 10px; font-size:clamp(38px,5vw,68px); line-height:1; letter-spacing:-.06em; }
+.motion-report-header p { color:var(--muted); margin:0; }
+.motion-actions, .motion-controls { display:flex; gap:9px; flex-wrap:wrap; align-items:center; }
+.motion-actions button, .motion-controls button { border:1px solid var(--line); background:transparent; border-radius:9px; min-height:40px; padding:0 12px; cursor:pointer; }
+.motion-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; margin:26px 0; background:var(--line); border:1px solid var(--line); }
+.motion-stats > div { background:var(--paper); padding:19px; display:grid; gap:5px; }
+.motion-stats strong { font-size:26px; letter-spacing:-.04em; }
+.motion-stats span, .motion-metrics p, .motion-boundary { color:var(--muted); font-size:13px; line-height:1.55; }
+.motion-notice { padding:15px 18px; border-left:3px solid var(--coral); background:rgba(255,112,79,.08); color:#45534c; line-height:1.6; font-size:13px; }
+.motion-notice ul { margin:0; padding-left:18px; }
+.motion-lab { margin-top:28px; }
+.motion-frames { display:grid; grid-template-columns:minmax(0,1fr); gap:18px; }
+.motion-frames.compare { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.motion-controls { margin-top:12px; padding:12px; background:var(--paper-deep); }
+.motion-controls input[type=range] { flex:1; min-width:130px; accent-color:var(--coral); }
+.motion-controls label { font-size:13px; color:var(--muted); }
+.motion-metrics, .motion-practice { margin-top:38px; padding-top:30px; border-top:1px solid var(--line); }
+.motion-metrics h3, .motion-practice h3 { margin:0 0 8px; font-size:24px; letter-spacing:-.03em; }
+.motion-practice article { border:1px solid var(--line); padding:20px; margin-top:16px; max-width:720px; }
+.motion-practice h4 { margin:0 0 7px; font-size:19px; }
+.motion-practice p, .motion-practice li { color:var(--muted); line-height:1.6; font-size:14px; }
+.motion-boundary { margin-top:25px; max-width:760px; }
+@media (max-width: 760px) {
+  .motion-report-header, .motion-frames.compare { grid-template-columns:1fr; display:grid; }
+  .motion-stats { grid-template-columns:repeat(2,1fr); }
+  .motion-actions { justify-content:flex-start; }
+}
 .stance-fieldset { display: flex; align-items: center; gap: 16px; }
 .analysis-options { display: grid; gap: 16px; margin-top: 8px; }
 .enhance-toggle { display: flex; align-items: center; gap: 10px; color: #a5b2ab; font-size: 12px; cursor: pointer; }

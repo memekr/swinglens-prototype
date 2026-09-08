@@ -1,5 +1,5 @@
 /** Pure, timestamp-based tracking. Predictions associate detections; they never become observations. */
-export type ObjectKind = "ball" | "bat";
+export type ObjectKind = "ball" | "bat" | "racket";
 export type Box = { x: number; y: number; width: number; height: number };
 export type ObjectCandidate = {
   kind: ObjectKind;

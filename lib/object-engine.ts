@@ -1,5 +1,5 @@
 import type { ObjectDetector } from "@mediapipe/tasks-vision";
-import { centerOfHeatmap, suppressDuplicates, type Box, type ObjectCandidate } from "./object-tracking";
+import { centerOfHeatmap, suppressDuplicates, type Box, type ObjectCandidate, type ObjectKind } from "./object-tracking";
 
 /**
  * Neural semantic proposals first. Bright pixels alone NEVER create a detection.
@@ -9,13 +9,15 @@ import { centerOfHeatmap, suppressDuplicates, type Box, type ObjectCandidate } f
 export class ObjectEngine {
   private detector: ObjectDetector | null = null;
   private readonly minInferenceEdge = 640;
-  async load() {
+  async load(kinds: ObjectKind[] = ["ball", "bat"]) {
     const { FilesetResolver, ObjectDetector } = await import("@mediapipe/tasks-vision");
     const vision = await FilesetResolver.forVisionTasks("/wasm");
+    const categoryAllowlist = kinds.flatMap((kind) => kind === "ball" ? ["sports ball"] : kind === "bat" ? ["baseball bat"] : []);
+    if (!categoryAllowlist.length) return;
     const options = {
       baseOptions: { modelAssetPath: "/models/efficientdet_lite0_v1.tflite", delegate: "CPU" as const },
       runningMode: "IMAGE" as const, scoreThreshold: 0.2, maxResults: 30,
-      categoryAllowlist: ["sports ball", "baseball bat"],
+      categoryAllowlist,
     };
     // Prefer an on-device GPU delegate where the browser exposes one, while
     // retaining a deterministic CPU fallback for older iOS/Android browsers.

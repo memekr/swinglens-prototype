@@ -1,16 +1,16 @@
 # Graph Report - swinglens-prototype  (2026-09-08)
 
 ## Corpus Check
-- 101 files · ~184,114 words
+- 104 files · ~186,675 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1561 nodes · 2160 edges · 110 communities (75 shown, 35 thin omitted)
+- 1577 nodes · 2218 edges · 115 communities (79 shown, 36 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 20 edges (avg confidence: 0.71)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `06d82a21`
+- Built from commit: `a7ca2147`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -116,6 +116,11 @@
 - [[_COMMUNITY_Mentality and Logic of Hitting|Mentality and Logic of Hitting.md]]
 - [[_COMMUNITY_Swing 101|Swing 101.md]]
 - [[_COMMUNITY_.url|.url]]
+- [[_COMMUNITY_object-tracking.ts|object-tracking.ts]]
+- [[_COMMUNITY_drills.ts|drills.ts]]
+- [[_COMMUNITY_analysis-resolution.ts|analysis-resolution.ts]]
+- [[_COMMUNITY_coaching.ts|coaching.ts]]
+- [[_COMMUNITY_openFrameReader|openFrameReader]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `module` - 47 edges
@@ -132,23 +137,23 @@
 ## Surprising Connections (you probably didn't know these)
 - `SkeletonView()` --indirect_call--> `point()`  [INFERRED]
   components/SkeletonView.tsx → lib/demo.ts
+- `ObjectReview()` --calls--> `reviewAt()`  [EXTRACTED]
+  components/ObjectReview.tsx → lib/object-tracking.ts
 - `scaleFill()` --indirect_call--> `point()`  [INFERRED]
   tests/framing.test.ts → lib/demo.ts
 - `JsOnUint8ArrayImageListener()` --references--> `module`  [EXTRACTED]
   public/wasm/vision_wasm_internal.js → tsconfig.json
 - `JsOnFloat32ArrayImageListener()` --references--> `module`  [EXTRACTED]
   public/wasm/vision_wasm_internal.js → tsconfig.json
-- `JsOnWebGLTextureListener()` --references--> `module`  [EXTRACTED]
-  public/wasm/vision_wasm_internal.js → tsconfig.json
 
 ## Import Cycles
 - None detected.
 
-## Communities (110 total, 35 thin omitted)
+## Communities (115 total, 36 thin omitted)
 
 ### Community 2 - "analysis.ts"
-Cohesion: 0.16
-Nodes (13): createDemoFrames(), point(), sigmoid(), meanVisibility(), countMissingLandmarks(), mapLandmarkFromSquare(), MediaPipePoseLandmarker, PoseDetection (+5 more)
+Cohesion: 0.19
+Nodes (12): createDemoFrames(), point(), sigmoid(), meanVisibility(), countMissingLandmarks(), mapLandmarkFromSquare(), MediaPipePoseLandmarker, PoseDetection (+4 more)
 
 ### Community 3 - "module"
 Cohesion: 0.04
@@ -223,8 +228,8 @@ Cohesion: 0.67
 Nodes (3): msync(), put_char(), write()
 
 ### Community 34 - "init"
-Cohesion: 0.06
-Nodes (45): ObjectReview(), ANALYSIS_LONG_EDGE, AnalysisQuality, aspectRatio(), aspectRatiosMatch(), getAnalysisDimensions(), getExportStillDimensions(), getThumbnailDimensions() (+37 more)
+Cohesion: 0.13
+Nodes (19): ObjectReview(), AnalysisQuality, emptyPoseDiagnostics(), PoseRunDiagnostics, recordPoseDiagnostics(), PoseEngine, analysisFrame(), analyzeVideoFile() (+11 more)
 
 ### Community 61 - "Third-party notices"
 Cohesion: 0.33
@@ -243,8 +248,8 @@ Cohesion: 0.05
 Nodes (40): 1. Land before starting the final barrel turn, 1. 마지막 배럴 회전을 시작하기 전에 착지합니다, 2. Establish the front-foot contact plane, 2. 앞발 컨택 평면을 설정합니다, 3. Adjust the barrel’s direction—not the entire contact depth, 3. 전체 컨택 깊이가 아니라 배럴의 방향을 조정합니다, 4. Continue through the ball, 4. 공을 통과해 계속 진행합니다 (+32 more)
 
 ### Community 65 - "types.ts"
-Cohesion: 0.08
-Nodes (31): AnalysisReport(), PHASE_ORDER, CueScience(), ReviewStudio(), buildCoaching(), RankedCue, rankedCues(), CUE_EXPLAINERS (+23 more)
+Cohesion: 0.13
+Nodes (17): PHASE_ORDER, ChatMessage, ChatRole, CoachChat(), linkify(), renderCoachText(), CueScience(), Icon() (+9 more)
 
 ### Community 66 - "English"
 Cohesion: 0.05
@@ -275,8 +280,8 @@ Cohesion: 0.12
 Nodes (26): abstain_response(), answer_question(), build_context(), _check_signal_scale(), format_analysis(), format_history(), is_off_topic(), is_report_question() (+18 more)
 
 ### Community 73 - "analysis.ts"
-Cohesion: 0.32
-Nodes (17): angleDegrees(), axisAngleDifference(), distance(), lineAngleDegrees(), midpoint(), torsoScale(), backspaceMetrics(), CONTACT_OK (+9 more)
+Cohesion: 0.29
+Nodes (18): axisAngleDifference(), distance(), lineAngleDegrees(), midpoint(), torsoScale(), backspaceMetrics(), CONTACT_OK, cue() (+10 more)
 
 ### Community 74 - "English"
 Cohesion: 0.11
@@ -303,16 +308,16 @@ Cohesion: 0.16
 Nodes (16): Paths for the copy of the hitting RAG stack inside swinglens-prototype., coverage_separation(), evaluate(), hit_rank(), inspect_question(), load_golden(), print_separation_detail(), Path (+8 more)
 
 ### Community 80 - "skeleton.ts"
-Cohesion: 0.25
-Nodes (13): SkeletonView(), toDisplay(), drawSkeletonOverlay(), renderExportStill(), waitSeeked(), BODY_LABELS, EMPHASIZED_POINTS, MEDIAPIPE_INDEX (+5 more)
+Cohesion: 0.22
+Nodes (16): SkeletonView(), toDisplay(), drawSkeletonOverlay(), renderExportStill(), waitSeeked(), BODY_LABELS, EMPHASIZED_POINTS, MEDIAPIPE_INDEX (+8 more)
 
 ### Community 81 - "The hip load"
 Cohesion: 0.12
 Nodes (16): Avoid Becoming Quad-Dominant, English, Finding the Athletic Position, How to avoid not having any hinge or athletic stance feeling, How to get into hip load or athletic stance?, The hip load, What is the Hip Load?, Why is the hip load important? (+8 more)
 
 ### Community 82 - "SwingAnalyzer.tsx"
-Cohesion: 0.17
-Nodes (12): ChatMessage, ChatRole, CoachChat(), linkify(), renderCoachText(), Icon(), IconName, HERO_DOTS (+4 more)
+Cohesion: 0.18
+Nodes (19): MotionReport(), HERO_DOTS, HERO_POSE, RunStatus, SwingAnalyzer(), angleDegrees(), analyzeMotion(), ANGLES (+11 more)
 
 ### Community 83 - "English"
 Cohesion: 0.13
@@ -387,8 +392,8 @@ Cohesion: 0.25
 Nodes (7): Corey Seager's mechanics: hands, center of gravity, barrel, English, Who is Corey Seager?, 스윙이 말해 주는 것, 코리 시거는 누구인가?, 코리 시거의 메커니즘: 핸드, 무게중심, 배럴, 한국어
 
 ### Community 101 - "framing.test.ts"
-Cohesion: 0.29
-Nodes (13): analyzePoseSequence(), detectPhases(), handCenter(), PHASE_COPY, pickImpactIndex(), qualityChecks(), smooth(), stabilizeBallTrack() (+5 more)
+Cohesion: 0.25
+Nodes (14): analyzePoseSequence(), detectPhases(), handCenter(), PHASE_COPY, pickImpactIndex(), qualityChecks(), smooth(), stabilizeBallTrack() (+6 more)
 
 ### Community 102 - "English"
 Cohesion: 0.29
@@ -410,24 +415,40 @@ Nodes (4): English, Masataka Yoshida's mechanics: compactness. Contact Hitter's 
 Cohesion: 0.33
 Nodes (4): hardware_concurrency(), init(), safeSetTimeout(), ModuleFactory()
 
+### Community 110 - "object-tracking.ts"
+Cohesion: 0.17
+Nodes (12): ObjectEngine, Box, boxIou(), centerOfHeatmap(), ObjectCandidate, ObjectKind, ObjectObservation, ObjectTrackFrame (+4 more)
+
+### Community 111 - "drills.ts"
+Cohesion: 0.18
+Nodes (12): AnalysisReport(), DrillCard, drillFor(), DrillSuggestion, DROP_BAT, FRONT_FOOT, getDrillSuggestions(), HIP_LOAD (+4 more)
+
+### Community 112 - "analysis-resolution.ts"
+Cohesion: 0.30
+Nodes (10): ANALYSIS_LONG_EDGE, aspectRatio(), aspectRatiosMatch(), getAnalysisDimensions(), getExportStillDimensions(), getThumbnailDimensions(), MediaPipelinePlan, planMediaPipeline() (+2 more)
+
+### Community 113 - "coaching.ts"
+Cohesion: 0.33
+Nodes (6): buildCoaching(), RankedCue, rankedCues(), MetricResult, PhaseKey, PhaseResult
+
 ## Knowledge Gaps
-- **504 isolated node(s):** `metadata`, `viewport`, `PHASE_ORDER`, `ChatRole`, `ChatMessage` (+499 more)
+- **506 isolated node(s):** `metadata`, `viewport`, `PHASE_ORDER`, `ChatRole`, `ChatMessage` (+501 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **35 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **36 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `ObjectUrlStore` connect `hardware_concurrency` to `SwingAnalyzer.tsx`, `.url`?**
-  _High betweenness centrality (0.119) - this node is a cross-community bridge._
+  _High betweenness centrality (0.118) - this node is a cross-community bridge._
 - **Why does `module` connect `module` to `compilerOptions`?**
-  _High betweenness centrality (0.080) - this node is a cross-community bridge._
-- **Why does `init()` connect `init` to `vision_wasm_nosimd_internal.js`, `.url`?**
+  _High betweenness centrality (0.065) - this node is a cross-community bridge._
+- **Why does `init()` connect `.url` to `vision_wasm_internal.js`?**
   _High betweenness centrality (0.060) - this node is a cross-community bridge._
 - **Are the 6 inferred relationships involving `Retriever` (e.g. with `answer_question()` and `run_golden()`) actually correct?**
   _`Retriever` has 6 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `metadata`, `viewport`, `PHASE_ORDER` to the rest of the system?**
-  _540 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _542 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `vision_wasm_internal.js` be split into smaller, more focused modules?**
   _Cohesion score 0.012121212121212121 - nodes in this community are weakly interconnected._
 - **Should `vision_wasm_nosimd_internal.js` be split into smaller, more focused modules?**

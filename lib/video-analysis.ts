@@ -2,6 +2,7 @@ import { PoseEngine } from "./pose-engine";
 import { ObjectEngine } from "./object-engine";
 import { openFrameReader } from "./frame-reader";
 import { OnlineObjectTracker, type ObjectTrackFrame } from "./object-tracking";
+import type { ObjectKind } from "./object-tracking";
 import {
   DEFAULT_ANALYSIS_QUALITY,
   getAnalysisDimensions,
@@ -51,6 +52,7 @@ export type AnalyzeVideoOptions = {
   tiledObjects?: boolean;
   sourceFps?: number;
   signal?: AbortSignal;
+  objectKinds?: ObjectKind[];
 };
 
 type FrameCallbackVideo = HTMLVideoElement & {
@@ -413,7 +415,11 @@ export async function analyzeVideoFile(
     let objectInferenceMs = 0;
     try {
       onProgress(0, objectTimes.length, "Loading the local bat + ball model");
-      await objects.load();
+      const objectKinds = options.objectKinds ?? ["ball", "bat"];
+      if (!objectKinds.length) {
+        onProgress(0, 1, "Body-only review · skipping object model");
+      } else {
+      await objects.load(objectKinds);
       checkCancelled();
       const tracker = new OnlineObjectTracker(video.videoWidth / video.videoHeight);
       const seen = new Set<number>();
@@ -444,6 +450,7 @@ export async function analyzeVideoFile(
         await nextPaint();
       }
       objectInferenceMs /= Math.max(1, objectFrames.length);
+      }
     } catch (error) {
       checkCancelled();
       objectError = error instanceof Error ? error.message : "Object tracking failed.";

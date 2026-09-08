@@ -14,6 +14,8 @@ import { AnalysisReport } from "./AnalysisReport";
 import { CoachChat } from "./CoachChat";
 import { Icon } from "./Icon";
 import { ObjectReview } from "./ObjectReview";
+import { MotionReport } from "./MotionReport";
+import { getSport, sportLabel, SPORTS, type CameraView, type PracticeGoal, type SportId } from "@/lib/sports";
 
 type RunStatus = "idle" | "processing" | "done" | "error";
 
@@ -52,6 +54,10 @@ export function SwingAnalyzer() {
   const [quality, setQuality] = useState<AnalysisQuality>(DEFAULT_ANALYSIS_QUALITY);
   const [enhanceInference, setEnhanceInference] = useState(false);
   const [tiledObjects, setTiledObjects] = useState(true);
+  const [sport, setSport] = useState<SportId>("baseball");
+  const [customSport, setCustomSport] = useState("");
+  const [cameraView, setCameraView] = useState<CameraView>("side");
+  const [practiceGoal, setPracticeGoal] = useState<PracticeGoal>("consistency");
   const uploadInput = useRef<HTMLInputElement>(null);
   const cameraInput = useRef<HTMLInputElement>(null);
   const engine = useRef<PoseEngine | null>(null);
@@ -122,7 +128,7 @@ export function SwingAnalyzer() {
           setProgress({ completed, total, stage });
         },
         handedness,
-        { quality, enhanceInference, tiledObjects, signal: runController.signal },
+        { quality, enhanceInference, tiledObjects, signal: runController.signal, objectKinds: getSport(sport).objects },
       );
       const nextResult = analyzePoseSequence(output.frames, handedness, output.expectedSamples);
       setVideoMeta(output);
@@ -235,18 +241,23 @@ export function SwingAnalyzer() {
 
       <section className="workspace" id="analyze" aria-labelledby="analyze-title">
         <div className="workspace-copy">
-          <p className="eyebrow light"><span /> TRY YOUR SWING</p>
-          <h2 id="analyze-title">One swing.<br />Full body in frame.</h2>
+          <p className="eyebrow light"><span /> LOCAL MULTISPORT REVIEW</p>
+          <h2 id="analyze-title">One move.<br />Review the next.</h2>
+          <p className="workspace-intro">Choose a sport to change the capture guidance, object models, and review prompts. A body-only sport never receives baseball scoring.</p>
           <ol className="capture-tips">
-            <li><b>Landscape</b><span>Phone at belt height, roughly 10–16 ft (3–5 m) away</span></li>
-            <li><b>Full body</b><span>Fill about 65–85% of the frame. Keep the head, both feet, both hands, and the complete bat path visible</span></li>
-            <li><b>Stable view</b><span>Use bright light and a fixed side or open-side camera</span></li>
+            <li><b>{sportLabel(sport, customSport)}</b><span>{getSport(sport).capture}</span></li>
+            <li><b>One athlete</b><span>Keep the head, both feet, both hands, and the full action in frame.</span></li>
+            <li><b>Stable view</b><span>Use bright light and one fixed camera position for comparisons.</span></li>
           </ol>
           <div className="analysis-options">
+            <div className="stance-fieldset"><span>SPORT</span><select aria-label="Sport" value={sport} onChange={(event) => setSport(event.target.value as SportId)}>{SPORTS.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></div>
+            {sport === "other" && <label className="custom-sport-field"><span>SPORT NAME</span><input value={customSport} maxLength={60} placeholder="e.g. fencing" onChange={(event) => setCustomSport(event.target.value)} /></label>}
+            <div className="stance-fieldset"><span>CAMERA VIEW</span><div className="segmented" role="group" aria-label="Camera view">{(["side", "front", "oblique"] as const).map((view) => <button key={view} className={cameraView === view ? "active" : ""} onClick={() => setCameraView(view)}>{view}</button>)}</div></div>
+            <div className="stance-fieldset"><span>REVIEW GOAL</span><div className="segmented" role="group" aria-label="Practice goal">{(["consistency", "timing", "control"] as const).map((goal) => <button key={goal} className={practiceGoal === goal ? "active" : ""} onClick={() => setPracticeGoal(goal)}>{goal}</button>)}</div></div>
             <div className="stance-fieldset"><span>BATTER</span><div className="segmented" role="group" aria-label="Batter side"><button className={handedness === "right" ? "active" : ""} onClick={() => setHandedness("right")}>Right</button><button className={handedness === "left" ? "active" : ""} onClick={() => setHandedness("left")}>Left</button></div></div>
             <div className="stance-fieldset"><span>POSE</span><div className="segmented" role="group" aria-label="Analysis quality"><button className={quality === "quality" ? "active" : ""} onClick={() => setQuality("quality")}>Quality</button><button className={quality === "balanced" ? "active" : ""} onClick={() => setQuality("balanced")}>Balanced</button><button className={quality === "fast" ? "active" : ""} onClick={() => setQuality("fast")}>Fast</button></div></div>
             <label className="enhance-toggle"><input type="checkbox" checked={enhanceInference} onChange={(event) => setEnhanceInference(event.target.checked)} /> Brighten frames for pose only</label>
-            <label className="enhance-toggle"><input type="checkbox" checked={tiledObjects} onChange={(event) => setTiledObjects(event.target.checked)} /> Oversample object search (5 views)</label>
+            {getSport(sport).objects.length > 0 && <label className="enhance-toggle"><input type="checkbox" checked={tiledObjects} onChange={(event) => setTiledObjects(event.target.checked)} /> Adaptive object search</label>}
           </div>
         </div>
 
@@ -276,13 +287,14 @@ export function SwingAnalyzer() {
         </div>
       </section>
 
-      {!isDemo && videoMeta && previewUrl && file && <ObjectReview key={`${file.name}-${file.lastModified}-${file.size}`} output={videoMeta} videoSrc={previewUrl} file={file} />}
+      {videoMeta && <MotionReport output={videoMeta} sport={sport} name={sportLabel(sport, customSport)} view={cameraView} goal={practiceGoal} videoSrc={isDemo ? null : previewUrl} isDemo={isDemo} onReset={() => { setResult(null); setVideoMeta(null); setStatus("idle"); document.querySelector("#analyze")?.scrollIntoView({ behavior: "smooth" }); }} />}
+      {!isDemo && videoMeta && previewUrl && file && getSport(sport).objects.length > 0 && <ObjectReview key={`${file.name}-${file.lastModified}-${file.size}`} output={videoMeta} videoSrc={previewUrl} file={file} />}
 
       <section className="coach-dock no-print" aria-label="Hitting coach">
         <CoachChat analysis={result} />
       </section>
 
-      {result && <AnalysisReport result={result} videoMeta={videoMeta} videoSrc={isDemo ? null : previewUrl} isDemo={isDemo} onReset={() => { setResult(null); setStatus("idle"); document.querySelector("#analyze")?.scrollIntoView({ behavior: "smooth" }); }} />}
+      {result && sport === "baseball" && <AnalysisReport result={result} videoMeta={videoMeta} videoSrc={isDemo ? null : previewUrl} isDemo={isDemo} onReset={() => { setResult(null); setStatus("idle"); document.querySelector("#analyze")?.scrollIntoView({ behavior: "smooth" }); }} />}
 
       <section className="privacy-section" id="privacy">
         <div><p className="eyebrow light"><span /> PRIVACY BY DESIGN</p><h2>Your video lives<br />on your device.</h2></div>
@@ -290,7 +302,7 @@ export function SwingAnalyzer() {
         <p>No login, cloud video storage, or ad tracker. The browser downloads the pose model once; your frames and results are computed locally.</p>
       </section>
 
-      <footer><a className="brand" href="#top"><span className="brand-mark">SL</span><span>SwingLens</span></a><p>Vision-first baseball movement prototype · 2026</p><p>Training reference only · Not medical or injury advice</p></footer>
+      <footer><a className="brand" href="#top"><span className="brand-mark">SL</span><span>SwingLens</span></a><p>Local-first multisport movement review · 2026</p><p>Training reference only · Not medical or injury advice</p></footer>
     </main>
   );
 }
