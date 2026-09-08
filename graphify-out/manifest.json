@@ -290,8 +290,8 @@
     "semantic_hash": ""
   },
   "lib/object-engine.ts": {
-    "mtime": 1788871946.7632473,
-    "ast_hash": "43c75d8a870bb40f482289300e130e34",
+    "mtime": 1788872367.124277,
+    "ast_hash": "9ec596c33f95624dd363e79d89a7a98c",
     "semantic_hash": ""
   },
   "lib/object-tracking.ts": {

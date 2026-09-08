@@ -12,11 +12,21 @@ export class ObjectEngine {
   async load() {
     const { FilesetResolver, ObjectDetector } = await import("@mediapipe/tasks-vision");
     const vision = await FilesetResolver.forVisionTasks("/wasm");
-    this.detector = await ObjectDetector.createFromOptions(vision, {
-      baseOptions: { modelAssetPath: "/models/efficientdet_lite0_v1.tflite", delegate: "CPU" },
-      runningMode: "IMAGE", scoreThreshold: 0.2, maxResults: 30,
+    const options = {
+      baseOptions: { modelAssetPath: "/models/efficientdet_lite0_v1.tflite", delegate: "CPU" as const },
+      runningMode: "IMAGE" as const, scoreThreshold: 0.2, maxResults: 30,
       categoryAllowlist: ["sports ball", "baseball bat"],
-    });
+    };
+    // Prefer an on-device GPU delegate where the browser exposes one, while
+    // retaining a deterministic CPU fallback for older iOS/Android browsers.
+    try {
+      this.detector = await ObjectDetector.createFromOptions(vision, {
+        ...options,
+        baseOptions: { ...options.baseOptions, delegate: "GPU" },
+      });
+    } catch {
+      this.detector = await ObjectDetector.createFromOptions(vision, options);
+    }
   }
   detect(source: HTMLCanvasElement, tiled: boolean): ObjectCandidate[] {
     if (!this.detector) throw new Error("Object model is not loaded.");
